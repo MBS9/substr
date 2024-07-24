@@ -4,7 +4,7 @@ use pyo3::{exceptions::PyValueError, prelude::*};
 /// Returns index and substring of substrings of length at least min
 /// Does not return overlapping substrings
 #[pyfunction]
-fn common_substring(mut b: String, mut a: String, min: usize) -> PyResult<Vec<(usize, String)>> {
+fn common_substring(mut a: String, mut b: String, min: usize) -> PyResult<Vec<(usize, String)>> {
     a.push(char::MAX);
     b.push('\n');
     if min < 2 {
@@ -28,7 +28,7 @@ fn common_substring(mut b: String, mut a: String, min: usize) -> PyResult<Vec<(u
                 if l[i - 1][j - 1] >= min {
                     // We don't need the -1 because the range is exclusive on the right side
                     // We don't need the -1 in the main formula, because the array starts from 0, but string length starts from 1
-                    ret.push((i-1, a[i - l[i - 1][j - 1] + 0..(i)].to_string()));
+                    ret.push((i- l[i - 1][j - 1], a[i - l[i - 1][j - 1] + 0..(i)].to_string()));
                 }
             }
         }
