@@ -1,3 +1,3 @@
 import compare_text
 
-print(compare_text.common_substring('agbrcd', 'agbcd', 2))
+print(compare_text.common_substring('agbrkkhcd', 'kkagbcd', 2))
