@@ -44,6 +44,8 @@ pip install .
 Example below:
 
 ```python
+textA = 'kkagbkk34535dgdfhcdhguzhello'
+textB= 'agbrkkhcd111111111zgzuhello'
 
 from compare_text import common_substring, common_substring_levenshtein
 print(common_substring(textA, textB, 2))
