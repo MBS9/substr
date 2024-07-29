@@ -1,12 +1,16 @@
 from concurrent.futures import ThreadPoolExecutor
+from os import path
 from aiohttp import web
 import asyncio
 import jinja2
 import analysis
+import pathlib
 
 pool = ThreadPoolExecutor(3)
 
-env = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'),
+templatesPath = pathlib.Path(__file__).parent / 'templates'
+
+env = jinja2.Environment(loader=jinja2.FileSystemLoader(templatesPath.resolve()),
                          autoescape=jinja2.select_autoescape(default=True))
 
 resp = env.get_template("resp.html")
@@ -31,4 +35,4 @@ app.add_routes([web.post('/compare', handle),
                 ])
 
 if __name__ == '__main__':
-    web.run_app(app)
+    web.run_app(app, port=8080)

@@ -43,9 +43,9 @@ fn common_substring(py: Python<'_>, mut a: String, mut b: String, min: usize) ->
     if min < MIN_LEN {
         return Err(PyValueError::new_err("min must be at least 2"));
     }
-    a.push(char::MAX);
-    b.push('\n');
     Python::allow_threads(py, move || {
+        a.push(char::MAX);
+        b.push('\n');
         //let mut l: Vec<Vec<usize>> = vec![vec![0usize; b.len()]; a.len()];
         let mut l: EfficientMatrix<usize> = EfficientMatrix::new(0, b.len());
 
@@ -91,9 +91,9 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, mi
     if min < MIN_LEN {
         return Err(PyValueError::new_err("min must be at least MIN_LEN"));
     }
-    a.push(char::MAX);
-    b.push('\n');
     Python::allow_threads(py, move || {
+        a.push(char::MAX);
+        b.push('\n');
         let mut l: EfficientMatrix<(usize, usize)> = EfficientMatrix::new((0, 0), b.len());
         // let mut l: Vec<Vec<(usize, usize)>> = vec![vec![(0usize, 0usize); b.len()]; a.len()];
         let mut ret: Vec<(usize, usize, f32, String)> = Vec::new();

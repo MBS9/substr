@@ -2,14 +2,15 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Form</title>
+    <title>Submit Form</title>
 </head>
 <body>
     <h1>Compare Text</h1>
     <form action="/compare"
         method="post"
         enctype="multipart/form-data"
-        id="form" name="form">
+        id="form" name="form"
+    >
         <label for="textA">Text A</label>
         <input name="textA" type="file" />
         <br/>
@@ -29,7 +30,7 @@
     </form>
     <div id="progress" style="display: none;">
         <progress max="100"></progress>
-        <p>Processing</p>
+        <p>Processing... please wait</p>
     </div>
     <script>
         document.getElementById('form').addEventListener('submit', function(event) {
