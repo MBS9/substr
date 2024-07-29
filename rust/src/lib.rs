@@ -39,13 +39,13 @@ impl<T> IndexMut<usize> for EfficientMatrix<T> {
 /// Thanks to the EfficientMatrix struct, this implementation is more memory efficient
 #[pyfunction]
 fn common_substring(py: Python<'_>, mut a: String, mut b: String, min: usize) -> PyResult<Vec<(usize, usize, String)>> {
+    const MIN_LEN: usize = 2;
+    if min < MIN_LEN {
+        return Err(PyValueError::new_err("min must be at least 2"));
+    }
     a.push(char::MAX);
     b.push('\n');
     Python::allow_threads(py, move || {
-        const MIN_LEN: usize = 2;
-        if min < MIN_LEN {
-            return Err(PyValueError::new_err("min must be at least 2"));
-        }
         //let mut l: Vec<Vec<usize>> = vec![vec![0usize; b.len()]; a.len()];
         let mut l: EfficientMatrix<usize> = EfficientMatrix::new(0, b.len());
 
@@ -87,13 +87,13 @@ fn common_substring(py: Python<'_>, mut a: String, mut b: String, min: usize) ->
 /// This is a more memory efficient implementation, thanks to the EfficientMatrix struct
 #[pyfunction]
 fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, min: usize, ratio: f32) -> PyResult<Vec<(usize, usize, f32, String)>> {
+    const MIN_LEN: usize = 2;
+    if min < MIN_LEN {
+        return Err(PyValueError::new_err("min must be at least MIN_LEN"));
+    }
     a.push(char::MAX);
     b.push('\n');
     Python::allow_threads(py, move || {
-        const MIN_LEN: usize = 2;
-        if min < MIN_LEN {
-            return Err(PyValueError::new_err("min must be at least MIN_LEN"));
-        }
         let mut l: EfficientMatrix<(usize, usize)> = EfficientMatrix::new((0, 0), b.len());
         // let mut l: Vec<Vec<(usize, usize)>> = vec![vec![(0usize, 0usize); b.len()]; a.len()];
         let mut ret: Vec<(usize, usize, f32, String)> = Vec::new();
