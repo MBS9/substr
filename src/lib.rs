@@ -38,44 +38,46 @@ impl<T> IndexMut<usize> for EfficientMatrix<T> {
 /// Does not return overlapping substrings
 /// Thanks to the EfficientMatrix struct, this implementation is more memory efficient
 #[pyfunction]
-fn common_substring(mut a: String, mut b: String, min: usize) -> PyResult<Vec<(usize, usize, String)>> {
-    const MIN_LEN: usize = 2;
+fn common_substring(py: Python<'_>, mut a: String, mut b: String, min: usize) -> PyResult<Vec<(usize, usize, String)>> {
     a.push(char::MAX);
     b.push('\n');
-    if min < MIN_LEN {
-        return Err(PyValueError::new_err("min must be at least 2"));
-    }
-    //let mut l: Vec<Vec<usize>> = vec![vec![0usize; b.len()]; a.len()];
-    let mut l: EfficientMatrix<usize> = EfficientMatrix::new(0, b.len());
+    Python::allow_threads(py, move || {
+        const MIN_LEN: usize = 2;
+        if min < MIN_LEN {
+            return Err(PyValueError::new_err("min must be at least 2"));
+        }
+        //let mut l: Vec<Vec<usize>> = vec![vec![0usize; b.len()]; a.len()];
+        let mut l: EfficientMatrix<usize> = EfficientMatrix::new(0, b.len());
 
-    let mut ret: Vec<(usize, usize, String)> = Vec::new();
-    for (i, c) in a.chars().enumerate() {
-        for (j, d) in b.chars().enumerate() {
-            if c == d {
-                if i == 0 || j == 0 {
-                    l[i][j] = 1;
+        let mut ret: Vec<(usize, usize, String)> = Vec::new();
+        for (i, c) in a.chars().enumerate() {
+            for (j, d) in b.chars().enumerate() {
+                if c == d {
+                    if i == 0 || j == 0 {
+                        l[i][j] = 1;
+                    } else {
+                        l[i][j] = l[i - 1][j - 1] + 1;
+                    }
                 } else {
-                    l[i][j] = l[i - 1][j - 1] + 1;
-                }
-            } else {
-                l[i][j] = 0;
-                if i == 0 || j == 0 {
-                    continue;
-                }
-                // This does not return overlapping substrings
-                if l[i - 1][j - 1] >= min {
-                    // We don't need the -1 because the range is exclusive on the right side
-                    // We don't need the -1 in the main formula, because the array starts from 0, but string length starts from 1
-                    ret.push((i- l[i - 1][j - 1],
-                        j- l[i - 1][j - 1],
-                        a[i - l[i - 1][j - 1] + 0..(i)]
-                        .to_string()));
+                    l[i][j] = 0;
+                    if i == 0 || j == 0 {
+                        continue;
+                    }
+                    // This does not return overlapping substrings
+                    if l[i - 1][j - 1] >= min {
+                        // We don't need the -1 because the range is exclusive on the right side
+                        // We don't need the -1 in the main formula, because the array starts from 0, but string length starts from 1
+                        ret.push((i- l[i - 1][j - 1],
+                            j- l[i - 1][j - 1],
+                            a[i - l[i - 1][j - 1] + 0..(i)]
+                            .to_string()));
+                    }
                 }
             }
         }
-    }
 
-    Ok(ret)
+        Ok(ret)
+    })
 }
 
 
@@ -84,67 +86,69 @@ fn common_substring(mut a: String, mut b: String, min: usize) -> PyResult<Vec<(u
 /// Does not return overlapping substrings
 /// This is a more memory efficient implementation, thanks to the EfficientMatrix struct
 #[pyfunction]
-fn common_substring_levenshtein(mut a: String, mut b: String, min: usize, ratio: f32) -> PyResult<Vec<(usize, usize, f32, String)>> {
+fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, min: usize, ratio: f32) -> PyResult<Vec<(usize, usize, f32, String)>> {
     a.push(char::MAX);
     b.push('\n');
-    const MIN_LEN: usize = 2;
-    if min < MIN_LEN {
-        return Err(PyValueError::new_err("min must be at least MIN_LEN"));
-    }
-    let mut l: EfficientMatrix<(usize, usize)> = EfficientMatrix::new((0, 0), b.len());
-    // let mut l: Vec<Vec<(usize, usize)>> = vec![vec![(0usize, 0usize); b.len()]; a.len()];
-    let mut ret: Vec<(usize, usize, f32, String)> = Vec::new();
-    for (i, c) in a.chars().enumerate() {
-        for (j, d) in b.chars().enumerate() {
-            if c == d {
-                if i == 0 || j == 0 {
-                    l[i][j].0 = 1;
+    Python::allow_threads(py, move || {
+        const MIN_LEN: usize = 2;
+        if min < MIN_LEN {
+            return Err(PyValueError::new_err("min must be at least MIN_LEN"));
+        }
+        let mut l: EfficientMatrix<(usize, usize)> = EfficientMatrix::new((0, 0), b.len());
+        // let mut l: Vec<Vec<(usize, usize)>> = vec![vec![(0usize, 0usize); b.len()]; a.len()];
+        let mut ret: Vec<(usize, usize, f32, String)> = Vec::new();
+        for (i, c) in a.chars().enumerate() {
+            for (j, d) in b.chars().enumerate() {
+                if c == d {
+                    if i == 0 || j == 0 {
+                        l[i][j].0 = 1;
+                    } else {
+                        l[i][j].0 = l[i - 1][j - 1].0 + 1;
+                    }
                 } else {
-                    l[i][j].0 = l[i - 1][j - 1].0 + 1;
-                }
-            } else {
-                if i == 0 || j == 0 {
+                    if i == 0 || j == 0 {
+                        l[i][j].1 = 0;
+                        l[i][j].0 = 0;
+                        continue;
+                    }
+                    // We don't check the single character
+                    let mut len = l[i-1][j-1].0;
+                    if len == 0 {
+                        l[i][j].1 = 0;
+                        l[i][j].0 = 0;
+                        continue;
+                    };
+
+                    // Calculate the edit ratio
+                    len += 1;
+                    let diffirent = l[i-1][j-1].1 +1;
+                    let mut edit_ratio = ((len-diffirent) as f32)/(len as f32);
+
+                    // If it is less then the set value, and we are not yet at the end of the string, continue
+                    if edit_ratio > ratio && j < b.len()-1 {
+                        l[i][j].1 = diffirent;
+                        l[i][j].0 = len;
+                        continue;
+                    }
+
+                    // Calculate the edit ratio for the returning string
+                    edit_ratio = ((len-diffirent) as f32)/((len-(1 as usize)) as f32);
+                    if l[i - 1][j - 1].0 >= min {
+                        // We don't need the -1 because the range is exclusive on the right side
+                        // We don't need the -1 in the main formula, because the array starts from 0, but string length starts from 1
+                        ret.push((i- l[i - 1][j - 1].0, j- l[i - 1][j - 1].0,
+                            edit_ratio,
+                            a[i - l[i - 1][j - 1].0 + 0..(i)]
+                            .to_string()));
+                    }
                     l[i][j].1 = 0;
                     l[i][j].0 = 0;
-                    continue;
                 }
-                // We don't check the single character
-                let mut len = l[i-1][j-1].0;
-                if len == 0 {
-                    l[i][j].1 = 0;
-                    l[i][j].0 = 0;
-                    continue;
-                };
-
-                // Calculate the edit ratio
-                len += 1;
-                let diffirent = l[i-1][j-1].1 +1;
-                let mut edit_ratio = ((len-diffirent) as f32)/(len as f32);
-
-                // If it is less then the set value, and we are not yet at the end of the string, continue
-                if edit_ratio > ratio && j < b.len()-1 {
-                    l[i][j].1 = diffirent;
-                    l[i][j].0 = len;
-                    continue;
-                }
-
-                // Calculate the edit ratio for the returning string
-                edit_ratio = ((len-diffirent) as f32)/((len-(1 as usize)) as f32);
-                if l[i - 1][j - 1].0 >= min {
-                    // We don't need the -1 because the range is exclusive on the right side
-                    // We don't need the -1 in the main formula, because the array starts from 0, but string length starts from 1
-                    ret.push((i- l[i - 1][j - 1].0, j- l[i - 1][j - 1].0,
-                        edit_ratio,
-                        a[i - l[i - 1][j - 1].0 + 0..(i)]
-                        .to_string()));
-                }
-                l[i][j].1 = 0;
-                l[i][j].0 = 0;
             }
         }
-    }
 
-    Ok(ret)
+        Ok(ret)
+    })
 }
 
 /// A Python module implemented in Rust.
