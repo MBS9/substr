@@ -5,6 +5,29 @@
 </head>
 <body>
     <h1>Response</h1>
-    <p>{{ response }}</p>
+        {% for result in results %}
+        <table>
+            <tr>
+                <td>Str1</td>
+                <td>Between</td>
+                <td>Str2</td>
+            </tr>
+            <tr>
+                <td>{{ result['str1']['substringA'] }}</td>
+                <td>{{ result['betweenInA'] }}</td>
+                <td>{{ result['str2']['substringA']  }}</td>
+            </tr>
+            <tr>
+                <td>{{ result['str1']['substringB']  }}</td>
+                <td>{{ result['betweenInB'] }}</td>
+                <td>{{ result['str2']['substringB']  }}</td>
+            </tr>
+            <tr>
+                <td>Edit Ratio: {{ result['str1']['ratio'] }}</td>
+                <td>Cosine Similarity: {{ result['cosine'] }}</td>
+                <td>Edit Ratio: {{ result['str2']['ratio']  }}</td>
+            </tr>
+        </table>
+        {% endfor %}
 </body>
 </html>

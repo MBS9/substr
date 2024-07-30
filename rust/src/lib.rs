@@ -38,7 +38,7 @@ impl<T> IndexMut<usize> for EfficientMatrix<T> {
 /// Does not return overlapping substrings
 /// Thanks to the EfficientMatrix struct, this implementation is more memory efficient
 #[pyfunction]
-fn common_substring(py: Python<'_>, mut a: String, mut b: String, min: usize) -> PyResult<Vec<(usize, usize, String)>> {
+fn common_substring(py: Python<'_>, mut a: String, mut b: String, min: usize) -> PyResult<Vec<(usize, usize, String, String)>> {
     const MIN_LEN: usize = 2;
     if min < MIN_LEN {
         return Err(PyValueError::new_err("min must be at least 2"));
@@ -49,7 +49,7 @@ fn common_substring(py: Python<'_>, mut a: String, mut b: String, min: usize) ->
         //let mut l: Vec<Vec<usize>> = vec![vec![0usize; b.len()]; a.len()];
         let mut l: EfficientMatrix<usize> = EfficientMatrix::new(0, b.len());
 
-        let mut ret: Vec<(usize, usize, String)> = Vec::new();
+        let mut ret: Vec<(usize, usize, String, String)> = Vec::new();
         for (i, c) in a.chars().enumerate() {
             for (j, d) in b.chars().enumerate() {
                 if c == d {
@@ -69,7 +69,8 @@ fn common_substring(py: Python<'_>, mut a: String, mut b: String, min: usize) ->
                         // We don't need the -1 in the main formula, because the array starts from 0, but string length starts from 1
                         ret.push((i- l[i - 1][j - 1],
                             j- l[i - 1][j - 1],
-                            a[i - l[i - 1][j - 1] + 0..(i)]
+                            a[i - l[i - 1][j - 1] + 0..(i)].to_string(),
+                            b[i - l[i - 1][j - 1] + 0..(i)]
                             .to_string()));
                     }
                 }
@@ -86,7 +87,7 @@ fn common_substring(py: Python<'_>, mut a: String, mut b: String, min: usize) ->
 /// Does not return overlapping substrings
 /// This is a more memory efficient implementation, thanks to the EfficientMatrix struct
 #[pyfunction]
-fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, min: usize, ratio: f32) -> PyResult<Vec<(usize, usize, f32, String)>> {
+fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, min: usize, ratio: f32) -> PyResult<Vec<(usize, usize, f32, String, String)>> {
     const MIN_LEN: usize = 2;
     if min < MIN_LEN {
         return Err(PyValueError::new_err("min must be at least MIN_LEN"));
@@ -96,7 +97,7 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, mi
         b.push('\n');
         let mut l: EfficientMatrix<(usize, usize)> = EfficientMatrix::new((0, 0), b.len());
         // let mut l: Vec<Vec<(usize, usize)>> = vec![vec![(0usize, 0usize); b.len()]; a.len()];
-        let mut ret: Vec<(usize, usize, f32, String)> = Vec::new();
+        let mut ret: Vec<(usize, usize, f32, String, String)> = Vec::new();
         for (i, c) in a.chars().enumerate() {
             for (j, d) in b.chars().enumerate() {
                 if c == d {
@@ -138,7 +139,8 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, mi
                         // We don't need the -1 in the main formula, because the array starts from 0, but string length starts from 1
                         ret.push((i- l[i - 1][j - 1].0, j- l[i - 1][j - 1].0,
                             edit_ratio,
-                            a[i - l[i - 1][j - 1].0 + 0..(i)]
+                            a[i - l[i - 1][j - 1].0 + 0..(i)].to_string(),
+                            b[j - l[i - 1][j - 1].0 + 0..(i)]
                             .to_string()));
                     }
                     l[i][j].1 = 0;

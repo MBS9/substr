@@ -1,2 +1,4 @@
 aiohttp
 jinja2
+numpy
+pandas

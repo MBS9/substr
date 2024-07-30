@@ -24,7 +24,7 @@ async def handle(request: web.Request):
     ratio = float(post['ratio'])
     loop = asyncio.get_running_loop()
     text = await loop.run_in_executor(pool, lambda: analysis.analyse_data(text1, text2, minLen, ratio))
-    return web.Response(text=resp.render(response=text), content_type='text/html')
+    return web.Response(text=resp.render(results=text), content_type='text/html')
 
 
 app = web.Application()
