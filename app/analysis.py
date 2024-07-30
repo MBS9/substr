@@ -22,13 +22,12 @@ def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
     levenshteinDistances['endA'] = levenshteinDistances['startA'] + levenshteinDistances['substringA'].str.len()
     levenshteinDistances['endB'] = levenshteinDistances['startB'] + levenshteinDistances['substringB'].str.len()
     result = []
-    print(levenshteinDistances)
     for i, elem in levenshteinDistances.iterrows():
         for j, elem2 in levenshteinDistances.iterrows():
-            if elem['endA'] >= elem2['startA'] or elem['endB'] >= elem2['startB']: continue
+            ## if elem['endA'] >= elem2['startA'] or elem['endB'] >= elem2['startB']: continue
             a = textA[elem['endA']: elem2['startA']]
             b = textB[elem['endB']: elem['startB']]
-            ##if a == '' or b == '': continue
+            if a == '' or b == '': continue
             result.append(
                 [a, b, elem.to_dict(),
                  elem2.to_dict(), cosineSimilarity(a, b, base)])
