@@ -93,7 +93,7 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, mi
         return Err(PyValueError::new_err("min must be at least MIN_LEN"));
     }
     Python::allow_threads(py, move || {
-        a.push(char::MAX);
+        a.push(1 as char);
         b.push('\n');
         let mut l: EfficientMatrix<(usize, usize)> = EfficientMatrix::new((0, 0), b.len());
         // let mut l: Vec<Vec<(usize, usize)>> = vec![vec![(0usize, 0usize); b.len()]; a.len()];
@@ -140,7 +140,7 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, mi
                         ret.push((i- l[i - 1][j - 1].0, j- l[i - 1][j - 1].0,
                             edit_ratio,
                             a[i - l[i - 1][j - 1].0 + 0..(i)].to_string(),
-                            b[j - l[i - 1][j - 1].0 + 0..(i)]
+                            b[j - l[i - 1][j - 1].0 + 0..(j)]
                             .to_string()));
                     }
                     l[i][j].1 = 0;

@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <title>Submit Form</title>
 </head>
 <body>
@@ -25,7 +27,8 @@
         <label for="ratio">Edit Ratio</label>
         <input name="ratio" step="0.001" min="0" max="1" type="number" />
         <br/>
-
+        <div class="g-recaptcha" data-sitekey="{{ env['CAPTCHA_KEY'] }}" data-action="LOGIN"></div>
+        <br/>
         <input name="submitButton" type="submit" value="Submit" />
     </form>
     <div id="progress" style="display: none;">
