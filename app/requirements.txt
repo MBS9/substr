@@ -2,4 +2,4 @@ aiohttp
 jinja2
 numpy
 pandas
-dotenv
+python-dotenv
