@@ -1,39 +1,55 @@
+from collections import Counter
+import os
 from compare_text import common_substring_levenshtein
 import numpy as np
 import pandas as pd
 import tracemalloc
 
-def cosineSimilarity(strA: str, strB: str, base: pd.Series):
-  a = pd.Series(list(strA)).value_counts()
-  b = pd.Series(list(strB)).value_counts()
-  a = a.add(base, fill_value=0)
-  b = b.add(base, fill_value=0)
-  dot = np.dot(a, b)
-  A = np.square(a).sum()
-  B = np.square(b).sum()
+MAX_SUBSTRING = int(os.getenv('MAX_SUBSTRINGS', '100'))
+
+def cosineSimilarity(strA: str, strB: str, base: Counter[str]):
+  a = Counter(strA)
+  b = Counter(strB)
+  a.update(base)
+  b.update(base)
+  
+  keys = base.keys()
+  
+  a_vec = np.array([a[k] for k in keys])
+  b_vec = np.array([b[k] for k in keys])
+  
+  dot = np.dot(a_vec, b_vec)
+  A = np.dot(a_vec, a_vec)
+  B = np.dot(b_vec, b_vec)
+
   cosine = dot/np.sqrt(A*B)
+
   return cosine
 
 
 def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
-    tracemalloc.start()
-    base = pd.Series(0, index=pd.Index(list(textA+textB)).unique())
+    #tracemalloc.start()
+    base = Counter(textA + textB)
     levenshteinDistances = pd.DataFrame(common_substring_levenshtein(textA, textB, minLen, ratio),
                                         columns=['startA', 'startB', 'ratio', 'substringA', 'substringB'])
     levenshteinDistances['endA'] = levenshteinDistances['startA'] + levenshteinDistances['substringA'].str.len()
     levenshteinDistances['endB'] = levenshteinDistances['startB'] + levenshteinDistances['substringB'].str.len()
     result = []
+    if len(levenshteinDistances.index) > MAX_SUBSTRING:
+        raise ValueError(f'{len(levenshteinDistances.index)} is too many. Please increase the minLen or increase the ratio')
     for i, elem in levenshteinDistances.iterrows():
         for j, elem2 in levenshteinDistances.iterrows():
-            ## if elem['endA'] >= elem2['startA'] or elem['endB'] >= elem2['startB']: continue
+            if elem['endA'] >= elem2['startA'] or elem['endB'] >= elem2['startB']: continue
             a = textA[elem['endA']: elem2['startA']]
             b = textB[elem['endB']: elem2['startB']]
-            if a == '' or b == '': continue
+            ## if a == '' or b == '': continue
             result.append(
-                [a, b, elem.to_dict(),
-                 elem2.to_dict(), cosineSimilarity(a, b, base)])
-    ret =  pd.DataFrame(result, columns=['betweenInA', 'betweenInB', 'str1', 'str2', 'cosine']).to_dict('records')
-    print('MEMORY USAGE: CURRENT, PEAK')
-    print(tracemalloc.get_traced_memory())
-    print(tracemalloc.stop())
-    return ret
+                {'betweenInA': a,
+                 'betweenInB': b,
+                 'str1': elem.to_dict(),
+                 'str2': elem2.to_dict(),
+                 'cosine': cosineSimilarity(a, b, base)})
+    #current, peak = tracemalloc.get_traced_memory()
+    #tracemalloc.stop()
+    #print(f"Current memory usage is {current / 10**6}MB; Peak was {peak / 10**6}MB")
+    return result

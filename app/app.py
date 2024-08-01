@@ -10,7 +10,7 @@ import pathlib
 import os
 from recatpcha import validate
 
-pool = ThreadPoolExecutor(3)
+pool = ThreadPoolExecutor(20) ## I think we can serve 21 clients with 512MB of memory
 
 templatesPath = pathlib.Path(__file__).parent / 'templates'
 
