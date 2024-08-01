@@ -3,7 +3,8 @@ import os
 from compare_text import common_substring_levenshtein
 import numpy as np
 import pandas as pd
-import tracemalloc
+import psutil
+import logging
 
 MAX_SUBSTRING = int(os.getenv('MAX_SUBSTRINGS', '100'))
 
@@ -28,7 +29,6 @@ def cosineSimilarity(strA: str, strB: str, base: Counter[str]):
 
 
 def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
-    #tracemalloc.start()
     base = Counter(textA + textB)
     levenshteinDistances = pd.DataFrame(common_substring_levenshtein(textA, textB, minLen, ratio),
                                         columns=['startA', 'startB', 'ratio', 'substringA', 'substringB'])
@@ -36,7 +36,7 @@ def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
     levenshteinDistances['endB'] = levenshteinDistances['startB'] + levenshteinDistances['substringB'].str.len()
     result = []
     if len(levenshteinDistances.index) > MAX_SUBSTRING:
-        raise ValueError(f'{len(levenshteinDistances.index)} is too many. Please increase the minLen or increase the ratio')
+        raise ValueError(f'{len(levenshteinDistances.index)} substrings is too many. Please increase the minLen or increase the ratio')
     for i, elem in levenshteinDistances.iterrows():
         for j, elem2 in levenshteinDistances.iterrows():
             if elem['endA'] >= elem2['startA'] or elem['endB'] >= elem2['startB']: continue
@@ -49,7 +49,11 @@ def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
                  'str1': elem.to_dict(),
                  'str2': elem2.to_dict(),
                  'cosine': cosineSimilarity(a, b, base)})
-    #current, peak = tracemalloc.get_traced_memory()
-    #tracemalloc.stop()
-    #print(f"Current memory usage is {current / 10**6}MB; Peak was {peak / 10**6}MB")
+
+    logging.info(f"""Number of substrings: {
+            len(levenshteinDistances.index)
+        }. Length of textA: {
+            len(textA)
+        }. Length of textB: {len(textB)}.""")
+    logging.info(f"Memory usage: {psutil.virtual_memory().percent}%")
     return result

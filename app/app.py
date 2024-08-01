@@ -8,9 +8,10 @@ import jinja2
 import analysis
 import pathlib
 import os
+import logging
 from recatpcha import validate
 
-pool = ThreadPoolExecutor(20) ## I think we can serve 21 clients with 512MB of memory
+pool = ThreadPoolExecutor(9) ## I think we can serve 10 clients with 512MB of memory
 
 templatesPath = pathlib.Path(__file__).parent / 'templates'
 
@@ -19,6 +20,14 @@ env = jinja2.Environment(loader=jinja2.FileSystemLoader(templatesPath.resolve())
 
 resp = env.get_template("resp.html")
 form = env.get_template("form.html")
+
+@web.middleware
+async def errorMiddleware(request, handler):
+    try:
+        return await handler(request)
+    except Exception as e:
+        logging.exception(e)
+        return web.Response(text=f"Internal server error: {e}", status=500)
 
 async def handle(request: web.Request):
     post = await request.post()
@@ -35,7 +44,7 @@ async def handle(request: web.Request):
     return web.Response(text=resp.render(results=text), content_type='text/html')
 
 
-app = web.Application()
+app = web.Application(middlewares=[errorMiddleware])
 app.add_routes([web.post('/compare', handle),
                 web.get('/', lambda req: web.Response(
                     text=form.render(env=os.environ),
@@ -43,4 +52,5 @@ app.add_routes([web.post('/compare', handle),
                 ])
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     web.run_app(app, port=8080)
