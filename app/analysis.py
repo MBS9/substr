@@ -3,7 +3,6 @@ import os
 from compare_text import common_substring_levenshtein
 import numpy as np
 import pandas as pd
-import psutil
 import logging
 
 MAX_SUBSTRING = int(os.getenv('MAX_SUBSTRINGS', '100'))
@@ -55,5 +54,4 @@ def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
         }. Length of textA: {
             len(textA)
         }. Length of textB: {len(textB)}.""")
-    logging.info(f"Memory usage: {psutil.virtual_memory().percent}%")
     return result
