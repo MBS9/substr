@@ -22,5 +22,5 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         push: true
-        tags: ghcr.io/mbs9/substr/substr-analyzer:latest
+        tags: ghcr.io/mbs9/substr-analyzer:latest
         file: "Dockerfile"
