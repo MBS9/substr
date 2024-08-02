@@ -1,5 +1,8 @@
 name: Docker Image CI
 
+permissions:
+  packages: write
+
 on:
   workflow_dispatch:
 
