@@ -1,6 +1,6 @@
 FROM python:3.12-alpine
 
-RUN apk add --no-cache musl-dev rust cargo
+RUN apk add --no-cache rust cargo
 
 COPY rust/ /rust/
 RUN cd /rust && pip install .
