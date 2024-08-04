@@ -31,11 +31,11 @@ def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
     base = Counter(textA + textB)
     levenshteinDistances = pd.DataFrame(common_substring_levenshtein(textA, textB, minLen, ratio),
                                         columns=['startA', 'startB', 'ratio', 'substringA', 'substringB'])
+    if len(levenshteinDistances.index) > MAX_SUBSTRING:
+        raise ValueError(f'{len(levenshteinDistances.index)} substrings is too many. Please increase the minLen or increase the ratio')
     levenshteinDistances['endA'] = levenshteinDistances['startA'] + levenshteinDistances['substringA'].str.len()
     levenshteinDistances['endB'] = levenshteinDistances['startB'] + levenshteinDistances['substringB'].str.len()
     result = []
-    if len(levenshteinDistances.index) > MAX_SUBSTRING:
-        raise ValueError(f'{len(levenshteinDistances.index)} substrings is too many. Please increase the minLen or increase the ratio')
     for i, elem in levenshteinDistances.iterrows():
         for j, elem2 in levenshteinDistances.iterrows():
             if elem['endA'] >= elem2['startA'] or elem['endB'] >= elem2['startB']: continue
