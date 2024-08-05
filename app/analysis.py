@@ -17,7 +17,6 @@ def cosineSimilarity(strA: str, strB: str, base: Counter[str]):
   
   a_vec = np.array([a[k] for k in keys])
   b_vec = np.array([b[k] for k in keys])
-  print(a_vec, b_vec)
   
   dot = np.dot(a_vec, b_vec)
   A = np.dot(a_vec, a_vec)
