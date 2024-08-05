@@ -17,6 +17,7 @@ def cosineSimilarity(strA: str, strB: str, base: Counter[str]):
   
   a_vec = np.array([a[k] for k in keys])
   b_vec = np.array([b[k] for k in keys])
+  print(a_vec, b_vec)
   
   dot = np.dot(a_vec, b_vec)
   A = np.dot(a_vec, a_vec)
@@ -29,6 +30,10 @@ def cosineSimilarity(strA: str, strB: str, base: Counter[str]):
 
 def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
     base = Counter(textA + textB)
+    ## SET ALL THE BASE VALUES TO 0
+    for k in base.keys():
+        base[k] = 0
+    print(base)
     levenshteinDistances = pd.DataFrame(common_substring_levenshtein(textA, textB, minLen, ratio),
                                         columns=['startA', 'startB', 'ratio', 'substringA', 'substringB'])
     if len(levenshteinDistances.index) > MAX_SUBSTRING:
