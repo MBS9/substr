@@ -36,13 +36,13 @@ async def handle(request: web.Request):
     ok = await validate(gReCaptchaResponse)
     if not ok:
         return web.Response(text="Recaptcha failed", status=403)
-    text1 = post["textA"].file.read().decode('utf-8')
-    text2 = post['textB'].file.read().decode('utf-8')
-    minLen = int(post['minLen'])
+    text1 = post["a"].file.read().decode('utf-8')
+    text2 = post['b'].file.read().decode('utf-8')
+    minLen = int(post['min_len'])
     ratio = float(post['ratio'])
     loop = asyncio.get_running_loop()
     text = await loop.run_in_executor(pool, lambda: analysis.analyse_data(text1, text2, minLen, ratio, resp))
-    return web.Response(text=text, content_type='text/html')
+    return web.Response(text=text, content_type='text/json', headers={'Access-Control-Allow-Origin': '*'})
 
 
 app = web.Application(middlewares=[errorMiddleware])
