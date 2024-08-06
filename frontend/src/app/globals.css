@@ -18,11 +18,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
+  background:
     rgb(var(--background-start-rgb));
 }
 
@@ -30,4 +26,14 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+span.show-info::after {
+  content: attr(title);
+  padding:5px;
+  border:1px solid #ccc;
+  top:5px;
+  right:10%;
+  background: #bada55;
+  position: absolute;
 }
