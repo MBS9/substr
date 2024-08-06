@@ -17,6 +17,7 @@ templatesPath = pathlib.Path(__file__).parent / 'templates'
 
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(templatesPath.resolve()),
                          autoescape=jinja2.select_autoescape(default=True))
+env.filters.update(zip=zip)
 
 resp = env.get_template("resp.html")
 form = env.get_template("form.html")
@@ -40,8 +41,8 @@ async def handle(request: web.Request):
     minLen = int(post['minLen'])
     ratio = float(post['ratio'])
     loop = asyncio.get_running_loop()
-    text = await loop.run_in_executor(pool, lambda: analysis.analyse_data(text1, text2, minLen, ratio))
-    return web.Response(text=resp.render(results=text), content_type='text/html')
+    text = await loop.run_in_executor(pool, lambda: analysis.analyse_data(text1, text2, minLen, ratio, resp))
+    return web.Response(text=text, content_type='text/html')
 
 
 app = web.Application(middlewares=[errorMiddleware])

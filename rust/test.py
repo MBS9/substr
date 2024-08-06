@@ -16,4 +16,4 @@ print(compare_text.common_substring_levenshtein('Galileo Night',
 ## So like this: "subtring substring substring substring" and "substring substring substring substring substring"
 ## Since in the actual usage, this is not very commonly used, I will leave it as is for now.
 
-print(compare_text.common_substring('ab ab ab ab ab ab','ab ab ab ab ab ab', 3))
+print(compare_text.common_substring_levenshtein('ab ab ab ab ab ab','ab ab ab ab ab ab', 3, 1))
