@@ -37,7 +37,6 @@
     <div style="columns: auto;">
         <p>
             {% for start, end in sliceListEndinA|zip(sliceListInA) %}
-                {{ start }}
                 {% if loop.last %}
                     <u>{{ textA[start:end] }}</u>{{ textA[end:] }}
                 {% else %}
@@ -46,11 +45,11 @@
             {% endfor %}
         </p>
         <p>
-            {% for start, end in sliceListEndinB|zip(sliceListEndinB) %}
+            {% for start, end in sliceListEndinB|zip(sliceListInB) %}
                 {% if loop.last %}
                     <u>{{ textB[start:end] }}</u>{{ textB[end:] }}
                 {% else %}
-                    <u>{{ textB[start:end] }}</u>{{ textB[end:sliceListInB[loop.index+1]] }}
+                    <u>{{ textB[start:end] }}</u>{{ textB[end:sliceListInA[loop.index+1]] }}
                 {% endif %}
             {% endfor %}
         </p>
