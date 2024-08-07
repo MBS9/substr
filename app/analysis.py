@@ -43,7 +43,7 @@ def cosineSimilarity(strA: str, strB: str, base: Counter[str]):
   return cosine
 
 
-def analyse_data(textA: str, textB: str, minLen: int, ratio: float, resp: Template):
+def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
     base = Counter(textA + textB)
     ## SET ALL THE BASE VALUES TO 0
     for k in base.keys():
