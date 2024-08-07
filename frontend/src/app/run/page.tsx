@@ -17,7 +17,7 @@ type DisplayResultState = {
 function ShowDiff({ result }: { result: DisplayResultState }) {
     
     const { A, aRefs, B, bRefs } = React.useMemo(() => {
-        function highlightRange(left: number, right: number, color: string, refSet: React.RefObject<HTMLSpanElement>[], text: string) {
+        function highlightRange(left: number, right: number, color: string, refSet: React.RefObject<HTMLSpanElement>[], text: string, matches: [number, number][]) {
             for (let i = left; i < right; i++) {
                 const ref = refSet[i];
                 if (ref.current !== null) {
@@ -53,15 +53,16 @@ function ShowDiff({ result }: { result: DisplayResultState }) {
                 if(!color) color = COLOR_LIST[index % COLOR_LIST.length];
                 const similarityType = pair.match ? 'Edit Ratio' : 'Cosine';
                 const title = `${similarityType} similarity: ${pair.similarity.toFixed(2)}`;
-                highlightRange(pair.b[0], pair.b[1], color, bRefs, text ? title: '');
-                highlightRange(pair.a[0], pair.a[1], color, aRefs, text ? title: '');
+                highlightRange(pair.b[0], pair.b[1], color, bRefs, text ? title: '', matchesB);
+                highlightRange(pair.a[0], pair.a[1], color, aRefs, text ? title: '', matchesA);
             });
         }
         const A: React.JSX.Element[] = [];
         const aRefs: React.RefObject<HTMLSpanElement>[] = [];
         const B: React.JSX.Element[] = [];
         const bRefs: React.RefObject<HTMLSpanElement>[] = [];
-        const matches = result.pairs.filter(pair => pair.match).map(pair => pair.a);
+        const matchesA = result.pairs.filter(pair => pair.match).map(pair => pair.a);
+        const matchesB = result.pairs.filter(pair => pair.match).map(pair => pair.b);
 
         for (const [index, letter] of Array.from(result.textB).entries()) {
             const ref = React.createRef<HTMLSpanElement>();
