@@ -1,6 +1,6 @@
 "use client"
 import API, { CompareResult, Pair } from '../api';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 const COLOR_LIST = ['yellow', 'orange', 'pink', 'gray'];
 
