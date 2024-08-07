@@ -4,6 +4,10 @@
 #
 name: Deploy Next.js site to Pages
 
+defaults:
+  run:
+    working-directory: ./frontend
+
 on:
 
   # Allows you to run this workflow manually from the Actions tab
@@ -40,7 +44,6 @@ jobs:
           #
           # You may remove this line if you want to manage the configuration yourself.
           static_site_generator: next
-          base_path: ${{ github.workspace }}/frontend
       - name: Install dependencies
         run: npm install
       - name: Build with Next.js
