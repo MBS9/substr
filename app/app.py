@@ -13,15 +13,6 @@ from recatpcha import validate
 
 pool = ThreadPoolExecutor(9) ## I think we can serve 10 clients with 512MB of memory
 
-templatesPath = pathlib.Path(__file__).parent / 'templates'
-
-env = jinja2.Environment(loader=jinja2.FileSystemLoader(templatesPath.resolve()),
-                         autoescape=jinja2.select_autoescape(default=True))
-env.filters.update(zip=zip)
-
-resp = env.get_template("resp.html")
-form = env.get_template("form.html")
-
 @web.middleware
 async def errorMiddleware(request, handler):
     try:
@@ -46,11 +37,7 @@ async def handle(request: web.Request):
 
 
 app = web.Application(middlewares=[errorMiddleware])
-app.add_routes([web.post('/compare', handle),
-                web.get('/', lambda req: web.Response(
-                    text=form.render(env=os.environ),
-                    content_type='text/html'))
-                ])
+app.add_routes([web.post('/compare', handle)])
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')

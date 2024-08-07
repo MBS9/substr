@@ -2,7 +2,7 @@
 import API, { CompareResult, Pair } from '../api';
 import React, { useMemo } from 'react';
 
-const COLOR_LIST = ['red', 'green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'brown', 'gray', 'black'];
+const COLOR_LIST = ['yellow', 'orange', 'pink', 'gray'];
 
 function getRandomColor() {
     return COLOR_LIST[Math.floor(Math.random() * COLOR_LIST.length)];
@@ -15,61 +15,42 @@ type DisplayResultState = {
 }
 
 function ShowDiff({ result }: { result: DisplayResultState }) {
-    function HighlightedPair({ pair, textA, textB }:
-        { pair: Pair, textA: string, textB: string })
-        : [React.JSX.Element, React.JSX.Element] {
-        const onHover = (e: any) => {
-            aRef.current!.style.backgroundColor = 'yellow';
-            bRef.current!.style.backgroundColor = 'yellow';
-        }
-        const onHoverFinish = (e: any) => {
-            aRef.current!.style.backgroundColor = 'white';
-            bRef.current!.style.backgroundColor = 'white';
-        }
-        // SELECT A RANDOM COLOR
-        const aRef = React.useRef<HTMLSpanElement>(null);
-        const bRef = React.useRef<HTMLSpanElement>(null);
-        const color = getRandomColor();
-        const aStyle = { color: color };
-        const bStyle = { color: color };
-        const similarityType = pair.match ? 'Edit Ratio' : 'Cosine';
-        const title = `${similarityType} similarity: ${pair.similarity.toFixed(2)}`;
-        return [<span style={aStyle} ref={aRef}
-            onMouseOver={onHover}
-            title={title}
-            onMouseLeave={onHoverFinish}>{
-                textA.substring(...pair.a)
-            }</span>, <span style={bStyle} ref={bRef}
-                onMouseOver={onHover}
-                title={title}
-                onMouseLeave={onHoverFinish}>{
-                textB.substring(...pair.b)
-            }</span>];
-    }
     
     const { A, aRefs, B, bRefs } = React.useMemo(() => {
         function highlightRange(left: number, right: number, color: string, refSet: React.RefObject<HTMLSpanElement>[], text: string) {
             for (let i = left; i < right; i++) {
                 const ref = refSet[i];
                 if (ref.current !== null) {
+                    if (matches.findIndex(match => match[0] <= i && i < match[1]) !== -1) {
+                        ref.current.style.border = '3px solid green';
+                    }
                     ref.current.style.backgroundColor = color;
                     ref.current.title = text;
                 }
             }
         }
+        
         function getContainingPair(index: number, text: 'a' | 'b') {
-            const pairs = []
+            const pairs: Pair[] = []
+            let pairResult: Pair | null = null;
+            let len = Infinity;
             for (const pair of result.pairs) {
                 if (pair[text][0] <= index && index < pair[text][1]) {
-                    pairs.push(pair);
+                    const newLen = pair[text][1] - pair[text][0];
+                    if (newLen < len) {
+                        len = newLen;
+                        pairResult = pair;
+                    }
                 }
             }
+            if (pairResult) pairs.push(pairResult);
             return pairs;
         }
         function highlight(index: number, color: string, matchColor: string, text: boolean ) {
             getContainingPair(index, 'a').forEach(pair => {
                 console.log(pair.similarity, pair.match)
                 if (pair.match) color = matchColor;
+                if(!color) color = COLOR_LIST[index % COLOR_LIST.length];
                 const similarityType = pair.match ? 'Edit Ratio' : 'Cosine';
                 const title = `${similarityType} similarity: ${pair.similarity.toFixed(2)}`;
                 highlightRange(pair.b[0], pair.b[1], color, bRefs, text ? title: '');
@@ -80,41 +61,26 @@ function ShowDiff({ result }: { result: DisplayResultState }) {
         const aRefs: React.RefObject<HTMLSpanElement>[] = [];
         const B: React.JSX.Element[] = [];
         const bRefs: React.RefObject<HTMLSpanElement>[] = [];
+        const matches = result.pairs.filter(pair => pair.match).map(pair => pair.a);
 
-        for (const [index, letter] of result.textB.split('').entries()) {
+        for (const [index, letter] of Array.from(result.textB).entries()) {
             const ref = React.createRef<HTMLSpanElement>();
             bRefs.push(ref);
-            B.push(<span ref={ref} className='show-info' key={index}
-                onMouseOver={()=>{
-                    highlight(index, 'yellow', 'green', true);
-                }}
-                onMouseLeave={()=>{
-                    highlight(index, 'white', 'white', true);
-                }}>{letter}</span>);
+            B.push(<span ref={ref} className='show-info' key={index}>{letter}</span>);
         }
-        for (const [index, letter] of result.textA.split('').entries()) {
+        for (const [index, letter] of Array.from(result.textA).entries()) {
             const ref = React.createRef<HTMLSpanElement>();
             aRefs.push(ref);
             A.push(<span ref={ref} className='show-info' key={index+result.textB.length} onMouseOver={()=>{
-                highlight(index, 'yellow', 'green', true);
+                highlight(index, '', 'green', true);
             }}
             onMouseLeave={()=>{
                 highlight(index, 'white', 'white', false);
             }}>{letter}</span>);
-            // highlight(index, getRandomColor());
+            //highlight(index, 'white', 'green', false);
         }
         return { A, aRefs, B, bRefs };
     }, [result.textA, result.textB]);
-
-    /*
-    const A: React.JSX.Element[] = [];
-    const B: React.JSX.Element[] = [];
-    result.pairs.map((pair, i) => {
-        const elem = HighlightedPair({ pair, textA: result.textA, textB: result.textB });
-        A.push(elem[0]);
-        B.push(elem[1]);
-    })
-        */
     
     return (
         <div className='grid grid-cols-2'>
@@ -135,6 +101,10 @@ function InputForm({ onSubmit }: { onSubmit: (e: React.FormEvent<HTMLFormElement
         <div className='items-center'>
             <h1>Run</h1>
             <form onSubmit={onSubmit}>
+                <label>
+                    API URL: <input type="text" name="api_url" defaultValue={'http://localhost:8080'} />
+                </label>
+                <br />
                 <label>
                     File A: <input type="file" name="a" />
                 </label>
@@ -158,11 +128,11 @@ function InputForm({ onSubmit }: { onSubmit: (e: React.FormEvent<HTMLFormElement
 }
 
 export default function Run() {
-    const api = new API();
     const [result, setResult] = React.useState<DisplayResultState | null>(null);
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
+        const api = new API(formData.get("api_url") as string);
         const a = formData.get("a") as File;
         const b = formData.get("b") as File;
         const minLength = parseInt(formData.get("min_length") as string);

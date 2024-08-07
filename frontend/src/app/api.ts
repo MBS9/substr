@@ -11,8 +11,8 @@ export type CompareResult = {
 
 export default class API {
   baseUrl: string;
-  constructor() {
-    this.baseUrl = "http://localhost:8080";
+  constructor(endpoint?: string) {
+    this.baseUrl = endpoint || "http://localhost:8000";
   }
   async compare(a: File, b: File, minLength: number, ratio: number) {
     const formData = new FormData();

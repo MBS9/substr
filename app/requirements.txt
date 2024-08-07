@@ -1,5 +1,3 @@
 aiohttp[speedups]
-jinja2
 numpy
-pandas
 python-dotenv
