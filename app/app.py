@@ -4,10 +4,7 @@ dotenv.load_dotenv()
 from concurrent.futures import ThreadPoolExecutor
 from aiohttp import web
 import asyncio
-import jinja2
 import analysis
-import pathlib
-import os
 import logging
 from recatpcha import validate
 
