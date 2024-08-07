@@ -1,5 +1,0 @@
-FROM nginx:latest-alpine
-
-COPY --from=frontend /app/dist /usr/share/nginx/html
-
-LABEL org.opencontainers.image.source=https://github.com/mbs9/substr
