@@ -97,14 +97,13 @@ function ShowDiff({ result }: { result: DisplayResultState }) {
     );
 }
 
-function InputForm({ onSubmit }: { onSubmit: (e: React.FormEvent<HTMLFormElement>) => void }) {
+function InputForm({ onSubmit }: { onSubmit: (e: React.FormEvent<HTMLFormElement>, ref: React.RefObject<HTMLParagraphElement>) => void }) {
     const ref = React.createRef<HTMLParagraphElement>();
     return (
         <div className='items-center'>
             <h1>Run</h1>
             <form onSubmit={(e)=>{
-                ref.current!.innerText = 'Processing...please wait';
-                onSubmit(e);
+                onSubmit(e, ref);
                 }}>
                 <label>
                     API URL: <input type="text" name="api_url" defaultValue={'http://localhost:8080'} />
@@ -135,16 +134,24 @@ function InputForm({ onSubmit }: { onSubmit: (e: React.FormEvent<HTMLFormElement
 
 export default function Run() {
     const [result, setResult] = React.useState<DisplayResultState | null>(null);
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, ref: React.RefObject<HTMLParagraphElement>) => {
         e.preventDefault();
+        ref.current!.innerText = 'Processing...please wait';
         const formData = new FormData(e.currentTarget);
         const api = new API(formData.get("api_url") as string);
         const a = formData.get("a") as File;
         const b = formData.get("b") as File;
         const minLength = parseInt(formData.get("min_length") as string);
         const ratio = parseFloat(formData.get("ratio") as string);
-        const result = await api.compare(a, b, minLength, ratio);
-        setResult({ textA: await a.text(), textB: await b.text(), pairs: result.pairs });
+        try {
+            const result = await api.compare(a, b, minLength, ratio);
+            setResult({ textA: result.aContent, textB: result.bContent, pairs: result.pairs });
+        } catch (e) {
+            console.error(e);
+            ref.current!.innerText = `An error has occured.
+            Perhaps the API endpoint is wrong, or too many substrings were found and they cannot all be displayed.
+            (Error: ${e})`;
+        }
     }
     if (result === null) {
         return <InputForm onSubmit={handleSubmit} />

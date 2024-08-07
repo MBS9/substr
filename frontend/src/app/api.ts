@@ -9,6 +9,15 @@ export type CompareResult = {
   pairs: Pair[];
 };
 
+export function cleanText(text: string) {
+  const punctuation =  ["，", "。", "：", "；", "「", "」", "？", "\n", "\r", "、", "·", "》", "《", "*"]
+  // remove the above chars
+  for (const char of punctuation) {
+    text = text.replaceAll(char, "");
+  }
+  return text;
+}
+
 export default class API {
   baseUrl: string;
   constructor(endpoint?: string) {
@@ -16,8 +25,12 @@ export default class API {
   }
   async compare(a: File, b: File, minLength: number, ratio: number) {
     const formData = new FormData();
-    formData.append("a", a);
-    formData.append("b", b);
+    let aContent = await a.text();
+    aContent = cleanText(aContent);
+    let bContent = await b.text();
+    bContent = cleanText(bContent);
+    formData.append("a", new File([aContent], a.name));
+    formData.append("b", new File([bContent], b.name));
     formData.append("min_len", minLength.toString());
     formData.append("ratio", ratio.toString());
     formData.append("g-recaptcha-response", "dummy");
@@ -25,6 +38,6 @@ export default class API {
       method: "POST",
       body: formData,
     });
-    return (await resp.json()) as CompareResult;
+    return {aContent, bContent, ...(await resp.json()) as CompareResult};
   }
 }
