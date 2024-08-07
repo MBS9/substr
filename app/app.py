@@ -6,7 +6,6 @@ from aiohttp import web
 import asyncio
 import analysis
 import logging
-from recatpcha import validate
 
 pool = ThreadPoolExecutor(9) ## I think we can serve 10 clients with 512MB of memory
 
@@ -20,10 +19,6 @@ async def errorMiddleware(request, handler):
 
 async def handle(request: web.Request):
     post = await request.post()
-    gReCaptchaResponse = post['g-recaptcha-response']
-    ok = await validate(gReCaptchaResponse)
-    if not ok:
-        return web.Response(text="Recaptcha failed", status=403)
     text1 = post["a"].file.read().decode('utf-8')
     text2 = post['b'].file.read().decode('utf-8')
     minLen = int(post['min_len'])

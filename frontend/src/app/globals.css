@@ -35,5 +35,5 @@ span.show-info::after {
   top:5px;
   right:10%;
   background: #bada55;
-  position: absolute;
+  position: fixed;
 }
