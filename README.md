@@ -6,7 +6,9 @@
 docker run -e NO_CAPTCHA=1 -p 8080:8080 --rm ghcr.io/mbs9/substr-analyzer:latest
 ```
 
-Then go to [https://mbs9.github.io/substr/run](this URL) and enjoy!
+Then go to [this URL](https://mbs9.github.io/substr/run)and enjoy!
+
+## Technical Setup
 
 The `rust` directory contains the Rust extension module
 
