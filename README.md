@@ -4,7 +4,7 @@
 
 ```shell
 docker rmi ghcr.io/mbs9/substr-analyzer:latest
-docker run -e NO_CAPTCHA=1 -p 8080:8080 --rm ghcr.io/mbs9/substr-analyzer:latest
+docker run -e NO_CAPTCHA=1 -e RECAPTCHA_SECRET=NA -p 8080:8080 --rm ghcr.io/mbs9/substr-analyzer:latest
 ```
 
 Then go to [this URL](https://mbs9.github.io/substr/run)and enjoy!

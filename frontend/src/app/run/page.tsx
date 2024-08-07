@@ -97,10 +97,14 @@ function ShowDiff({ result }: { result: DisplayResultState }) {
 }
 
 function InputForm({ onSubmit }: { onSubmit: (e: React.FormEvent<HTMLFormElement>) => void }) {
+    const ref = React.createRef<HTMLParagraphElement>();
     return (
         <div className='items-center'>
             <h1>Run</h1>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={(e)=>{
+                ref.current!.innerText = 'Processing...please wait';
+                onSubmit(e);
+                }}>
                 <label>
                     API URL: <input type="text" name="api_url" defaultValue={'http://localhost:8080'} />
                 </label>
@@ -121,7 +125,8 @@ function InputForm({ onSubmit }: { onSubmit: (e: React.FormEvent<HTMLFormElement
                     Ratio: <input type="number" name="ratio" min={0} max={1} step={0.001}/>
                 </label>
                 <br />
-                <button type="submit">Run</button>
+                <button type="submit" className='rounded-md py-1 text-center border-black border-4 px-5'>Run</button>
+                <p ref={ref}></p>
             </form>
         </div>
     )

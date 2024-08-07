@@ -29,7 +29,7 @@ async def handle(request: web.Request):
     minLen = int(post['min_len'])
     ratio = float(post['ratio'])
     loop = asyncio.get_running_loop()
-    text = await loop.run_in_executor(pool, lambda: analysis.analyse_data(text1, text2, minLen, ratio, resp))
+    text = await loop.run_in_executor(pool, lambda: analysis.analyse_data(text1, text2, minLen, ratio))
     return web.Response(text=text, content_type='text/json', headers={'Access-Control-Allow-Origin': '*'})
 
 
