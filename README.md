@@ -3,6 +3,7 @@
 ## Setup
 
 ```shell
+docker rmi ghcr.io/mbs9/substr-analyzer:latest
 docker run -e NO_CAPTCHA=1 -p 8080:8080 --rm ghcr.io/mbs9/substr-analyzer:latest
 ```
 
