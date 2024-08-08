@@ -23,6 +23,10 @@ Result = TypedDict('Result',
 
 MAX_SUBSTRING = int(os.getenv('MAX_SUBSTRINGS', '100'))
 
+def listSlice(xs, start):
+    for i in range(start, len(xs)):
+        yield xs[i]
+
 def cosineSimilarity(strA: str, strB: str, base: Counter[str]):
   a = Counter(strA)
   b = Counter(strB)
@@ -54,14 +58,14 @@ def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
 
     result: list[Result] = []
 
-    for elem in levenshteinDistances:
+    for i, elem in enumerate(levenshteinDistances):
         result.append({
             'a': (elem[OUTPUT_KEYS.START_A], elem[OUTPUT_KEYS.END_A]),
             'b': (elem[OUTPUT_KEYS.START_B], elem[OUTPUT_KEYS.END_B]),
             'similarity': elem[OUTPUT_KEYS.RATIO],
             'match': True
         })
-        for elem2 in levenshteinDistances:
+        for elem2 in listSlice(levenshteinDistances, i + 1):
             if (elem[OUTPUT_KEYS.END_A] >= elem2[OUTPUT_KEYS.START_A]
                 or elem[OUTPUT_KEYS.END_B] >= elem2[OUTPUT_KEYS.START_B]): continue
 
