@@ -76,8 +76,8 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String,
         }, b.len());
         // let mut l: Vec<Vec<(usize, usize)>> = vec![vec![(0usize, 0usize); b.len()]; a.len()];
         let mut ret: Vec<(usize, usize, usize, usize, usize,f32)> = Vec::new();
-        for (i, (_i_true, c)) in a.char_indices().enumerate() {
-            for (j, (_j_true, d)) in b.char_indices().enumerate() {
+        for (i, c) in a.chars().enumerate() {
+            for (j, d) in b.chars().enumerate() {
                 l[i][j].zero();
                 if c == d {
                     if i == 0 || j == 0 {
