@@ -60,9 +60,10 @@ impl<T> IndexMut<usize> for EfficientMatrix<T> {
 /// Does not return overlapping substrings
 /// This is a more memory efficient implementation, thanks to the EfficientMatrix struct
 #[pyfunction]
-fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, min: usize, ratio: f32)
+fn common_substring_levenshtein(py: Python<'_>, mut a: String,
+    mut b: String, min: usize, ratio: f32, max_substrings: usize)
         -> PyResult<Vec<(usize, usize, usize, usize, usize, f32)>> {
-    const MIN_LEN: usize = 2;
+    const MIN_LEN: usize = 3;
     if min < MIN_LEN {
         return Err(PyValueError::new_err("min must be at least MIN_LEN"));
     }
@@ -77,6 +78,7 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, mi
         let mut ret: Vec<(usize, usize, usize, usize, usize,f32)> = Vec::new();
         for (i, (_i_true, c)) in a.char_indices().enumerate() {
             for (j, (_j_true, d)) in b.char_indices().enumerate() {
+                l[i][j].zero();
                 if c == d {
                     if i == 0 || j == 0 {
                         l[i][j].len = 1;
@@ -85,13 +87,11 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, mi
                     }
                 } else {
                     if i == 0 || j == 0 {
-                        l[i][j].zero();
                         continue;
                     }
                     // We don't check the single character
                     let mut len = l[i-1][j-1].len;
                     if len == 0 {
-                        l[i][j].zero();
                         continue;
                     };
 
@@ -108,8 +108,9 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, mi
                     }
 
                     // Calculate the edit ratio for the returning string
-                    edit_ratio = ((len-diffirent) as f32)/((len-(1 as usize)) as f32);
                     len -= 1;
+                    edit_ratio = ((len-diffirent) as f32)/(len as f32);
+
                     if len >= min {
                         // We don't need the -1 because the range is exclusive on the right side
                         // We don't need the -1 in the main formula, because the array starts from 0, but string length starts from 1
@@ -120,8 +121,10 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String, mut b: String, mi
                             len,
                             edit_ratio
                             ));
+                        if ret.len() >= max_substrings {
+                            return Ok(ret);
+                        }
                     }
-                    l[i][j].zero();
                 }
             }
         }

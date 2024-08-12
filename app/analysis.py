@@ -52,9 +52,8 @@ def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
     ## SET ALL THE BASE VALUES TO 0
     for k in base.keys():
         base[k] = 0
-    levenshteinDistances: list[tuple[int, int, int, int, int, float]] = common_substring_levenshtein(textA, textB, minLen, ratio)
-    if len(levenshteinDistances) > MAX_SUBSTRING:
-        raise ValueError(f'{len(levenshteinDistances)} substrings is too many. Please increase the minLen or increase the ratio')
+    levenshteinDistances: list[tuple[int, int, int, int, int, float]] = (
+        common_substring_levenshtein(textA, textB, minLen, ratio, MAX_SUBSTRING))
 
     result: list[Result] = []
 
