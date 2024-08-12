@@ -33,7 +33,6 @@ export default class API {
     formData.append("b", new File([bContent], b.name));
     formData.append("min_len", minLength.toString());
     formData.append("ratio", ratio.toString());
-    formData.append("g-recaptcha-response", "dummy");
     const resp = await fetch(`${this.baseUrl}/compare`, {
       method: "POST",
       body: formData,
