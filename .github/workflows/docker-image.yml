@@ -5,6 +5,9 @@ permissions:
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
 
@@ -27,4 +30,5 @@ jobs:
         push: true
         tags: ghcr.io/mbs9/substr-analyzer:latest
         file: "Dockerfile"
+        platform: linux/amd64,linux/arm64
 
