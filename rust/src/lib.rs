@@ -109,6 +109,7 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String,
 
                     // Calculate the edit ratio for the returning string
                     len -= 1;
+                    diffirent -= 1;
                     edit_ratio = ((len-diffirent) as f32)/(len as f32);
 
                     if len >= min {

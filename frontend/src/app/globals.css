@@ -28,7 +28,7 @@ body {
   }
 }
 
-span.show-info::after {
+span.show-info:hover::after {
   content: attr(title);
   padding:5px;
   border:1px solid #ccc;
