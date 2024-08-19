@@ -97,7 +97,7 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String,
 
                     // Calculate the edit ratio
                     len += 1;
-                    let diffirent = l[i-1][j-1].diff + 1;
+                    let mut diffirent = l[i-1][j-1].diff + 1;
                     let mut edit_ratio = ((len-diffirent) as f32)/(len as f32);
 
                     // If it is less then the set value, and we are not yet at the end of the string, continue
