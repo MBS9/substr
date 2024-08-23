@@ -21,7 +21,8 @@ export function cleanText(text: string) {
 export default class API {
   baseUrl: string;
   constructor(endpoint?: string) {
-    this.baseUrl = endpoint || "http://localhost:8000";
+    const baseUrl = endpoint?.endsWith('/') ? endpoint?.substring(0, endpoint.length - 1) : endpoint;
+    this.baseUrl = baseUrl || "http://localhost:8000";
   }
   async compare(a: File, b: File, minLength: number, ratio: number) {
     const formData = new FormData();
