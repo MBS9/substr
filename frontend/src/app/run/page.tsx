@@ -5,10 +5,6 @@ import Instructions from './instructions';
 
 const COLOR_LIST = ['yellow', 'orange', 'pink', 'gray'];
 
-function getRandomColor() {
-    return COLOR_LIST[Math.floor(Math.random() * COLOR_LIST.length)];
-}
-
 type DisplayResultState = {
     textA: string,
     textB: string,
@@ -171,7 +167,7 @@ export default function Run() {
         } catch (e) {
             console.error(e);
             ref.current!.innerText = `An error has occured.
-            Perhaps the API endpoint is wrong, or too many substrings were found and they cannot all be displayed.
+            Perhaps the API endpoint is wrong, or there is something wrong with the server.
             (Error: ${e})`;
         }
     }
