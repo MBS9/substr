@@ -1,6 +1,7 @@
 "use client"
 import API, { CompareResult, Pair } from '../api';
 import React from 'react';
+import Instructions from './instructions';
 
 const COLOR_LIST = ['yellow', 'orange', 'pink', 'gray'];
 
@@ -29,7 +30,17 @@ function ShowDiff({ result }: { result: DisplayResultState }) {
                 }
             }
         }
-        
+
+        function resetRange(left: number, right: number, refSet: React.RefObject<HTMLSpanElement>[]) {
+            for (let i = left; i < right; i++) {
+                const ref = refSet[i];
+                if (ref.current !== null) {
+                    ref.current.style.backgroundColor = 'transparent';
+                    ref.current.style.border = 'none';
+                    ref.current.title = '';
+                }
+            }
+        }
         function getContainingPair(index: number, text: 'a' | 'b') {
             const pairs: Pair[] = []
             let pairResult: Pair | null = null;
@@ -44,17 +55,27 @@ function ShowDiff({ result }: { result: DisplayResultState }) {
                 }
             }
             if (pairResult) pairs.push(pairResult);
+            // if (pairResult?.match === false) {
+            //     getContainingPair(pairResult[text][0]-1, text).forEach(pair => pairs.push(pair));
+            //     getContainingPair(pairResult[text][1], text).forEach(pair => pairs.push(pair));
+            // }
             return pairs;
         }
-        function highlight(index: number, color: string, matchColor: string, text: boolean ) {
+        function highlight(index: number, color: string, matchColor: string ) {
             getContainingPair(index, 'a').forEach(pair => {
                 console.log(pair.similarity, pair.match)
                 if (pair.match) color = matchColor;
                 if(!color) color = COLOR_LIST[index % COLOR_LIST.length];
                 const similarityType = pair.match ? 'Edit Ratio' : 'Cosine';
                 const title = `${similarityType} similarity: ${pair.similarity.toFixed(2)}`;
-                highlightRange(pair.b[0], pair.b[1], color, bRefs, text ? title: '', matchesB);
-                highlightRange(pair.a[0], pair.a[1], color, aRefs, text ? title: '', matchesA);
+                highlightRange(pair.b[0], pair.b[1], color, bRefs, title, matchesB);
+                highlightRange(pair.a[0], pair.a[1], color, aRefs, title, matchesA);
+            });
+        }
+        function reset(index: number) {
+            getContainingPair(index, 'a').forEach(pair => {
+                resetRange(pair.b[0], pair.b[1], bRefs);
+                resetRange(pair.a[0], pair.a[1], aRefs);
             });
         }
         const A: React.JSX.Element[] = [];
@@ -73,10 +94,10 @@ function ShowDiff({ result }: { result: DisplayResultState }) {
             const ref = React.createRef<HTMLSpanElement>();
             aRefs.push(ref);
             A.push(<span ref={ref} className='show-info' key={index+result.textB.length} onMouseOver={()=>{
-                highlight(index, '', 'green', true);
+                highlight(index, '', 'green');
             }}
             onMouseLeave={()=>{
-                highlight(index, 'white', 'white', false);
+                reset(index);
             }}>{letter}</span>);
             //highlight(index, 'white', 'green', false);
         }
@@ -128,6 +149,7 @@ function InputForm({ onSubmit }: { onSubmit: (e: React.FormEvent<HTMLFormElement
                 <button type="submit" className='rounded-md py-1 text-center border-black border-4 px-5'>Run</button>
                 <p ref={ref}></p>
             </form>
+            <Instructions />
         </div>
     )
 }
