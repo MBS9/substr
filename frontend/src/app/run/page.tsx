@@ -32,7 +32,7 @@ function ShowDiff({ result }: { result: DisplayResultState }) {
                 const ref = refSet[i];
                 if (ref.current !== null) {
                     ref.current.style.backgroundColor = 'transparent';
-                    ref.current.style.border = 'none';
+                    ref.current.style.borderColor = 'transparent';
                     ref.current.title = '';
                 }
             }
@@ -84,12 +84,12 @@ function ShowDiff({ result }: { result: DisplayResultState }) {
         for (const [index, letter] of Array.from(result.textB).entries()) {
             const ref = React.createRef<HTMLSpanElement>();
             bRefs.push(ref);
-            B.push(<span ref={ref} className='show-info' key={index}>{letter}</span>);
+            B.push(<span ref={ref} className='show-info spacing' key={index}>{letter}</span>);
         }
         for (const [index, letter] of Array.from(result.textA).entries()) {
             const ref = React.createRef<HTMLSpanElement>();
             aRefs.push(ref);
-            A.push(<span ref={ref} className='show-info' key={index+result.textB.length} onMouseOver={()=>{
+            A.push(<span ref={ref} className='show-info spacing' key={index+result.textB.length} onMouseOver={()=>{
                 highlight(index, '', 'green');
             }}
             onMouseLeave={()=>{

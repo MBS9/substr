@@ -20,6 +20,13 @@ body {
   }
 }
 
+
+span.spacing {
+  border-width: 3px;
+  border-color: transparent;
+}
+
+
 span.show-info:hover::after {
   content: attr(title);
   padding:5px;
