@@ -93,7 +93,7 @@ If the corresponding letter from text A matches the letter from text B:
 
 If the corresponding letter from text A does not match the letter from text B:
 - if levenshtein edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is greater then `ratio`, set the current cell to be `(l+1, d+1)`.
-- if the levenshtein edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is less or equal to `ratio` and `l` is greater or equal to `minLen`, then declare the substring of length `l` and end position in text A and B to be `i-1` and `j-1` respectively to be a match. Leave the content of the cell at 0,0 .
+- if the levenshtein edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is less or equal to `ratio` and `l` is greater or equal to `minLen`, then declare the substring of length `l` and end position in text A and B to be `i-1` and `j-1` respectively to be a match. Content of the cell is left 0,0 .
 - if neither of the above match, the cell content is left 0,0.
 
 ```
