@@ -37,3 +37,21 @@ Or
 ```shell
 docker run -e NO_CAPTCHA=1 -p 8080:8080 --rm ghcr.io/mbs9/substr-analyzer:latest
 ```
+
+## The algorithm
+
+This uses a modified version of the longest common substring algorithm.
+
+The concept is built around a table: the letters of Text A in the rows, and the leeters of text B in the columns.
+
+For example is "ABCDEF" is text A and "FABCDFE" is text B, the table would look something like this:
+
+| Text B | A | B | C | D | E | E |
+|-------|----|---|---|---|---|---|
+|   F   |    |   |   |   |   |   |
+|   A   |    |   |   |   |   |   |
+|   B   |    |   |   |   |   |   |
+|   C   |    |   |   |   |   |   |
+|   D   |    |   |   |   |   |   |
+|   F   |    |   |   |   |   |   |
+|   E   |    |   |   |   |   |   |
