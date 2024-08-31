@@ -133,15 +133,15 @@ That is for `textA=textB='AB AB AB AB'`, the algorithm would output:
 
 Once the similar substrings have been identified, the algorithm applies the below algorithm to substrings that are between (sandwiched) by the matched substrings.
 
-So that is, the algorithm will apply the below algorithm to an array of string pairs. These pairs contain the sandwiched substrings from both text A and B. If there is a match (we will denote this match as M1) and another match (which we will denote as M2), the algorithm would extract the substring sandwiched by M1 and M3 from both text A and B.
+So that is, the algorithm will apply the below algorithm to an array of string pairs. These pairs contain the sandwiched substrings from both text A and B. If there is a match (we will denote this match as M1) and another match (which we will denote as M2), the algorithm would extract the substring sandwiched by M1 and M2 from both text A and B.
 
 For each of these sandwiched pairs, it will find the set of all characters that appear in the pair.
 
 For example if a pair is `abcd` and `cdef`, then the set would contain `abcdef`.
 
-Second it builds an array from this set. That is `abcdef` would become `[a, b, c, d, e, f]`.
+Second it builds an array from this set. That is, `abcdef` would become `[a, b, c, d, e, f]`.
 
-It would then build a vector for both strings, where the nth element of the vector represents the frequency of the character at position n of the array in the string. It would build this vector for each string in the pair. So two vectors per pair.
+It then builds a vector for both strings, where the nth element of the vector represents the frequency of the character at position n of the array in the string. It would build this vector for each string in the pair. So two vectors per pair.
 
 It then calculates the dot product of the two vectors, and divides it by the square root of the dot product of the vectors with themselves.
 
