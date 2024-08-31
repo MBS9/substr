@@ -42,14 +42,14 @@ docker run -e NO_CAPTCHA=1 -p 8080:8080 --rm ghcr.io/mbs9/substr-analyzer:latest
 
 ### Utility Functions
 
-The algorithm will assume some the existance of some simple utility functions, these are:
+The algorithm will assume the existance of some simple utility functions, these are:
 
 ```
 Notation:
 <Algorithm name> (<parameters>): <algorithm discription>
 
 Levenshtein Edit ratio (l, d): returns (l-d)/d
-Dot Product (vectorA, vectorB): returns the dot produce of vectorA and vectorB. By dot product, we refer to multiplying the corresponding element of each vector, and summing the results.
+Dot Product (vectorA, vectorB): returns the dot product of vectorA and vectorB. By dot product, we refer to multiplying the corresponding element of each vector, and summing the results.
 ```
 
 ### The string matching algorithm
@@ -58,9 +58,9 @@ This uses a modified version of the longest common substring algorithm.
 
 It takes two inputs: `ratio` and `minLen`.
 
-The concept is built around a table: the letters of Text A in the rows, and the leeters of text B in the columns.
+The concept is built around a table: the letters of Text A in the rows, and the letters of text B in the columns.
 
-For example is "ABCDEF" is text A and "FABCDFE" is text B, the table would look like this:
+For example if "ABCDEF" is text A and "FABCDFE" is text B, then the table would look like this:
 
 |   | A | B | C | D | E | E |
 |---|---|---|---|---|---|---|
@@ -72,7 +72,7 @@ For example is "ABCDEF" is text A and "FABCDFE" is text B, the table would look 
 | F |   |   |   |   |   |   |
 | E |   |   |   |   |   |   |
 
-In the elements of each cell contains two natural numbers: l and d.
+The elements of each cell contains two natural numbers: l and d.
 
 In this document, we will represent these two values inside the tables like this: l, d. For example, if a table cell contains `5, 2` that means `l=5` and `d=2`.
 
@@ -118,9 +118,9 @@ Building this table can be memory intensive. To help with this, this implementat
 
 ### The cosine similarity
 
-Once the similar substrings have been identified, the algorithm applies the the below algorithm to substrings that are between (sandwiched) by the matched substrings.
+Once the similar substrings have been identified, the algorithm applies the below algorithm to substrings that are between (sandwiched) by the matched substrings.
 
-So that is, the algorithm will have an apply the below algorithm to an array of string pairs. These pairs contain the sandwiched substrings from both text A and B. If there is a match (we will denote this match as M1) and another match (which we will denote as M2), the algorithm would extract the substring sandwiched by M1 and M3 from both text A and B.
+So that is, the algorithm will apply the below algorithm to an array of string pairs. These pairs contain the sandwiched substrings from both text A and B. If there is a match (we will denote this match as M1) and another match (which we will denote as M2), the algorithm would extract the substring sandwiched by M1 and M3 from both text A and B.
 
 For each of these sandwiched pairs, it will find the set of all characters that appear in the pair.
 
@@ -130,7 +130,7 @@ Second it builds an array from this set. That is `abcdef` would become `[a, b, c
 
 It would then build a vector for both strings, where the nth element of the vector represents the frequency of the character at position n of the array in the string. It would build this vector for each string in the pair. So two vectors per pair.
 
-It then calculates the dot product of the two vectors, and divides it by the square root of the product of the vectors with themselves.
+It then calculates the dot product of the two vectors, and divides it by the square root of the dot product of the vectors with themselves.
 
 That is, the formula is (`dot(A, B)` represents the dot products of vector A and B):
 
