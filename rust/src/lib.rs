@@ -100,7 +100,7 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String,
                     let mut diffirent = l[i-1][j-1].diff + 1;
                     let mut edit_ratio = ((len-diffirent) as f32)/(len as f32);
 
-                    // If it is less then the set value, and we are not yet at the end of the string, continue
+                    // If it is more then the set value, and we are not yet at the end of the string, continue
                     if edit_ratio > ratio && j < b.len()-1 {
                         l[i][j].diff = diffirent;
                         l[i][j].len = len;
