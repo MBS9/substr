@@ -60,17 +60,18 @@ It takes two inputs: `ratio` and `minLen`.
 
 The concept is built around a table: the letters of Text A in the rows, and the letters of text B in the columns.
 
-For example if "ABCDEF" is text A and "FABCDFE" is text B, then the table would look like this:
+For example if "ABCDEFZ" is text A and "FABCDFEY" is text B, then the table would look like this:
 
-|   | A | B | C | D | E | E |
-|---|---|---|---|---|---|---|
-| F |   |   |   |   |   |   |
-| A |   |   |   |   |   |   |
-| B |   |   |   |   |   |   |
-| C |   |   |   |   |   |   |
-| D |   |   |   |   |   |   |
-| F |   |   |   |   |   |   |
-| E |   |   |   |   |   |   |
+|   | A | B | C | D | E | E | Z |
+|---|---|---|---|---|---|---|---|
+| F |   |   |   |   |   |   |   |
+| A |   |   |   |   |   |   |   |
+| B |   |   |   |   |   |   |   |
+| C |   |   |   |   |   |   |   |
+| D |   |   |   |   |   |   |   |
+| F |   |   |   |   |   |   |   |
+| E |   |   |   |   |   |   |   |
+| Y |   |   |   |   |   |   |   |
 
 The elements of each cell contains two natural numbers: l and d.
 
@@ -92,21 +93,23 @@ If the corresponding letter from text A matches the letter from text B:
 
 If the corresponding letter from text A does not match the letter from text B:
 - if levenshtein edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is greater then `ratio`, set the current cell to be `(l+1, d+1)`.
-- if the levenshtein edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is less or equal to `ratio` and `l` is greater or equal to `minLen`, then declare the substring of length `l` and end position in text A and B to be `i-1` and `j-1` respectively to be a match.
+- if the levenshtein edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is less or equal to `ratio` and `l` is greater or equal to `minLen`, then declare the substring of length `l` and end position in text A and B to be `i-1` and `j-1` respectively to be a match. Leave the content of the cell at 0,0 .
+- if neither of the above match, the cell content is left 0,0.
 
 ```
 
-At the end, the table may look something like this (with `ratio=0.5` and `minLen=3`):
+At the end, the table may look something like this (with `ratio=0.6` and `minLen=3`):
 
-|   | A   | B   | C   | D   | E   | F   |
-|---|-----|-----|-----|-----|-----|-----|
-| F | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 | 1,0 |
-| A | 1,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 |
-| B | 0,0 | 2,0 | 0,0 | 0,0 | 0,0 | 0,0 |
-| C | 0,0 | 0,0 | 3,0 | 0,0 | 0,0 | 0,0 |
-| D | 0,0 | 0,0 | 0,0 | 4,0 | 0,0 | 0,0 |
-| F | 0,0 | 0,0 | 0,0 | 0,0 | 4,1 | 1,0 |
-| E | 0,0 | 0,0 | 0,0 | 0,0 | 1,0 | 4,2 |
+|   | A   | B   | C   | D   | E   | F   | Z   |
+|---|-----|-----|-----|-----|-----|-----|-----|
+| F | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 | 1,0 | 0,0 |
+| A | 1,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 |
+| B | 0,0 | 2,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 |
+| C | 0,0 | 0,0 | 3,0 | 0,0 | 0,0 | 0,0 | 0,0 |
+| D | 0,0 | 0,0 | 0,0 | 4,0 | 0,0 | 0,0 | 0,0 |
+| F | 0,0 | 0,0 | 0,0 | 0,0 | 5,1 | 1,0 | 0,0 |
+| E | 0,0 | 0,0 | 0,0 | 0,0 | 1,0 | 6,2 | 0,0 |
+| Y | 0,0 | 0,0 | 0,0 | 0,0 | 1,0 | 0,0 | 0,0 |
 
 The only match would be between index 0 to 5 of text A and 1 to 6 of text B.
 
