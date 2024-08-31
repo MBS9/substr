@@ -109,7 +109,7 @@ At the end, the table may look something like this (with `ratio=0.6` and `minLen
 | D | 0,0 | 0,0 | 0,0 | 4,0 | 0,0 | 0,0 | 0,0 |
 | F | 0,0 | 0,0 | 0,0 | 0,0 | 5,1 | 1,0 | 0,0 |
 | E | 0,0 | 0,0 | 0,0 | 0,0 | 1,0 | 6,2 | 0,0 |
-| Y | 0,0 | 0,0 | 0,0 | 0,0 | 1,0 | 0,0 | 0,0 |
+| Y | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 |
 
 The only match would be between index 0 to 5 of text A and 1 to 6 of text B.
 
