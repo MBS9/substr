@@ -111,7 +111,7 @@ At the end, the table may look something like this (with `ratio=0.6` and `minLen
 | E | 0,0 | 0,0 | 0,0 | 0,0 | 1,0 | 6,2 | 0,0 |
 | Y | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 |
 
-The only match would be between index 0 to 5 of text A and 1 to 6 of text B.
+The only match would be between index 0 to 6 of text A and 1 to 6 of text B.
 
 Hopefully the match is visible across the diagonal.
 
