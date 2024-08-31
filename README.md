@@ -119,6 +119,16 @@ Hopefully the match is visible across the diagonal.
 
 Building this table can be memory intensive. To help with this, this implementation only stores the last 2 rows, and rest are discarded. This ensures that uneeded data is not stored.
 
+#### Known issues
+
+If both text A and text B contain the same repeating pattern adjacently (e.g.: `textA=textB='AB AB AB AB'`), the algorithm will identify this pattern multiple times, even though they are part of a greater substring.
+
+That is for `textA=textB='AB AB AB AB'`, the algorithm would output:
+- `'AB AB AB AB'` - this is correct
+- `'AB AB AB'` - this is unecessary - it is already contained in the above substring
+- `'AB AB'` - this is unecessary - it is already contained in the above substring
+- `'AB'` - this is unecessary - it is already contained in the above substring
+
 ### The cosine similarity
 
 Once the similar substrings have been identified, the algorithm applies the below algorithm to substrings that are between (sandwiched) by the matched substrings.
