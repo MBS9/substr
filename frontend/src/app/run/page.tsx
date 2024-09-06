@@ -123,8 +123,8 @@ function ShowDiff({ result: inp }: { result: DisplayResultState }) {
 function InputForm({ onSubmit }: { onSubmit: (e: React.FormEvent<HTMLFormElement>, ref: React.RefObject<HTMLParagraphElement>) => void }) {
     const ref = React.createRef<HTMLParagraphElement>();
     return (
-        <div className='items-center'>
-            <h1>Run</h1>
+        <div className='ml-3'>
+            <h1 className='text-3xl mb-2'>Substring Tiler</h1>
             <form onSubmit={(e) => {
                 onSubmit(e, ref);
             }}>
