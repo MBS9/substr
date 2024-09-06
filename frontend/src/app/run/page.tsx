@@ -96,13 +96,17 @@ function ShowDiff({ result: inp }: { result: DisplayResultState }) {
     for (const [index, letter] of Array.from(result.textA).entries()) {
         const ref = React.createRef<HTMLSpanElement>();
         aRefs.push(ref);
-        A.push(<span ref={ref} className='show-info spacing' key={index + result.textB.length} onMouseOver={() => {
-            highlight(index, '', 'green');
-        }}
-            onMouseLeave={() => {
-                reset(index);
-            }}
-            onMouseDown={() => toggleHold(index)}>{letter}</span>);
+        A.push(
+            <span ref={ref} className='show-info spacing'
+                key={index + result.textB.length}
+                onMouseOver={() => {
+                    highlight(index, '', 'green');
+                }}
+                onMouseLeave={() => {
+                    reset(index);
+                }}
+                onMouseDown={() => toggleHold(index)}
+            >{letter}</span>);
         //highlight(index, 'white', 'green', false);
     }
 
