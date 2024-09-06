@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Substring Tiler",
   description: "A tool for comparing two texts and highlighting their similarities/differences.",
-  robots: "noindex, nofollow",
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({
