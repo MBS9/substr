@@ -5,8 +5,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Text Analyzer",
-  description: "",
+  title: "Substring Tiler",
+  description: "A tool for comparing two texts and highlighting their similarities/differences.",
+  robots: "noindex, nofollow",
 };
 
 export default function RootLayout({
