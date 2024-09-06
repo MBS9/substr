@@ -3,6 +3,8 @@ export type Pair = {
   b: [number, number];
   similarity: number;
   match: boolean;
+  hold?: boolean;
+  meta?: string;
 };
 
 export type CompareResult = {
