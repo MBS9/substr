@@ -60,7 +60,7 @@ function ShowDiff({ result: inp }: { result: DisplayResultState }) {
     }
     function highlight(index: number, color: string, matchColor: string) {
         getContainingPair(index, 'a').forEach(pair => {
-            console.log(pair.similarity, pair.match)
+            if (pair.hold === true) return;
             if (pair.match) color = matchColor;
             if (!color) color = COLOR_LIST[index % COLOR_LIST.length];
             const similarityType = pair.match ? 'Edit Ratio' : 'Cosine';
