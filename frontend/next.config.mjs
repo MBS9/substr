@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'export',
-    basePath: '/substr',
+  output: "export",
 };
 
 export default nextConfig;
