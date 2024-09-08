@@ -47,13 +47,13 @@ def cosineSimilarity(strA: str, strB: str, base: Counter[str]):
   return cosine
 
 
-def analyse_data(textA: str, textB: str, minLen: int, ratio: float):
+def analyse_data(textA: str, textB: str, minLen: int, ratio: float, maxStrikes: int) -> str:
     base = Counter(textA + textB)
     ## SET ALL THE BASE VALUES TO 0
     for k in base.keys():
         base[k] = 0
     levenshteinDistances = (
-        common_substring_levenshtein(textA, textB, minLen, ratio, MAX_SUBSTRING))
+        common_substring_levenshtein(textA, textB, minLen, ratio, MAX_SUBSTRING, maxStrikes))
 
     result: list[Result] = []
 

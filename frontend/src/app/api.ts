@@ -26,7 +26,7 @@ export default class API {
     const baseUrl = endpoint?.endsWith('/') ? endpoint?.substring(0, endpoint.length - 1) : endpoint;
     this.baseUrl = baseUrl || "http://localhost:8000";
   }
-  async compare(a: File, b: File, minLength: number, ratio: number) {
+  async compare(a: File, b: File, minLength: number, ratio: number, maxStrikes: number) {
     const formData = new FormData();
     let aContent = await a.text();
     aContent = cleanText(aContent);
@@ -36,10 +36,11 @@ export default class API {
     formData.append("b", new File([bContent], b.name));
     formData.append("min_len", minLength.toString());
     formData.append("ratio", ratio.toString());
+    formData.append("max_strikes", maxStrikes.toString());
     const resp = await fetch(`${this.baseUrl}/compare`, {
       method: "POST",
       body: formData,
     });
-    return {aContent, bContent, ...(await resp.json()) as CompareResult};
+    return { aContent, bContent, ...((await resp.json()) as CompareResult) };
   }
 }

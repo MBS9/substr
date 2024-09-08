@@ -152,6 +152,10 @@ function InputForm({ onSubmit }: { onSubmit: (e: React.FormEvent<HTMLFormElement
                     Ratio: <input type="number" name="ratio" min={0} max={1} step={0.001} />
                 </label>
                 <br />
+                <label>
+                    Max Strikes: <input type="number" name="strikes" />
+                </label>
+                <br />
                 <button type="submit" className='rounded-md py-1 text-center border-black border-4 px-5'>Run</button>
                 <p ref={ref}></p>
             </form>
@@ -171,8 +175,9 @@ export default function Run() {
         const b = formData.get("b") as File;
         const minLength = parseInt(formData.get("min_length") as string);
         const ratio = parseFloat(formData.get("ratio") as string);
+        const maxStrikes = parseInt(formData.get("strikes") as string);
         try {
-            const result = await api.compare(a, b, minLength, ratio);
+            const result = await api.compare(a, b, minLength, ratio, maxStrikes);
             setResult({ textA: result.aContent, textB: result.bContent, pairs: result.pairs });
         } catch (e) {
             console.error(e);

@@ -4,14 +4,15 @@ use pyo3::{exceptions::PyValueError, prelude::*};
 
 struct MatrixElement {
     len: usize,
-    diff: usize,
+    diff: usize
 }
+
 
 impl std::clone::Clone for MatrixElement {
     fn clone(&self) -> Self {
         MatrixElement {
             len: self.len,
-            diff: self.diff,
+            diff: self.diff
         }
     }
 }
@@ -61,7 +62,7 @@ impl<T> IndexMut<usize> for EfficientMatrix<T> {
 /// This is a more memory efficient implementation, thanks to the EfficientMatrix struct
 #[pyfunction]
 fn common_substring_levenshtein(py: Python<'_>, mut a: String,
-    mut b: String, min: usize, ratio: f32, max_substrings: usize)
+    mut b: String, min: usize, ratio: f32, max_substrings: usize, max_strike: usize)
         -> PyResult<Vec<(usize, usize, usize, usize, usize, f32)>> {
     const MIN_LEN: usize = 3;
     if min < MIN_LEN {
@@ -75,8 +76,8 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String,
             len: 0,
         }, b.len());
         // let mut l: Vec<Vec<(usize, usize)>> = vec![vec![(0usize, 0usize); b.len()]; a.len()];
-        let mut ret: Vec<(usize, usize, usize, usize, usize,f32)> = Vec::new();
-        for (i, c) in a.chars().enumerate() {
+        let mut ret: Vec<(usize, usize, usize, usize, usize, f32)> = Vec::new();
+        'outer: for (i, c) in a.chars().enumerate() {
             for (j, d) in b.chars().enumerate() {
                 l[i][j].zero();
                 if c == d {
@@ -123,13 +124,50 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String,
                             edit_ratio
                             ));
                         if ret.len() >= max_substrings {
-                            return Ok(ret);
+                            break 'outer;
                         }
                     }
                 }
             }
         }
 
+        // Expand matches for the set number of strikes
+        let a_chars: Vec<_> = a.chars().collect();
+        let b_chars: Vec<_> = b.chars().collect();
+        for i in 0..ret.len() {
+            let (_start_a, end_a,
+                _start_b,
+                end_b, len,
+                old_ratio) = ret[i];
+            let mut strike = 0;
+            let mut new_end_a = end_a;
+            let mut new_end_b = end_b;
+            let mut new_len = len;
+            let mut different = ((old_ratio*(new_len as f32)) as isize - (new_len as isize)).abs() as usize;
+            while strike < max_strike {
+                new_end_a += 1;
+                new_end_b += 1;
+                new_len += 1;
+                if new_end_a < a_chars.len() && new_end_b < b_chars.len() {
+                    if a_chars[new_end_a] != b_chars[new_end_b] {
+                        different += 1;
+                    }
+                    let new_ratio = (new_len as f32 - different as f32) / new_len as f32;
+                    if new_ratio < ratio {
+                        strike += 1;
+                    } else {
+                        strike = 0;
+                        ret[i].1 = new_end_a;
+                        ret[i].3 = new_end_b;
+                        ret[i].4 = new_len;
+                        ret[i].5 = new_ratio;
+                        println!("{}", len);
+                    }
+                } else {
+                    strike = max_strike;
+                }
+            }
+        }
         Ok(ret)
     })
 }

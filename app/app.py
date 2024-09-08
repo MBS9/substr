@@ -23,8 +23,9 @@ async def handle(request: web.Request):
     text2 = post['b'].file.read().decode('utf-8')
     minLen = int(post['min_len'])
     ratio = float(post['ratio'])
+    maxStrikes = int(post['max_strikes'])
     loop = asyncio.get_running_loop()
-    text = await loop.run_in_executor(pool, lambda: analysis.analyse_data(text1, text2, minLen, ratio))
+    text = await loop.run_in_executor(pool, lambda: analysis.analyse_data(text1, text2, minLen, ratio, maxStrikes))
     return web.Response(text=text, content_type='text/json', headers={'Access-Control-Allow-Origin': '*'})
 
 
