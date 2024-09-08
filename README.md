@@ -56,7 +56,7 @@ Dot Product (vectorA, vectorB): returns the dot product of vectorA and vectorB. 
 
 This uses a modified version of the longest common substring algorithm.
 
-It takes two inputs: `ratio` and `minLen`.
+It takes three inputs: `ratio`, `minLen`, and `maxStrikes`.
 
 The concept is built around a table: the letters of Text A in the rows, and the letters of text B in the columns.
 
@@ -114,6 +114,8 @@ At the end, the table may look something like this (with `ratio=0.6` and `minLen
 The only match would be between index 0 to 6 of text A and 1 to 6 of text B.
 
 Hopefully the match is visible across the diagonal.
+
+Once these initial matches are identified, the algorithm continues by trying to expand the matches. It looks at the next characters after the end of the string, and observes that if it includes some of the next `maxStrike` characters, whether the Levenshtein edit ratio goes above `ratio`. If it goes above, then it looks at the next `maxStrike` characters.
 
 #### Memory
 
