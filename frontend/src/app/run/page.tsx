@@ -111,16 +111,16 @@ function ShowDiff({ result: inp }: { result: DisplayResultState }) {
     }
 
     return (
-        <div className='grid grid-cols-2'>
-            <div>
-                <h1>Text A</h1>
-                <p>{A}</p>
-            </div>
-            <div>
-                <h1>Text B</h1>
-                <p>{B}</p>
-            </div>
+      <div className='grid grid-cols-2 mt-4'>
+        <div>
+          <h1>Text A</h1>
+          <p>{A}</p>
         </div>
+        <div>
+          <h1>Text B</h1>
+          <p>{B}</p>
+        </div>
+      </div>
     );
 }
 
