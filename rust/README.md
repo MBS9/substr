@@ -17,23 +17,9 @@ pip install .
 
 ## API
 
-****
-
-### **common_substring**
-
-`common_substring` finds substrings which exists in both texts. 
-
-**Call Signature:** `common_substring(textA, textB, minStringLength)`
-
-**Returns**: A tupple of form `(startingIndexInTextA, startingIndexInTextB, substring)`
-
-**Same as** `common_substring_levenshtein` with `edit_ratio=1`
-
-****
-
 ### **common_substring_levenshtein**
 
-`common_substring_levenshtein` finds substrings which exists in both texts, and have at least a certain degree of Levenshtein edit ratio similarity. 
+`common_substring_levenshtein` finds substrings which exists in both texts, and have at least a certain degree of edit ratio similarity. 
 
 **Call Signature:** `common_substring_levenshtein(textA, textB, minStringLength, editRatio)`
 

@@ -48,7 +48,7 @@ The algorithm will assume the existance of some simple utility functions, these 
 Notation:
 <Algorithm name> (<parameters>): <algorithm discription>
 
-Levenshtein Edit ratio (l, d): returns (l-d)/d
+Edit ratio (l, d): returns (l-d)/d
 Dot Product (vectorA, vectorB): returns the dot product of vectorA and vectorB. By dot product, we refer to multiplying the corresponding element of each vector, and summing the results.
 ```
 
@@ -92,8 +92,8 @@ If the corresponding letter from text A matches the letter from text B:
 - and `i` and `j` is not 1, it will copy `l` and `d` from the `i-1` row and `j-1` column incrementing `l` by one.
 
 If the corresponding letter from text A does not match the letter from text B:
-- if levenshtein edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is greater then `ratio`, set the current cell to be `(l+1, d+1)`.
-- if the levenshtein edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is less or equal to `ratio` and `l` is greater or equal to `minLen`, then declare the substring of length `l` and end position in text A and B to be `i-1` and `j-1` respectively to be a match. Content of the cell is left 0,0 .
+- if  edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is greater then `ratio`, set the current cell to be `(l+1, d+1)`.
+- if the  edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is less or equal to `ratio` and `l` is greater or equal to `minLen`, then declare the substring of length `l` and end position in text A and B to be `i-1` and `j-1` respectively to be a match. Content of the cell is left 0,0 .
 - if neither of the above match, the cell content is left 0,0.
 
 ```
@@ -115,7 +115,7 @@ The only match would be between index 0 to 6 of text A and 1 to 6 of text B.
 
 Hopefully the match is visible across the diagonal.
 
-Once these initial matches are identified, the algorithm continues by trying to expand the matches. It looks at the next characters after the end of the string, and observes that if it includes some of the next `maxStrike` characters, whether the Levenshtein edit ratio goes above `ratio`. If it goes above, then it looks at the next `maxStrike` characters.
+Once these initial matches are identified, the algorithm continues by trying to expand the matches. It looks at the next characters after the end of the string, and observes that if it includes some of the next `maxStrike` characters, whether the  edit ratio goes above `ratio`. If it goes above, then it looks at the next `maxStrike` characters.
 
 #### Memory
 
