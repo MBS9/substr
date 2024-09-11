@@ -69,7 +69,7 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String,
         return Err(PyValueError::new_err("min must be at least MIN_LEN"));
     }
     Python::allow_threads(py, move || {
-        a.push(1 as char);
+        a.push('B' as char);
         b.push('\n');
         let mut l: EfficientMatrix<MatrixElement> = EfficientMatrix::new(MatrixElement{
             diff: 0,
