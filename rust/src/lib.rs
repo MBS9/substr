@@ -85,6 +85,7 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String,
                         l[i][j].len = 1;
                     } else {
                         l[i][j].len = l[i - 1][j - 1].len + 1;
+                        l[i][j].diff = l[i - 1][j - 1].diff;
                     }
                 } else {
                     if i == 0 || j == 0 {
