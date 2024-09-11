@@ -62,10 +62,10 @@ impl<T> IndexMut<usize> for EfficientMatrix<T> {
 /// This is a more memory efficient implementation, thanks to the EfficientMatrix struct
 #[pyfunction]
 fn common_substring_levenshtein(py: Python<'_>, mut a: String,
-    mut b: String, min: usize, ratio: f32, max_substrings: usize, max_strike: usize)
+    mut b: String, min_len: usize, ratio: f32, max_substrings: usize, max_strike: usize)
         -> PyResult<Vec<(usize, usize, usize, usize, usize, f32)>> {
     const MIN_LEN: usize = 3;
-    if min < MIN_LEN {
+    if min_len < MIN_LEN {
         return Err(PyValueError::new_err("min must be at least MIN_LEN"));
     }
     Python::allow_threads(py, move || {
@@ -114,7 +114,7 @@ fn common_substring_levenshtein(py: Python<'_>, mut a: String,
                     diffirent -= 1;
                     edit_ratio = ((len-diffirent) as f32)/(len as f32);
 
-                    if len >= min {
+                    if len >= min_len {
                         // We don't need the -1 because the range is exclusive on the right side
                         // We don't need the -1 in the main formula, because the array starts from 0, but string length starts from 1
                         ret.push((i- len,
