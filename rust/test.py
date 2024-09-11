@@ -1,7 +1,7 @@
 import compare_text
 
 def test_common_substring_levenshtein(stringA, stringB):
-    results = compare_text.common_substring_levenshtein(stringA, stringB, 3, 0.6, 100, 0)
+    results = compare_text.common_substring_levenshtein(stringA, stringB, 3, 0.7, 100, 0)
     for result in results:
         print(stringA[result[0]:result[1]])
         print(stringB[result[2]:result[3]])
