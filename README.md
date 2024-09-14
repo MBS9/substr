@@ -48,7 +48,7 @@ The algorithm will assume the existance of some simple utility functions, these 
 Notation:
 <Algorithm name> (<parameters>): <algorithm discription>
 
-Edit ratio (l, d): returns (l-d)/d
+Levenshtein Edit ratio (str1, str2): returns the Levenshtein edit ratio between str1 and str2. The edit ratio is the following: (lengthOfString - editDistance)/lengthOfString
 Dot Product (vectorA, vectorB): returns the dot product of vectorA and vectorB. By dot product, we refer to multiplying the corresponding element of each vector, and summing the results.
 ```
 
@@ -73,11 +73,9 @@ For example if "ABCDEFZ" is text A and "FABCDFEY" is text B, then the table woul
 | E |   |   |   |   |   |   |   |
 | Y |   |   |   |   |   |   |   |
 
-The elements of each cell contains two natural numbers: l and d.
+The elements of each cell contain a natural numbers: l.
 
-In this document, we will represent these two values inside the tables like this: l, d. For example, if a table cell contains `5, 2` that means `l=5` and `d=2`.
-
-Initially all cells are initialized to `0, 0`.
+Initially all cells are initialized to `0`.
 
 The algorithm will start traversing the table row-by-row, from top-to-buttom and left-to-right.
 
@@ -89,27 +87,27 @@ Suppose the cell is in the ith row and jth column.
 
 If the corresponding letter from text A matches the letter from text B:
 - and `i` or `j` is 1, it will insert 0, 0 into the cell.
-- and `i` and `j` is not 1, it will copy `l` and `d` from the `i-1` row and `j-1` column incrementing `l` by one.
+- and `i` and `j` is not 1, it will copy `l` from the `i-1` row and `j-1` column incrementing `l` by one.
 
 If the corresponding letter from text A does not match the letter from text B:
-- if  edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is greater then `ratio`, set the current cell to be `(l+1, d+1)`.
-- if the  edit ratio of `(l+1, d+1)` from the `i-1`, `j-1` cell is less or equal to `ratio` and `l` is greater or equal to `minLen`, then declare the substring of length `l` and end position in text A and B to be `i-1` and `j-1` respectively to be a match. Content of the cell is left 0,0 .
+- if edit ratio of the string from text A in the range `(i-l, i-1)` from the `i-1`, `j-1` cell is greater then `ratio`, copy l to the current cell.
+- if the edit ratio is less or equal to `ratio` and `l` is greater or equal to `minLen`, then declare the substring of length `l` and end position in text A and B to be `i-1` and `j-1` respectively to be a match. Content of the cell is left 0,0 .
 - if neither of the above match, the cell content is left 0,0.
 
 ```
 
 At the end, the table may look something like this (with `ratio=0.6` and `minLen=3`):
 
-|   | A   | B   | C   | D   | E   | F   | Z   |
-|---|-----|-----|-----|-----|-----|-----|-----|
-| F | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 | 1,0 | 0,0 |
-| A | 1,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 |
-| B | 0,0 | 2,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 |
-| C | 0,0 | 0,0 | 3,0 | 0,0 | 0,0 | 0,0 | 0,0 |
-| D | 0,0 | 0,0 | 0,0 | 4,0 | 0,0 | 0,0 | 0,0 |
-| F | 0,0 | 0,0 | 0,0 | 0,0 | 5,1 | 1,0 | 0,0 |
-| E | 0,0 | 0,0 | 0,0 | 0,0 | 1,0 | 6,2 | 0,0 |
-| Y | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 | 0,0 |
+|   | A | B | C | D | E | F | Z |
+|---|---|---|---|---|---|---|---|
+| F | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| A | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+| B | 0 | 2 | 0 | 0 | 0 | 0 | 0 |
+| C | 0 | 0 | 3 | 0 | 0 | 0 | 0 |
+| D | 0 | 0 | 0 | 4 | 0 | 0 | 0 |
+| F | 0 | 0 | 0 | 0 | 5 | 1 | 0 |
+| E | 0 | 0 | 0 | 0 | 1 | 6 | 0 |
+| Y | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 The only match would be between index 0 to 6 of text A and 1 to 6 of text B.
 
