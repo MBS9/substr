@@ -46,7 +46,7 @@ export default function Instructions() {
         substring, the affected portion will have a green border.
       </p>
       <p>
-        Finally, to avoid overloading the system, the API server will, by
+        Finally, to avoid overloading the system, this app will, by
         default, only return the first 100 matches.
       </p>
       <br />

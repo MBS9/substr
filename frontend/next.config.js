@@ -6,6 +6,7 @@ const nextConfig = {
   output: "export",
   webpack: (config, options) => {
     config.experiments.asyncWebAssembly = true;
+    config.experiments.syncWebAssembly = true;
     config.plugins.push(
       new WasmPackPlugin({
         crateDirectory: path.join(__dirname, '../wasm'),
