@@ -3,6 +3,7 @@ import API, { CompareResult, Pair } from '../api';
 import React from 'react';
 import Instructions from './instructions';
 import { cloneDeep } from 'lodash';
+import * as wasm from 'algo-wasm';
 
 const COLOR_LIST = ['yellow', 'orange', 'pink', 'gray'];
 
@@ -168,6 +169,11 @@ export default function Run() {
     const [result, setResult] = React.useState<DisplayResultState | null>(null);
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, ref: React.RefObject<HTMLParagraphElement>) => {
         e.preventDefault();
+
+        // Initialize the wasm module
+        wasm.initSync(await wasm.default());
+        wasm.greet('world');
+
         ref.current!.innerText = 'Processing...please wait';
         const formData = new FormData(e.currentTarget);
         const api = new API(formData.get("api_url") as string);

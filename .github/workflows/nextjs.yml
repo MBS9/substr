@@ -43,7 +43,7 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           static_site_generator: next
-          generator_config_file: ${{ github.workspace }}/frontend/next.config.mjs
+          generator_config_file: ${{ github.workspace }}/frontend/next.config.js
       - name: Install dependencies
         run: npm ci
       - name: Build with Next.js
