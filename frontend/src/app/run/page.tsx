@@ -172,7 +172,7 @@ export default function Run() {
 
         // Initialize the wasm module
         wasm.initSync(await wasm.default());
-        wasm.greet('world');
+        wasm.greet('Processing. Click okay to start.');
 
         ref.current!.innerText = 'Processing...please wait';
         const formData = new FormData(e.currentTarget);
