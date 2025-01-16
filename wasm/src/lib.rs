@@ -58,14 +58,15 @@ impl<T> IndexMut<usize> for EfficientMatrix<T> {
 }
 
 fn levenshteinEditDistance(a_chars: &[char], b_chars: &[char]) -> usize {
-    let mut l: Vec<Vec<usize>> = vec![vec![0; b_chars.len()+1]; a_chars.len()+1];
-    for i in 0..(a_chars.len()+1) {
-        l[i][0] = i;
-    }
+    let mut l = EfficientMatrix::new(0, b_chars.len()+1);
+    // for i in 0..(a_chars.len()+1) {
+    //     l[0][i] = i;
+    // }
     for j in 0..(b_chars.len()+1) {
         l[0][j] = j;
     }
     for i in 1..(a_chars.len()+1) {
+        l[i][0] = i;
         for j in 1..(b_chars.len()+1) {
             if a_chars[i-1] == b_chars[j-1] {
                 l[i][j] = l[i - 1][j - 1];
