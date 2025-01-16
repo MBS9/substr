@@ -118,23 +118,3 @@ The result of this is the cosine similarity of the two vectors.
 ### The output
 
 Finally, the algorithm returns the substrings that where matched (together with their ratio), and the sandwiched substrings (together with their cosine similarities).
-
-## The App's Architecture
-
-### Frontend
-
-The frontend is responsible for displaying and visualising the output. It calls the API server with the inputs, and visualises the output. It also does some input validation, sanity checks, and minimal preprocessing.
-
-This is written with Typescript using Next.js. It is exported as a Static WebApp.
-
-### Backend API Server
-
-This is simple HTTP server built with aiohttp in Python. This is responsible for running the analysis.
-
-The algorithm to identify Levenshtein matches is written in Rust, this is to maximise the efficiency of the code. This is in the form of a Python extension module, so it is called from Python code.
-
-The algorithm to calculate the cosine similarity is written in Python, thanks to numpy, it is possible to make this code efficient without Rust.
-
-To save bandwidth, instead of returning the matched strings, it only returns the start and end index of the matches. The data is serialized as JSON.
-
-This API server is often distributed as a Docker container.
