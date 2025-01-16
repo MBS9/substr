@@ -1,7 +1,8 @@
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
-use std::collections::HashMap;
-use std::{cmp::min, iter::FromIterator, ops::{Index, IndexMut}};
+use std::collections::{HashMap, HashSet};
+use std::panic::{self, PanicHookInfo};
+use std::{cmp::min, ops::{Index, IndexMut}};
 
 struct MatrixElement {
     len: usize,
@@ -89,10 +90,13 @@ fn cosineSimilarity(strA: &[char], strB: &[char]) -> f32 {
     let mut dot_product = 0;
     let mut norm_a = 0;
     let mut norm_b = 0;
-    for i in a.keys() {
-        dot_product += a[i] * b[i];
-        norm_a += a[i] * a[i];
-        norm_b += b[i] * b[i];
+    let allKeys: Vec<&char> = a.keys().chain(b.keys()).into_iter().collect::<HashSet<&char>>().into_iter().collect::<Vec<&char>>();
+    for i in allKeys {
+        let aFreq = *a.get(i).unwrap_or(&0);
+        let bFreq = *b.get(i).unwrap_or(&0);
+        dot_product += aFreq * bFreq;
+        norm_a += aFreq * aFreq;
+        norm_b += bFreq * bFreq;
     }
     let similarity = (dot_product as f32) / ((norm_a * norm_b) as f32).sqrt();
     similarity
@@ -240,6 +244,11 @@ pub fn common_substring_levenshtein(
 #[wasm_bindgen]
 pub fn process(strA: String, strB: String, minLength: usize, ratio: f32, maxStrikes: usize) -> Vec<Result> {
 
+    panic::set_hook(Box::new(|panic_info: &PanicHookInfo | {
+        // Alert panic error message
+        alert(panic_info.payload().downcast_ref::<String>().unwrap());
+    }));
+
     // Slightly sad workaround to avoid the issue with the last character being removed
 
     let mut fileA: Vec<_> = strA.chars().collect();
@@ -264,13 +273,15 @@ pub fn process(strA: String, strB: String, minLength: usize, ratio: f32, maxStri
             levenshteinMatch: true
         });
         for elem2 in levenshteinDistances.iter().skip(i+1) {
-            if elem.end_a >= elem2.start_a || elem2.end_b >= elem.start_b {
+            if elem.end_a >= elem2.start_a || elem.end_b >= elem2.start_b {
                 continue;
             }
             let a = Substring { start: elem.end_a, end: elem2.start_a };
             let b = Substring { start: elem.end_b, end: elem2.start_b };
-
-            let similarity = cosineSimilarity(&fileA[(a.start)..(a.end)], &fileB[(b.start)..(b.end)]);
+            let similarity = cosineSimilarity(
+                &fileA[(a.start)..(a.end)],
+                &fileB[(b.start)..(b.end)]
+            );
             result.push(Result {
                 a,
                 b,
