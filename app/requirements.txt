@@ -1,3 +1,0 @@
-aiohttp[speedups]
-numpy
-python-dotenv
