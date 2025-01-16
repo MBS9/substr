@@ -10,10 +10,11 @@
   },
   "dependencies": {
     "algo-wasm": "file:../wasm/pkg",
+    "eslint-config-next": "^15.1.4",
     "lodash": "^4.17.21",
-    "next": "14.2.5",
-    "react": "^18",
-    "react-dom": "^18"
+    "next": "^15.1.4",
+    "react": "^19.0.0-rc.1",
+    "react-dom": "^19.0.0-rc.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.7",
