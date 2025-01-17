@@ -254,11 +254,9 @@ pub fn process(strA: String, strB: String, minLength: usize, ratio: f32, maxStri
 
     // Slightly sad workaround to avoid the issue with the last character being removed
 
-    let mut fileA: Vec<_> = strA.chars().collect();
-    let mut fileB: Vec<_> = strB.chars().collect();
+    let mut fileA: Vec<_> = strA.chars().chain([char::from(0)]).collect();
+    let mut fileB: Vec<_> = strB.chars().chain([char::from(1)]).collect();
 
-    fileA.push(char::from(0));
-    fileB.push(char::from(1));
     let levenshteinDistances = common_substring_levenshtein(&fileA, &fileB, minLength, ratio, 100, maxStrikes);
     fileA.pop();
     fileB.pop();
