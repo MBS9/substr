@@ -196,6 +196,7 @@ pub fn common_substring_levenshtein(
                             edit_ratio,
                         });
                         if ret.len() >= max_substrings {
+                            alert("Too many matches found, limiting the amount returned!");
                             break 'outer;
                         }
                     }
@@ -203,6 +204,7 @@ pub fn common_substring_levenshtein(
             }
         }
         // Expand matches for the set number of strikes
+        // TODO: allow seperately expanding on one side, for only 1 of the strings
         for i in 0..ret.len() {
             let SubstringResult {
                 start_a,
