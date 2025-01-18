@@ -9,8 +9,8 @@ export default function Instructions() {
         minimum length of the similarities and the ratio of the similarities.
       </p>
       <p>
-        The minimum length is the minimum number of characters that a similarity
-        must have to be considered.
+        The minimum length is the minimum number of characters that both substrings must
+        have to be matched.
       </p>
       <p>
         The ratio is the minimum ratio of the number of characters in the
