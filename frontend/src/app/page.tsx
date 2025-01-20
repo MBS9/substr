@@ -5,7 +5,6 @@ import { InputForm } from './components/form';
 import { DisplayResultState, InputData } from './types';
 import { ShowDiff } from './components/displayResult';
 import Instructions from './components/instructions';
-import { set } from 'lodash';
 
 export default function Run() {
     const [wasmLoading, setWasmLoading] = React.useState(true);
