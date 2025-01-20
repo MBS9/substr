@@ -1,12 +1,10 @@
-import { cloneDeep } from "lodash";
 import { DisplayResultState, Pair, Substring } from "../types";
-import React from "react";
+import React, { useEffect } from "react";
 
 const COLOR_LIST = ['yellow', 'orange', 'pink', 'gray'];
 
-export function ShowDiff({ result: inp }: { result: DisplayResultState }) {
+export function ShowDiff({ result }: { result: DisplayResultState }) {
 
-    const result: DisplayResultState = cloneDeep(inp);
     function highlightRange(left: number, right: number, color: string, refSet: React.RefObject<HTMLSpanElement>[], text: string, matches: Substring[]) {
         for (let i = left; i < right; i++) {
             const ref = refSet[i];
@@ -44,21 +42,20 @@ export function ShowDiff({ result: inp }: { result: DisplayResultState }) {
             }
         }
         if (pairResult) pairs.push(pairResult);
-        // if (pairResult?.match === false) {
-        //     getContainingPair(pairResult[text].start-1, text).forEach(pair => pairs.push(pair));
-        //     getContainingPair(pairResult[text].end, text).forEach(pair => pairs.push(pair));
-        // }
         return pairs;
     }
-    function highlight(index: number, color: string, matchColor: string) {
+    function highlightFromPair(pair: Pair, color: string, matchColor: string, index: number) {
+        if (pair.levenshteinMatch) color = matchColor;
+        if (!color) color = COLOR_LIST[index % COLOR_LIST.length];
+        const similarityType = pair.levenshteinMatch ? 'Edit Ratio' : 'Cosine';
+        const title = `${similarityType} similarity: ${pair.similarity.toFixed(2)}`;
+        highlightRange(pair.b.start, pair.b.end, color, bRefs, title, matchesB);
+        highlightRange(pair.a.start, pair.a.end, color, aRefs, title, matchesA);
+    }
+    function highlightFromCharIndex(index: number, color: string, matchColor: string) {
         getContainingPair(index, 'a').forEach(pair => {
             if (pair.hold === true) return;
-            if (pair.levenshteinMatch) color = matchColor;
-            if (!color) color = COLOR_LIST[index % COLOR_LIST.length];
-            const similarityType = pair.levenshteinMatch ? 'Edit Ratio' : 'Cosine';
-            const title = `${similarityType} similarity: ${pair.similarity.toFixed(2)}`;
-            highlightRange(pair.b.start, pair.b.end, color, bRefs, title, matchesB);
-            highlightRange(pair.a.start, pair.a.end, color, aRefs, title, matchesA);
+            highlightFromPair(pair, color, matchColor, index);
         });
     }
     function reset(index: number) {
@@ -92,26 +89,62 @@ export function ShowDiff({ result: inp }: { result: DisplayResultState }) {
             <span ref={ref} className='show-info spacing'
                 key={index + result.textB.length}
                 onMouseOver={() => {
-                    highlight(index, '', 'green');
+                    highlightFromCharIndex(index, '', 'green');
                 }}
                 onMouseLeave={() => {
                     reset(index);
                 }}
                 onMouseDown={() => toggleHold(index)}
             >{letter}</span>);
-        //highlight(index, 'white', 'green', false);
+    }
+
+    function loadInputResult() {
+        for (const [index, pair] of Array.from(result.pairs).entries()) {
+            if (pair.hold) {
+                highlightFromPair(pair, '', 'green', index);
+            }
+        }
+    }
+
+    useEffect(() => {
+        loadInputResult();
+    }, []);
+
+    function exportResult() {
+        const jsResultCopy: DisplayResultState = { textA: result.textA, textB: result.textB, pairs: [] };
+        result.pairs.forEach(pair => {
+            jsResultCopy.pairs.push({
+                a: { start: pair.a.start, end: pair.a.end } as any,
+                b: { start: pair.b.start, end: pair.b.end } as any,
+                similarity: pair.similarity,
+                levenshteinMatch: pair.levenshteinMatch,
+                hold: pair.hold,
+            });
+        });
+        const resultText = JSON.stringify(jsResultCopy);
+        const blob = new Blob([resultText], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'myproject.tile';
+        a.click();
     }
 
     return (
-        <div className='grid grid-cols-2 mt-4'>
-            <div>
-                <h1>Text A</h1>
-                <p>{A}</p>
+        <>
+            <button onClick={exportResult} className="rounded-md py-1 text-center border-black border-4 px-5" type="button">
+                Export Project
+            </button>
+            <div className='grid grid-cols-2 mt-4'>
+                <div>
+                    <h1>Text A</h1>
+                    <p>{A}</p>
+                </div>
+                <div>
+                    <h1>Text B</h1>
+                    <p>{B}</p>
+                </div>
             </div>
-            <div>
-                <h1>Text B</h1>
-                <p>{B}</p>
-            </div>
-        </div>
+        </>
     );
 }

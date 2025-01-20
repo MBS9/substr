@@ -1,7 +1,10 @@
 import React from "react";
-import { InputData } from "../types";
+import { InputData, DisplayResultState } from "../types";
 
-export function InputForm({ onSubmit, disabled }: { onSubmit: (data: InputData) => void, disabled: boolean }) {
+type Props = { onSubmit: (data: InputData) => void, disabled: boolean, onImport: (data: DisplayResultState) => void }
+
+export function InputForm({ onSubmit, disabled, onImport }:
+    Props) {
     const submitCallback = React.useCallback((e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
@@ -12,9 +15,18 @@ export function InputForm({ onSubmit, disabled }: { onSubmit: (data: InputData) 
         const maxStrikes = parseInt(formData.get("strikes") as string);
         onSubmit({ fileA, fileB, minLength, ratio, maxStrikes });
     }, [onSubmit]);
+    const importCallback = React.useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) {
+            alert('No file selected');
+            return;
+        };
+        const input = await file.text();
+        onImport(JSON.parse(input) as DisplayResultState);
+    }, [onImport]);
     return (
         <div className='ml-3'>
-            <h1 className='text-3xl mb-2'>Substring Tiler</h1>
+            <h2 className='text-xl mt-5'>Upload files for a new project</h2>
             <form onSubmit={submitCallback}>
                 <label>
                     File A: <input type="file" name="a" />
@@ -38,6 +50,8 @@ export function InputForm({ onSubmit, disabled }: { onSubmit: (data: InputData) 
                 <br />
                 <button type="submit" className='rounded-md py-1 text-center border-black border-4 px-5' disabled={disabled}>Run</button>
             </form>
+            <h2 className='text-xl mt-5'>Or, open an existing project</h2>
+            <input type="file" accept="*.tile" onChange={importCallback} />
         </div>
     )
 }

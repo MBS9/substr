@@ -14,7 +14,7 @@ export default function Run() {
         SubstringAlgorithm.default().then(() => {
             console.log('Wasm initialized');
             setWasmLoading(false);
-            setStatusMessage('Ready to process');
+            setStatusMessage('Ready');
         });
     }, []);
     const [result, setResult] = React.useState<DisplayResultState | null>(null);
@@ -36,8 +36,9 @@ export default function Run() {
     if (result === null) {
         return (
             <div>
-                <InputForm onSubmit={handleSubmit} disabled={wasmLoading} />
-                <p>{statusMessage}</p>
+                <h1 className='text-3xl mb-2'>Substring Tiler</h1>
+                <p>Status: {statusMessage}</p>
+                <InputForm onSubmit={handleSubmit} disabled={wasmLoading} onImport={setResult} />
                 <Instructions />
             </div>
         )

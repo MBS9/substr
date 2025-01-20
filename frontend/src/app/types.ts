@@ -2,9 +2,8 @@ import { Substring as WasmSubstring, Result } from "algo-wasm";
 
 export type Substring = WasmSubstring;
 
-export type Pair = Result & {
+export type Pair = Omit<Result, 'free'> & {
     hold?: boolean;
-    meta?: string;
 };
 
 export type DisplayResultState = {
