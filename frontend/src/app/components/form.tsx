@@ -48,7 +48,9 @@ export function InputForm({ onSubmit, disabled, onImport }:
                     Max Strikes: <input type="number" name="strikes" />
                 </label>
                 <br />
-                <button type="submit" className='rounded-md py-1 text-center border-black border-4 px-5' disabled={disabled}>Run</button>
+                <button type="submit" className='rounded-md py-1 text-center border-black border-4 px-5' disabled={disabled}>
+                    Create new project
+                </button>
             </form>
             <h2 className='text-xl mt-5'>Or, open an existing project</h2>
             <input type="file" accept="*.tile" onChange={importCallback} />

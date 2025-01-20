@@ -133,7 +133,7 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
     return (
         <>
             <button onClick={exportResult} className="rounded-md py-1 text-center border-black border-4 px-5" type="button">
-                Export Project
+                Save Project
             </button>
             <div className='grid grid-cols-2 mt-4'>
                 <div>
