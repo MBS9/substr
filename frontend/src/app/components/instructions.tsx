@@ -47,7 +47,7 @@ export default function Instructions() {
       </p>
       <p>
         Finally, to avoid overloading the system, this app will, by
-        default, only return the first 100 matches.
+        default, only return the first 70 matches.
       </p>
       <br />
       <Link

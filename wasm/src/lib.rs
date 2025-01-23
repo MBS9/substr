@@ -257,7 +257,7 @@ pub fn process(strA: String, strB: String, minLength: usize, ratio: f32, maxStri
     let mut fileA: Vec<_> = strA.chars().chain([char::from(0)]).collect();
     let mut fileB: Vec<_> = strB.chars().chain([char::from(1)]).collect();
 
-    let levenshteinDistances = common_substring_levenshtein(&fileA, &fileB, minLength, ratio, 100, maxStrikes);
+    let levenshteinDistances = common_substring_levenshtein(&fileA, &fileB, minLength, ratio, 70, maxStrikes);
     fileA.pop();
     fileB.pop();
 

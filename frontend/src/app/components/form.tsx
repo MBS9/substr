@@ -37,7 +37,7 @@ export function InputForm({ onSubmit, disabled, onImport }:
                 </label>
                 <br />
                 <label>
-                    Minimum Length: <input type="number" name="min_length" />
+                    Minimum Length: <input type="number" name="min_length" min={3} />
                 </label>
                 <br />
                 <label>
@@ -45,7 +45,7 @@ export function InputForm({ onSubmit, disabled, onImport }:
                 </label>
                 <br />
                 <label>
-                    Max Strikes: <input type="number" name="strikes" />
+                    Max Strikes: <input type="number" name="strikes" min={0} max={5} />
                 </label>
                 <br />
                 <button type="submit" className='rounded-md py-1 text-center border-black border-4 px-5' disabled={disabled}>
