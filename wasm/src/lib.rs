@@ -370,7 +370,7 @@ pub fn process(
     let mut file_b: Vec<_> = str_b.chars().chain([char::from(1)]).collect();
 
     let mut levenshtein_distances =
-        common_substring_levenshtein(&file_a, &file_b, min_length, ratio, 70);
+        common_substring_levenshtein(&file_a, &file_b, min_length, ratio, 100);
     expand_matches_left_and_right(
         &mut levenshtein_distances,
         &file_a,
