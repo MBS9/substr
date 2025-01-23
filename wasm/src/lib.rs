@@ -365,13 +365,7 @@ pub fn process(
     ratio: f32,
     max_strikes: usize,
 ) -> Vec<Result> {
-    panic::set_hook(Box::new(|panic_info: &PanicHookInfo| {
-        // Alert panic error message
-        alert(panic_info.payload().downcast_ref::<String>().unwrap());
-    }));
-
     // Slightly sad workaround to avoid the issue with the last character being removed
-
     let mut file_a: Vec<_> = str_a.chars().chain([char::from(0)]).collect();
     let mut file_b: Vec<_> = str_b.chars().chain([char::from(1)]).collect();
 
@@ -428,4 +422,13 @@ pub fn process(
         }
     }
     result
+}
+
+#[wasm_bindgen(start)]
+fn start() {
+    panic::set_hook(Box::new(|panic_info: &PanicHookInfo| {
+        // Alert panic error message
+        alert(panic_info.payload().downcast_ref::<String>().unwrap());
+        alert(panic_info.location().unwrap().to_string().as_str());
+    }));
 }
