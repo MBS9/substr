@@ -37,7 +37,7 @@ export function InputForm({ onSubmit, disabled, onImport }:
                 </label>
                 <br />
                 <label>
-                    Minimum Length: <input type="number" name="min_length" min={3} />
+                    Minimum Length: <input type="number" name="min_length" min={4} />
                 </label>
                 <br />
                 <label>
