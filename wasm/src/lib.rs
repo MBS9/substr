@@ -3,6 +3,7 @@ use std::collections::{HashMap, HashSet};
 use std::panic::{self, PanicHookInfo};
 use std::{
     cmp::min,
+    cmp::max,
     ops::{Index, IndexMut},
 };
 use wasm_bindgen::prelude::*;
@@ -215,8 +216,8 @@ fn reset_end_and_len(
 }
 
 pub fn common_substring_levenshtein(
-    a: &Vec<char>,
-    b: &Vec<char>,
+    a: &[char],
+    b: &[char],
     min_len: usize,
     ratio: f32,
     max_substrings: usize,
@@ -290,7 +291,13 @@ pub fn common_substring_levenshtein(
     ret
 }
 
-fn expand_matches_left_and_right(ret:  &mut Vec<SubstringResult>, a: &Vec<char>, b: &Vec<char>, ratio: f32, max_strike: usize) {
+fn expand_matches_left_and_right(
+    ret: &mut [SubstringResult],
+    a: &[char],
+    b: &[char],
+    ratio: f32,
+    max_strike: usize,
+) {
     let mut new_end_a: usize = 0;
     let mut new_end_b: usize = 0;
     let mut new_len: usize = 0;
@@ -317,7 +324,7 @@ fn expand_matches_left_and_right(ret:  &mut Vec<SubstringResult>, a: &Vec<char>,
             &mut new_len,
             ratio,
             max_strike,
-             &mut ret[i],
+            &mut ret[i],
             true,
             true,
         );
@@ -366,24 +373,71 @@ pub fn process(
     max_strikes: usize,
 ) -> Vec<Result> {
     // Slightly sad workaround to avoid the issue with the last character being removed
-    let mut file_a: Vec<_> = str_a.chars().chain([char::from(0)]).collect();
-    let mut file_b: Vec<_> = str_b.chars().chain([char::from(1)]).collect();
+    let file_a: Vec<char> = str_a.chars().chain([char::from(0)]).collect();
+    let file_a = file_a.as_slice();
+    let file_b: Vec<char> = str_b.chars().chain([char::from(1)]).collect();
+    let file_b = file_b.as_slice();
 
     let mut levenshtein_distances =
-        common_substring_levenshtein(&file_a, &file_b, min_length, ratio, 100);
+        common_substring_levenshtein(file_a, file_b, min_length, ratio, 100);
     expand_matches_left_and_right(
-        &mut levenshtein_distances,
+        levenshtein_distances.as_mut_slice(),
         &file_a,
         &file_b,
         ratio,
         max_strikes,
     );
-    file_a.pop();
-    file_b.pop();
 
-    let mut result: Vec<Result> = Vec::new();
+    let mut result: Vec<Result> = Vec::with_capacity(levenshtein_distances.len()*2 -1);
 
-    for (i, elem) in levenshtein_distances.iter().enumerate() {
+    // It seems like this is not needed, as the levenshtein_distances are already sorted
+    // levenshtein_distances.sort_unstable_by_key(|x| x.end_a);
+
+    // TODO: eliminate overlapping matches, and always choose the longest match
+    //levenshtein_distances.sort_unstable_by_key(|x| x.start_a);
+
+    //let mut non_overlapping_matches: Vec<SubstringResult> = Vec::new();
+    //let mut last_end_a = 0;
+    //for match_result in levenshtein_distances.iter() {
+    //    if match_result.start_a >= last_end_a {
+    //        non_overlapping_matches.push(*match_result);
+    //        last_end_a = match_result.end_a;
+    //    }
+    //}
+
+    //levenshtein_distances = non_overlapping_matches;
+
+    for (elem, elem2) in levenshtein_distances[..levenshtein_distances.len() - 1]
+        .iter()
+        .zip(levenshtein_distances[1..].iter())
+    {
+        if elem.end_a >= elem2.start_a {
+            continue;
+        }
+        let start_b = min(elem2.end_b, elem.end_b);
+        let end_b = max(elem2.start_b, elem.start_b);
+        if start_b >= end_b {
+            continue;
+        }
+        let a = Substring {
+            start: elem.end_a,
+            end: elem2.start_a,
+        };
+        let b = Substring {
+            start: start_b,
+            end: end_b,
+        };
+        let similarity =
+            cosine_similarity(&file_a[(a.start)..(a.end)], &file_b[(b.start)..(b.end)]);
+        result.push(Result {
+            a,
+            b,
+            similarity,
+            levenshteinMatch: false,
+        });
+    }
+
+    for elem in levenshtein_distances.iter() {
         let a = Substring {
             start: elem.start_a,
             end: elem.end_a,
@@ -399,27 +453,6 @@ pub fn process(
             similarity,
             levenshteinMatch: true,
         });
-        for elem2 in levenshtein_distances.iter().skip(i + 1) {
-            if elem.end_a >= elem2.start_a || elem.end_b >= elem2.start_b {
-                continue;
-            }
-            let a = Substring {
-                start: elem.end_a,
-                end: elem2.start_a,
-            };
-            let b = Substring {
-                start: elem.end_b,
-                end: elem2.start_b,
-            };
-            let similarity =
-                cosine_similarity(&file_a[(a.start)..(a.end)], &file_b[(b.start)..(b.end)]);
-            result.push(Result {
-                a,
-                b,
-                similarity,
-                levenshteinMatch: false,
-            });
-        }
     }
     result
 }
