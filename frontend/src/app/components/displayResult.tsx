@@ -5,6 +5,8 @@ const COLOR_LIST = ['yellow', 'orange', 'pink', 'gray'];
 
 export function ShowDiff({ result }: { result: DisplayResultState }) {
 
+    const [isLoading, setIsLoading] = React.useState(true);
+
     function highlightRange(left: number, right: number, color: string, refSet: React.RefObject<HTMLSpanElement>[], text: string, matches: Substring[]) {
         for (let i = left; i < right; i++) {
             const ref = refSet[i];
@@ -49,8 +51,8 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
         if (!color) color = COLOR_LIST[index % COLOR_LIST.length];
         const similarityType = pair.levenshteinMatch ? 'Edit Ratio' : 'Cosine';
         const title = `${similarityType} similarity: ${pair.similarity.toFixed(2)}`;
-        highlightRange(pair.b.start, pair.b.end, color, bRefs, title, matchesB);
-        highlightRange(pair.a.start, pair.a.end, color, aRefs, title, matchesA);
+        highlightRange(pair.b.start, pair.b.end, color, bRefs.current, title, matchesB);
+        highlightRange(pair.a.start, pair.a.end, color, aRefs.current, title, matchesA);
     }
     function highlightFromCharIndex(index: number, color: string, matchColor: string) {
         getContainingPair(index, 'a').forEach(pair => {
@@ -61,8 +63,8 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
     function reset(index: number) {
         getContainingPair(index, 'a').forEach(pair => {
             if (pair.hold === true) return;
-            resetRange(pair.b.start, pair.b.end, bRefs);
-            resetRange(pair.a.start, pair.a.end, aRefs);
+            resetRange(pair.b.start, pair.b.end, bRefs.current);
+            resetRange(pair.a.start, pair.a.end, aRefs.current);
         });
     }
     function toggleHold(index: number) {
@@ -70,33 +72,42 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
             pair.hold = !pair.hold;
         });
     }
-    const A: React.JSX.Element[] = [];
-    const aRefs: React.RefObject<HTMLSpanElement>[] = [];
-    const B: React.JSX.Element[] = [];
-    const bRefs: React.RefObject<HTMLSpanElement>[] = [];
-    const matchesA = result.pairs.filter(pair => pair.levenshteinMatch).map(pair => pair.a);
-    const matchesB = result.pairs.filter(pair => pair.levenshteinMatch).map(pair => pair.b);
+    const A = React.useRef<React.JSX.Element[]>([]);
+    const aRefs = React.useRef<React.RefObject<HTMLSpanElement>[]>([])
+    const B = React.useRef<React.JSX.Element[]>([]);
+    const bRefs = React.useRef<React.RefObject<HTMLSpanElement>[]>([]);
+    const matchesA = React.useMemo(() => result.pairs.filter(pair => pair.levenshteinMatch).map(pair => pair.a), [result.pairs]);
+    const matchesB = React.useMemo(() => result.pairs.filter(pair => pair.levenshteinMatch).map(pair => pair.b), [result.pairs]);
 
-    for (const [index, letter] of Array.from(result.textB).entries()) {
-        const ref = React.createRef<HTMLSpanElement>();
-        bRefs.push(ref);
-        B.push(<span ref={ref} className='show-info spacing' key={index}>{letter}</span>);
-    }
-    for (const [index, letter] of Array.from(result.textA).entries()) {
-        const ref = React.createRef<HTMLSpanElement>();
-        aRefs.push(ref);
-        A.push(
-            <span ref={ref} className='show-info spacing'
-                key={index + result.textB.length}
-                onMouseOver={() => {
-                    highlightFromCharIndex(index, '', 'green');
-                }}
-                onMouseLeave={() => {
-                    reset(index);
-                }}
-                onMouseDown={() => toggleHold(index)}
-            >{letter}</span>);
-    }
+    useEffect(() => {
+        A.current = [];
+        B.current = [];
+        aRefs.current = [];
+        bRefs.current = [];
+
+        for (const [index, letter] of Array.from(result.textB).entries()) {
+            const ref = React.createRef<HTMLSpanElement>();
+            bRefs.current.push(ref);
+            B.current.push(<span ref={ref} className='show-info spacing' key={index}>{letter}</span>);
+        }
+        for (const [index, letter] of Array.from(result.textA).entries()) {
+            const ref = React.createRef<HTMLSpanElement>();
+            aRefs.current.push(ref);
+            A.current.push(
+                <span ref={ref} className='show-info spacing'
+                    key={index + result.textB.length}
+                    onMouseOver={() => {
+                        highlightFromCharIndex(index, '', 'green');
+                    }}
+                    onMouseLeave={() => {
+                        reset(index);
+                    }}
+                    onMouseDown={() => toggleHold(index)}
+                >{letter}</span>);
+        }
+        loadInputResult();
+        setIsLoading(false);
+    }, [result.textA, result.textB]);
 
     function loadInputResult() {
         for (const [index, pair] of Array.from(result.pairs).entries()) {
@@ -105,10 +116,6 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
             }
         }
     }
-
-    useEffect(() => {
-        loadInputResult();
-    }, []);
 
     function exportResult() {
         const jsResultCopy: DisplayResultState = { textA: result.textA, textB: result.textB, pairs: [] };
@@ -135,14 +142,15 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
             <button onClick={exportResult} className="rounded-md py-1 text-center border-black border-4 px-5" type="button">
                 Save Project
             </button>
+            <p>Is Loading: {String(isLoading)}</p>
             <div className='grid grid-cols-2 mt-4'>
                 <div>
                     <h1>Text A</h1>
-                    <p>{A}</p>
+                    <p>{A.current}</p>
                 </div>
                 <div>
                     <h1>Text B</h1>
-                    <p>{B}</p>
+                    <p>{B.current}</p>
                 </div>
             </div>
         </>
