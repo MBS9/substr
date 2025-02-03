@@ -1,13 +1,17 @@
 import { DisplayResultState, Pair, Substring } from "../types";
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 
 const COLOR_LIST = ['yellow', 'orange', 'pink', 'gray'];
 
 export function ShowDiff({ result }: { result: DisplayResultState }) {
+    const [isLoading, setIsLoading] = useState(true);
+    const [aRefs, setARefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);
+    const [bRefs, setBRefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);
 
-    const [isLoading, setIsLoading] = React.useState(true);
+    const matchesA = useMemo(() => result.pairs.filter(pair => pair.levenshteinMatch).map(pair => pair.a), [result.pairs]);
+    const matchesB = useMemo(() => result.pairs.filter(pair => pair.levenshteinMatch).map(pair => pair.b), [result.pairs]);
 
-    function highlightRange(left: number, right: number, color: string, refSet: React.RefObject<HTMLSpanElement>[], text: string, matches: Substring[]) {
+    const highlightRange = useCallback((left: number, right: number, color: string, refSet: React.RefObject<HTMLSpanElement>[], text: string, matches: Substring[]) => {
         for (let i = left; i < right; i++) {
             const ref = refSet[i];
             if (ref.current !== null) {
@@ -18,9 +22,9 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
                 ref.current.title = text;
             }
         }
-    }
+    }, []);
 
-    function resetRange(left: number, right: number, refSet: React.RefObject<HTMLSpanElement>[]) {
+    const resetRange = useCallback((left: number, right: number, refSet: React.RefObject<HTMLSpanElement>[]) => {
         for (let i = left; i < right; i++) {
             const ref = refSet[i];
             if (ref.current !== null) {
@@ -29,9 +33,10 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
                 ref.current.title = '';
             }
         }
-    }
-    function getContainingPair(index: number, text: 'a' | 'b') {
-        const pairs: Pair[] = []
+    }, []);
+
+    const getContainingPair = useCallback((index: number, text: 'a' | 'b') => {
+        const pairs: Pair[] = [];
         let pairResult: Pair | null = null;
         let len = Infinity;
         for (const pair of result.pairs) {
@@ -45,79 +50,57 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
         }
         if (pairResult) pairs.push(pairResult);
         return pairs;
-    }
-    function highlightFromPair(pair: Pair, color: string, matchColor: string, index: number) {
+    }, [result.pairs]);
+
+    const highlightFromPair = useCallback((pair: Pair, color: string, matchColor: string, index: number) => {
         if (pair.levenshteinMatch) color = matchColor;
         if (!color) color = COLOR_LIST[index % COLOR_LIST.length];
         const similarityType = pair.levenshteinMatch ? 'Edit Ratio' : 'Cosine';
         const title = `${similarityType} similarity: ${pair.similarity.toFixed(2)}`;
-        highlightRange(pair.b.start, pair.b.end, color, bRefs.current, title, matchesB);
-        highlightRange(pair.a.start, pair.a.end, color, aRefs.current, title, matchesA);
-    }
-    function highlightFromCharIndex(index: number, color: string, matchColor: string) {
+        highlightRange(pair.b.start, pair.b.end, color, bRefs, title, matchesB);
+        highlightRange(pair.a.start, pair.a.end, color, aRefs, title, matchesA);
+    }, [highlightRange, matchesA, matchesB, bRefs, aRefs]);
+
+    const highlightFromCharIndex = useCallback((index: number, color: string, matchColor: string) => {
         getContainingPair(index, 'a').forEach(pair => {
             if (pair.hold === true) return;
             highlightFromPair(pair, color, matchColor, index);
         });
-    }
-    function reset(index: number) {
+    }, [getContainingPair, highlightFromPair]);
+
+    const reset = useCallback((index: number) => {
         getContainingPair(index, 'a').forEach(pair => {
             if (pair.hold === true) return;
-            resetRange(pair.b.start, pair.b.end, bRefs.current);
-            resetRange(pair.a.start, pair.a.end, aRefs.current);
+            resetRange(pair.b.start, pair.b.end, bRefs);
+            resetRange(pair.a.start, pair.a.end, aRefs);
         });
-    }
-    function toggleHold(index: number) {
+    }, [getContainingPair, resetRange, bRefs, aRefs]);
+
+    const toggleHold = useCallback((index: number) => {
         getContainingPair(index, 'a').forEach(pair => {
             pair.hold = !pair.hold;
         });
-    }
-    const A = React.useRef<React.JSX.Element[]>([]);
-    const aRefs = React.useRef<React.RefObject<HTMLSpanElement>[]>([])
-    const B = React.useRef<React.JSX.Element[]>([]);
-    const bRefs = React.useRef<React.RefObject<HTMLSpanElement>[]>([]);
-    const matchesA = React.useMemo(() => result.pairs.filter(pair => pair.levenshteinMatch).map(pair => pair.a), [result.pairs]);
-    const matchesB = React.useMemo(() => result.pairs.filter(pair => pair.levenshteinMatch).map(pair => pair.b), [result.pairs]);
+    }, [getContainingPair]);
 
     useEffect(() => {
-        A.current = [];
-        B.current = [];
-        aRefs.current = [];
-        bRefs.current = [];
-
-        for (const [index, letter] of Array.from(result.textB).entries()) {
-            const ref = React.createRef<HTMLSpanElement>();
-            bRefs.current.push(ref);
-            B.current.push(<span ref={ref} className='show-info spacing' key={index}>{letter}</span>);
-        }
-        for (const [index, letter] of Array.from(result.textA).entries()) {
-            const ref = React.createRef<HTMLSpanElement>();
-            aRefs.current.push(ref);
-            A.current.push(
-                <span ref={ref} className='show-info spacing'
-                    key={index + result.textB.length}
-                    onMouseOver={() => {
-                        highlightFromCharIndex(index, '', 'green');
-                    }}
-                    onMouseLeave={() => {
-                        reset(index);
-                    }}
-                    onMouseDown={() => toggleHold(index)}
-                >{letter}</span>);
-        }
-        loadInputResult();
+        const newARefs = Array(result.textA.length).fill(null).map(() => React.createRef<HTMLSpanElement>());
+        const newBRefs = Array(result.textB.length).fill(null).map(() => React.createRef<HTMLSpanElement>());
+        setARefs(newARefs);
+        setBRefs(newBRefs);
         setIsLoading(false);
-    }, [result.textA, result.textB]);
+    }, [result.textA.length, result.textB.length]);
 
-    function loadInputResult() {
-        for (const [index, pair] of Array.from(result.pairs).entries()) {
-            if (pair.hold) {
-                highlightFromPair(pair, '', 'green', index);
-            }
+    useEffect(() => {
+        if (!isLoading) {
+            result.pairs.forEach((pair, index) => {
+                if (pair.hold) {
+                    highlightFromPair(pair, '', 'green', index);
+                }
+            });
         }
-    }
+    }, [isLoading, result.pairs, highlightFromPair]);
 
-    function exportResult() {
+    const exportResult = useCallback(() => {
         const jsResultCopy: DisplayResultState = { textA: result.textA, textB: result.textB, pairs: [] };
         result.pairs.forEach(pair => {
             jsResultCopy.pairs.push({
@@ -135,7 +118,7 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
         a.href = url;
         a.download = 'myproject.tile';
         a.click();
-    }
+    }, [result]);
 
     return (
         <>
@@ -146,11 +129,34 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
             <div className='grid grid-cols-2 mt-4'>
                 <div>
                     <h1>Text A</h1>
-                    <p>{A.current}</p>
+                    <p>
+                        {Array.from(result.textA).map((letter, index) => (
+                            <span
+                                ref={aRefs[index]}
+                                className='show-info spacing'
+                                key={index + result.textB.length}
+                                onMouseOver={() => highlightFromCharIndex(index, '', 'green')}
+                                onMouseLeave={() => reset(index)}
+                                onMouseDown={() => toggleHold(index)}
+                            >
+                                {letter}
+                            </span>
+                        ))}
+                    </p>
                 </div>
                 <div>
                     <h1>Text B</h1>
-                    <p>{B.current}</p>
+                    <p>
+                        {Array.from(result.textB).map((letter, index) => (
+                            <span
+                                ref={bRefs[index]}
+                                className='show-info spacing'
+                                key={index}
+                            >
+                                {letter}
+                            </span>
+                        ))}
+                    </p>
                 </div>
             </div>
         </>
