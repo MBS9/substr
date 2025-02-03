@@ -10,22 +10,18 @@ use wasm_bindgen::prelude::*;
 
 struct MatrixElement {
     len: usize,
-    diff: usize,
 }
 
 impl std::clone::Clone for MatrixElement {
     fn clone(&self) -> Self {
         MatrixElement {
-            len: self.len,
-            diff: self.diff,
-        }
+            len: self.len,        }
     }
 }
 
 impl MatrixElement {
     fn zero(&mut self) {
         self.len = 0;
-        self.diff = 0;
     }
 }
 
@@ -94,13 +90,11 @@ fn cosine_similarity(str_a: &[char], str_b: &[char]) -> f32 {
     let mut dot_product = 0;
     let mut norm_a = 0;
     let mut norm_b = 0;
-    let all_keys: Vec<&char> = a
+    let all_keys = a
         .keys()
         .chain(b.keys())
-        .into_iter()
         .collect::<HashSet<&char>>()
-        .into_iter()
-        .collect::<Vec<&char>>();
+        .into_iter();
     for i in all_keys {
         let a_freq = *a.get(i).unwrap_or(&0);
         let b_freq = *b.get(i).unwrap_or(&0);
@@ -224,7 +218,7 @@ pub fn common_substring_levenshtein(
 ) -> Vec<SubstringResult> {
     let mut ret: Vec<SubstringResult> = Vec::new();
     let mut l: EfficientMatrix<MatrixElement> =
-        EfficientMatrix::new(MatrixElement { diff: 0, len: 0 }, b.len());
+        EfficientMatrix::new(MatrixElement { len: 0 }, b.len());
     // let mut l: Vec<Vec<(usize, usize)>> = vec![vec![(0usize, 0usize); b.len()]; a.len()];
     'outer: for (i, c) in a.into_iter().enumerate() {
         for (j, d) in b.into_iter().enumerate() {
