@@ -58,9 +58,7 @@ impl<T> IndexMut<usize> for EfficientMatrix<T> {
 
 fn levenshtein_edit_distance(a_chars: &[char], b_chars: &[char]) -> usize {
     let mut l = EfficientMatrix::new(0, b_chars.len() + 1);
-    // for i in 0..(a_chars.len()+1) {
-    //     l[0][i] = i;
-    // }
+
     for j in 0..(b_chars.len() + 1) {
         l[0][j] = j;
     }
@@ -219,8 +217,7 @@ pub fn common_substring_levenshtein(
     let mut ret: Vec<SubstringResult> = Vec::new();
     let mut l: EfficientMatrix<MatrixElement> =
         EfficientMatrix::new(MatrixElement { len: 0 }, b.len());
-    // let mut l: Vec<Vec<(usize, usize)>> = vec![vec![(0usize, 0usize); b.len()]; a.len()];
-    'outer: for (i, c) in a.into_iter().enumerate() {
+    for (i, c) in a.into_iter().enumerate() {
         for (j, d) in b.into_iter().enumerate() {
             l[i][j].zero();
             if c == d {
@@ -240,7 +237,6 @@ pub fn common_substring_levenshtein(
                 };
 
                 // Calculate the edit ratio
-                //let mut diffirent = l[i-1][j-1].diff + 1;
                 let mut diffirent = levenshtein_edit_distance(
                     &a[(i - l[i - 1][j - 1].len)..(i + 1)],
                     &b[(j - l[i - 1][j - 1].len)..(j + 1)],
@@ -250,7 +246,6 @@ pub fn common_substring_levenshtein(
 
                 // If it is more then the set value, and we are not yet at the end of the string, continue
                 if edit_ratio > ratio && j < b.len() - 1 {
-                    //l[i][j].diff = diffirent;
                     l[i][j].len = len;
                     continue;
                 }
@@ -276,7 +271,7 @@ pub fn common_substring_levenshtein(
                     });
                     if ret.len() >= max_substrings {
                         alert("Too many matches found, limiting the amount returned!");
-                        break 'outer;
+                        return ret;
                     }
                 }
             }

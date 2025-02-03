@@ -125,40 +125,41 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
             <button onClick={exportResult} className="rounded-md py-1 text-center border-black border-4 px-5" type="button">
                 Save Project
             </button>
-            <p>Is Loading: {String(isLoading)}</p>
-            <div className='grid grid-cols-2 mt-4'>
-                <div>
-                    <h1>Text A</h1>
-                    <p>
-                        {Array.from(result.textA).map((letter, index) => (
-                            <span
-                                ref={aRefs[index]}
-                                className='show-info spacing'
-                                key={index + result.textB.length}
-                                onMouseOver={() => highlightFromCharIndex(index, '', 'green')}
-                                onMouseLeave={() => reset(index)}
-                                onMouseDown={() => toggleHold(index)}
-                            >
-                                {letter}
-                            </span>
-                        ))}
-                    </p>
+            {isLoading ? <p>Loading...</p> :
+                <div className='grid grid-cols-2 mt-4'>
+                    <div>
+                        <h1>Text A</h1>
+                        <p>
+                            {Array.from(result.textA).map((letter, index) => (
+                                <span
+                                    ref={aRefs[index]}
+                                    className='show-info spacing'
+                                    key={index + result.textB.length}
+                                    onMouseOver={() => highlightFromCharIndex(index, '', 'green')}
+                                    onMouseLeave={() => reset(index)}
+                                    onMouseDown={() => toggleHold(index)}
+                                >
+                                    {letter}
+                                </span>
+                            ))}
+                        </p>
+                    </div>
+                    <div>
+                        <h1>Text B</h1>
+                        <p>
+                            {Array.from(result.textB).map((letter, index) => (
+                                <span
+                                    ref={bRefs[index]}
+                                    className='show-info spacing'
+                                    key={index}
+                                >
+                                    {letter}
+                                </span>
+                            ))}
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <h1>Text B</h1>
-                    <p>
-                        {Array.from(result.textB).map((letter, index) => (
-                            <span
-                                ref={bRefs[index]}
-                                className='show-info spacing'
-                                key={index}
-                            >
-                                {letter}
-                            </span>
-                        ))}
-                    </p>
-                </div>
-            </div>
+            }
         </>
     );
 }
