@@ -19,3 +19,18 @@ export type InputData = {
     ratio: number,
     maxStrikes: number,
 };
+
+interface LaunchParams {
+    files: any[];
+    targetURL: string;
+}
+
+declare global {
+    interface Window {
+        launchQueue: {
+            setConsumer: (
+                consumer: (launchParams: LaunchParams) => void
+            ) => void
+        };
+    }
+}
