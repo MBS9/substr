@@ -291,18 +291,12 @@ fn expand_matches_left_and_right(
     let mut new_end_b: usize = 0;
     let mut new_len: usize = 0;
 
-    for i in 0..ret.len() {
-        let SubstringResult {
-            start_a,
-            end_a: _,
-            start_b,
-            end_b: _,
-            len: _,
-            edit_ratio: _,
-        } = ret[i];
+    for substr in ret.iter_mut() {
+        let start_a = substr.start_a;
+        let start_b = substr.start_b;
 
         // Expand both sides
-        reset_end_and_len(&mut new_end_a, &mut new_end_b, &mut new_len, &ret[i]);
+        reset_end_and_len(&mut new_end_a, &mut new_end_b, &mut new_len, substr);
         expand_matches(
             &a,
             &b,
@@ -313,13 +307,13 @@ fn expand_matches_left_and_right(
             &mut new_len,
             ratio,
             max_strike,
-            &mut ret[i],
+            substr,
             true,
             true,
         );
 
         // Expand only on one side (A)
-        reset_end_and_len(&mut new_end_a, &mut new_end_b, &mut new_len, &ret[i]);
+        reset_end_and_len(&mut new_end_a, &mut new_end_b, &mut new_len, substr);
         expand_matches(
             &a,
             &b,
@@ -330,12 +324,12 @@ fn expand_matches_left_and_right(
             &mut new_len,
             ratio,
             max_strike,
-            &mut ret[i],
+            substr,
             true,
             false,
         );
 
-        reset_end_and_len(&mut new_end_a, &mut new_end_b, &mut new_len, &ret[i]);
+        reset_end_and_len(&mut new_end_a, &mut new_end_b, &mut new_len, substr);
         expand_matches(
             &a,
             &b,
@@ -346,7 +340,7 @@ fn expand_matches_left_and_right(
             &mut new_len,
             ratio,
             max_strike,
-            &mut ret[i],
+            substr,
             false,
             true,
         );
@@ -368,7 +362,7 @@ pub fn process(
     let file_b = file_b.as_slice();
 
     let mut levenshtein_distances =
-        common_substring_levenshtein(file_a, file_b, min_length, ratio, 100);
+        common_substring_levenshtein(file_a, file_b, min_length, ratio, 150);
     expand_matches_left_and_right(
         levenshtein_distances.as_mut_slice(),
         &file_a,
