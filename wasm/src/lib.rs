@@ -148,6 +148,7 @@ fn recompute_ratio(
 }
 
 // Helper function to expand matches
+// This function is problamatic: sometimes it takes forever to finish
 fn expand_matches(
     a: &[char],
     b: &[char],
