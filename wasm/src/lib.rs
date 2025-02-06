@@ -144,7 +144,7 @@ fn recompute_ratio(
     new_len: usize,
 ) -> f32 {
     let edit_distance = levenshtein_edit_distance(&a[start_a..new_end_a], &b[start_b..new_end_b]);
-    (edit_distance as f32) / (new_len as f32)
+    ((new_len - edit_distance) as f32) / (new_len as f32)
 }
 
 // Helper function to expand matches
@@ -299,8 +299,8 @@ fn expand_matches_left_and_right(
         // Expand both sides
         reset_end_and_len(&mut new_end_a, &mut new_end_b, &mut new_len, substr);
         expand_matches(
-            &a,
-            &b,
+            a,
+            b,
             start_a,
             start_b,
             &mut new_end_a,
