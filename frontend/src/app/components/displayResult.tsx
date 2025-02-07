@@ -1,5 +1,6 @@
 import { DisplayResultState, Pair, Substring } from "../types";
 import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { exportToFile } from "../utils/file-format";
 
 const COLOR_LIST = ['yellow', 'orange', 'pink', 'gray'];
 
@@ -100,7 +101,7 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
         }
     }, [isLoading, result.pairs, highlightFromPair]);
 
-    const exportResult = useCallback(() => {
+    const exportResult = useCallback(async () => {
         const jsResultCopy: DisplayResultState = { textA: result.textA, textB: result.textB, pairs: [] };
         result.pairs.forEach(pair => {
             jsResultCopy.pairs.push({
@@ -111,9 +112,8 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
                 hold: pair.hold,
             });
         });
-        const resultText = JSON.stringify(jsResultCopy);
-        const blob = new Blob([resultText], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
+        const file = await exportToFile(jsResultCopy);
+        const url = URL.createObjectURL(file);
         const a = document.createElement('a');
         a.href = url;
         a.download = 'myproject.tile';

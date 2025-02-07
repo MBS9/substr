@@ -2,6 +2,7 @@
 import React from "react";
 import { DisplayResultState } from "../types";
 import { ShowDiff } from "../components/displayResult";
+import { importFromFile } from "../utils/file-format";
 
 export default function Run() {
     const [project, setProject] = React.useState<DisplayResultState | null>(null);
@@ -9,8 +10,8 @@ export default function Run() {
         if ('launchQueue' in window) {
             window.launchQueue.setConsumer(async (launchParams) => {
                 if (launchParams.files.length > 0) {
-                    const fileA = await launchParams.files[0].getFile();
-                    setProject(JSON.parse(await fileA.text()) as DisplayResultState);
+                    const fileA = await launchParams.files[0].getFile() as File;
+                    setProject(await importFromFile(fileA));
                 }
             })
         }

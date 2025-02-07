@@ -1,5 +1,6 @@
 import React from "react";
 import { InputData, DisplayResultState } from "../types";
+import { importFromFile } from "../utils/file-format";
 
 type Props = { onSubmit: (data: InputData) => void, disabled: boolean, onImport: (data: DisplayResultState) => void }
 
@@ -21,8 +22,8 @@ export function InputForm({ onSubmit, disabled, onImport }:
             alert('No file selected');
             return;
         };
-        const input = await file.text();
-        onImport(JSON.parse(input) as DisplayResultState);
+        const input = await importFromFile(file);
+        onImport(input);
     }, [onImport]);
     return (
         <div className='ml-3'>
