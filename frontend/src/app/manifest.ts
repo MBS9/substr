@@ -15,7 +15,7 @@ export default function manifest(): MetadataRoute.Manifest {
             {
                 action: '/openFile',
                 accept: {
-                    'application/gzip': ['.tile']
+                    'application/octet-stream': ['.tile']
                 }
             }
         ],

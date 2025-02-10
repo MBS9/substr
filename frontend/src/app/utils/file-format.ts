@@ -11,7 +11,7 @@ export async function exportToFile(data: DisplayResultState) {
     const compressionStream = new CompressionStream('gzip');
     const compressedStream = jsonStream.pipeThrough(compressionStream);
     const compressed = await new Response(compressedStream).blob();
-    const file = new File([compressed], 'project.tile', { type: 'application/gzip' });
+    const file = new File([compressed], 'project.tile', { type: 'application/octet-stream' });
     return file;
 }
 
