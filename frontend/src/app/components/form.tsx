@@ -2,6 +2,7 @@ import React from "react";
 import { InputData, DisplayResultState } from "../types";
 import { importFromFile } from "../utils/file-format";
 import { Button, TextField, Typography, Slider, Box } from "@mui/material";
+import { Check as CheckIcon } from "@mui/icons-material";
 
 type Props = {
   onSubmit: (data: InputData) => void;
@@ -10,6 +11,8 @@ type Props = {
 };
 
 export function InputForm({ onSubmit, disabled, onImport }: Props) {
+  const [fileASelected, setFileASelected] = React.useState(false);
+  const [fileBSelected, setFileBSelected] = React.useState(false);
   const submitCallback = React.useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -40,14 +43,40 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
       <Typography variant='h5'>Upload files for a new project</Typography>
       <form onSubmit={submitCallback}>
         <Typography variant='body1'>Select files: </Typography>
-        <Button variant='outlined' component='label'>
+        <Button
+          variant='outlined'
+          component='label'
+          endIcon={fileASelected ? <CheckIcon /> : null}
+        >
           File A
-          <input type='file' name='a' hidden />
+          <input
+            type='file'
+            name='a'
+            hidden
+            onChange={(e) =>
+              e.target.files?.[0]
+                ? setFileASelected(true)
+                : setFileASelected(false)
+            }
+          />
         </Button>
         <br />
-        <Button variant='outlined' component='label'>
+        <Button
+          variant='outlined'
+          component='label'
+          endIcon={fileBSelected ? <CheckIcon /> : null}
+        >
           File B
-          <input type='file' name='b' hidden />
+          <input
+            type='file'
+            name='b'
+            hidden
+            onChange={(e) =>
+              e.target.files?.[0]
+                ? setFileBSelected(true)
+                : setFileBSelected(false)
+            }
+          />
         </Button>
         <br />
 
