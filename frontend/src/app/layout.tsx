@@ -1,3 +1,8 @@
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -6,7 +11,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Substring Tiler",
-  description: "A tool for comparing two texts and highlighting their similarities/differences.",
+  description:
+    "A tool for comparing two texts and highlighting their similarities/differences.",
   icons: [
     {
       url: "/icon-192.png",
@@ -18,7 +24,7 @@ export const metadata: Metadata = {
       sizes: "512x512",
       type: "image/png",
     },
-  ]
+  ],
 };
 
 export default function RootLayout({
@@ -27,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body className={inter.className}>{children}</body>
     </html>
   );

@@ -9,6 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.4.6",
+    "@mui/material": "^6.4.6",
     "algo-wasm": "file:../wasm/pkg",
     "eslint-config-next": "^15.1.4",
     "lodash": "^4.17.21",
@@ -23,8 +27,6 @@
     "@types/react-dom": "^18",
     "@wasm-tool/wasm-pack-plugin": "^1.1.0",
     "file-loader": "^6.2.0",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
 }

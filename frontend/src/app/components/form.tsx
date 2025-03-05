@@ -1,60 +1,100 @@
 import React from "react";
 import { InputData, DisplayResultState } from "../types";
 import { importFromFile } from "../utils/file-format";
+import { Button, TextField, Typography, Slider, Box } from "@mui/material";
 
-type Props = { onSubmit: (data: InputData) => void, disabled: boolean, onImport: (data: DisplayResultState) => void }
+type Props = {
+  onSubmit: (data: InputData) => void;
+  disabled: boolean;
+  onImport: (data: DisplayResultState) => void;
+};
 
-export function InputForm({ onSubmit, disabled, onImport }:
-    Props) {
-    const submitCallback = React.useCallback((e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const fileA = formData.get("a") as File;
-        const fileB = formData.get("b") as File;
-        const minLength = parseInt(formData.get("min_length") as string);
-        const ratio = parseFloat(formData.get("ratio") as string);
-        const maxStrikes = parseInt(formData.get("strikes") as string);
-        onSubmit({ fileA, fileB, minLength, ratio, maxStrikes });
-    }, [onSubmit]);
-    const importCallback = React.useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) {
-            alert('No file selected');
-            return;
-        };
-        const input = await importFromFile(file);
-        onImport(input);
-    }, [onImport]);
-    return (
-        <div className='ml-3'>
-            <h2 className='text-xl mt-5'>Upload files for a new project</h2>
-            <form onSubmit={submitCallback}>
-                <label>
-                    File A: <input type="file" name="a" />
-                </label>
-                <br />
-                <label>
-                    File B: <input type="file" name="b" />
-                </label>
-                <br />
-                <label>
-                    Minimum Length: <input type="number" name="min_length" min={4} />
-                </label>
-                <br />
-                <label>
-                    Ratio: <input type="number" name="ratio" min={0} max={1} step={0.001} />
-                </label>
-                <br />
-                <label>
-                    Max Strikes: <input type="number" name="strikes" min={0} max={10} />
-                </label>
-                <br />
-                <button type="submit" className='rounded-md py-1 text-center border-black border-4 px-5' disabled={disabled}>
-                    Create new project
-                </button>
-            </form>
-            <h2 className='text-xl mt-5'>Or, open an existing project</h2>
-            <input type="file" accept="*.tile" onChange={importCallback} />
-        </div>
-    )
+export function InputForm({ onSubmit, disabled, onImport }: Props) {
+  const submitCallback = React.useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const fileA = formData.get("a") as File;
+      const fileB = formData.get("b") as File;
+      const minLength = parseInt(formData.get("min_length") as string);
+      const ratio = parseFloat(formData.get("ratio") as string);
+      const maxStrikes = parseInt(formData.get("strikes") as string);
+      onSubmit({ fileA, fileB, minLength, ratio, maxStrikes });
+    },
+    [onSubmit]
+  );
+  const importCallback = React.useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) {
+        alert("No file selected");
+        return;
+      }
+      const input = await importFromFile(file);
+      onImport(input);
+    },
+    [onImport]
+  );
+  return (
+    <div>
+      <Typography variant='h5'>Upload files for a new project</Typography>
+      <form onSubmit={submitCallback}>
+        <Typography variant='body1'>Select files: </Typography>
+        <Button variant='outlined' component='label'>
+          File A
+          <input type='file' name='a' hidden />
+        </Button>
+        <br />
+        <Button variant='outlined' component='label'>
+          File B
+          <input type='file' name='b' hidden />
+        </Button>
+        <br />
+
+        <TextField
+          variant='standard'
+          type='number'
+          name='min_length'
+          label='Minimum Length'
+        />
+        <br />
+
+        <Box sx={{ width: 300 }}>
+          <Typography id='ratio_slider' gutterBottom>
+            Ratio
+          </Typography>
+          <Slider
+            name='ratio'
+            defaultValue={0.8}
+            step={0.01}
+            min={0}
+            max={1}
+            valueLabelDisplay='auto'
+            aria-labelledby='ratio_slider'
+          />
+        </Box>
+        <TextField
+          variant='standard'
+          type='number'
+          name='strikes'
+          label='Max Strikes'
+        />
+        <br />
+
+        <Button
+          variant='contained'
+          type='submit'
+          className='rounded-md py-1 text-center border-black border-4 px-5'
+          disabled={disabled}
+        >
+          Create new project
+        </Button>
+      </form>
+      <Typography variant='h5'>Or, open an existing project</Typography>
+      <Button variant='contained' component='label'>
+        Import Project
+        <input type='file' accept='*.tile' onChange={importCallback} hidden />
+      </Button>
+    </div>
+  );
 }

@@ -7,10 +7,13 @@ export type Pair = Omit<Result, 'free'> & {
 };
 
 export type DisplayResultState = {
-    textA: string,
-    textB: string,
-    pairs: Pair[],
-}
+  textA: string;
+  textB: string;
+  pairs: Pair[];
+  minLength: number;
+  ratio: number;
+  maxStrikes: number;
+};
 
 export type InputData = {
     fileA: File,
