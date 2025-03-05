@@ -47,12 +47,22 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
     [onImport]
   );
   return (
-    <div>
-      <Typography variant='h5'>Upload files for a new project</Typography>
+    <Box>
+      <Box sx={{ mt: 4, placeItems: "center" }}>
+        <Typography variant='h5'>Open or create a project</Typography>
+        <Button variant='contained' component='label'>
+          Import Existing Project
+          <input type='file' accept='*.tile' onChange={importCallback} hidden />
+        </Button>
+      </Box>
       <form onSubmit={submitCallback}>
         <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>
           <Chip label='Upload new files' />
         </Divider>
+        <Typography variant='body1'>
+          Please click to upload two files to compare. The files should be in
+          plain text format.
+        </Typography>
         <Button
           variant='outlined'
           component='label'
@@ -90,9 +100,10 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
         </Button>
         <br />
         <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>
-          <Chip label='Enter a few configuration options' />
+          <Chip label='Enter a few configuration options for the new files' />
         </Divider>
 
+        <Typography variant='body1'>Minimum Length:</Typography>
         <TextField
           variant='standard'
           type='number'
@@ -103,7 +114,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
 
         <Box sx={{ width: 300 }}>
           <Typography id='ratio_slider' gutterBottom>
-            Ratio
+            Ratio:
           </Typography>
           <Slider
             name='ratio'
@@ -115,6 +126,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
             aria-labelledby='ratio_slider'
           />
         </Box>
+        <Typography variant='body1'>Max Strikes:</Typography>
         <TextField
           variant='standard'
           type='number'
@@ -134,13 +146,6 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
           Create new project
         </Button>
       </form>
-      <Box sx={{ mt: 4 }}>
-        <Typography variant='h5'>Or, open an existing project</Typography>
-        <Button variant='contained' component='label'>
-          Import Project
-          <input type='file' accept='*.tile' onChange={importCallback} hidden />
-        </Button>
-      </Box>
-    </div>
+    </Box>
   );
 }

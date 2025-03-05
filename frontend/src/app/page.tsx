@@ -41,22 +41,15 @@ export default function Run() {
   }, []);
   if (result === null) {
     return (
-      <div>
+      <div style={{ placeItems: "center" }}>
         <Typography variant='h4'>Substring Tiler</Typography>
         <Typography variant='body1'>Status: {statusMessage}</Typography>
-        <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={15}>
-            <Grid>
-              <InputForm
-                onSubmit={handleSubmit}
-                disabled={wasmLoading}
-                onImport={setResult}
-              />
-            </Grid>
-            <Grid>
-              <Instructions />
-            </Grid>
-          </Grid>
+        <Box sx={{ flexGrow: 1, width: "70%", placeContent: "center", mb: 5 }}>
+          <InputForm
+            onSubmit={handleSubmit}
+            disabled={wasmLoading}
+            onImport={setResult}
+          />
         </Box>
       </div>
     );
