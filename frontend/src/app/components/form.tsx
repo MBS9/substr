@@ -1,8 +1,16 @@
 import React from "react";
 import { InputData, DisplayResultState } from "../types";
 import { importFromFile } from "../utils/file-format";
-import { Button, TextField, Typography, Slider, Box } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Typography,
+  Slider,
+  Box,
+  Chip,
+} from "@mui/material";
 import { Check as CheckIcon } from "@mui/icons-material";
+import Divider from "@mui/material/Divider";
 
 type Props = {
   onSubmit: (data: InputData) => void;
@@ -42,11 +50,14 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
     <div>
       <Typography variant='h5'>Upload files for a new project</Typography>
       <form onSubmit={submitCallback}>
-        <Typography variant='body1'>Select files: </Typography>
+        <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>
+          <Chip label='Upload new files' />
+        </Divider>
         <Button
           variant='outlined'
           component='label'
           endIcon={fileASelected ? <CheckIcon /> : null}
+          sx={{ mr: 3 }}
         >
           File A
           <input
@@ -60,7 +71,6 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
             }
           />
         </Button>
-        <br />
         <Button
           variant='outlined'
           component='label'
@@ -79,6 +89,9 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
           />
         </Button>
         <br />
+        <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>
+          <Chip label='Enter a few configuration options' />
+        </Divider>
 
         <TextField
           variant='standard'
@@ -109,21 +122,25 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
           label='Max Strikes'
         />
         <br />
+        <Divider> </Divider>
 
         <Button
           variant='contained'
           type='submit'
           className='rounded-md py-1 text-center border-black border-4 px-5'
           disabled={disabled}
+          sx={{ mt: 4 }}
         >
           Create new project
         </Button>
       </form>
-      <Typography variant='h5'>Or, open an existing project</Typography>
-      <Button variant='contained' component='label'>
-        Import Project
-        <input type='file' accept='*.tile' onChange={importCallback} hidden />
-      </Button>
+      <Box sx={{ mt: 4 }}>
+        <Typography variant='h5'>Or, open an existing project</Typography>
+        <Button variant='contained' component='label'>
+          Import Project
+          <input type='file' accept='*.tile' onChange={importCallback} hidden />
+        </Button>
+      </Box>
     </div>
   );
 }

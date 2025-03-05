@@ -45,7 +45,7 @@ export default function Run() {
         <Typography variant='h4'>Substring Tiler</Typography>
         <Typography variant='body1'>Status: {statusMessage}</Typography>
         <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={2}>
+          <Grid container spacing={15}>
             <Grid>
               <InputForm
                 onSubmit={handleSubmit}
