@@ -5,7 +5,8 @@ import { InputForm } from './components/form';
 import { DisplayResultState, InputData } from './types';
 import { ShowDiff } from './components/displayResult';
 import Instructions from './components/instructions';
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 
 export default function Run() {
   const [wasmLoading, setWasmLoading] = React.useState(true);
@@ -43,12 +44,20 @@ export default function Run() {
       <div>
         <Typography variant='h4'>Substring Tiler</Typography>
         <Typography variant='body1'>Status: {statusMessage}</Typography>
-        <InputForm
-          onSubmit={handleSubmit}
-          disabled={wasmLoading}
-          onImport={setResult}
-        />
-        <Instructions />
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={2}>
+            <Grid>
+              <InputForm
+                onSubmit={handleSubmit}
+                disabled={wasmLoading}
+                onImport={setResult}
+              />
+            </Grid>
+            <Grid>
+              <Instructions />
+            </Grid>
+          </Grid>
+        </Box>
       </div>
     );
   } else {

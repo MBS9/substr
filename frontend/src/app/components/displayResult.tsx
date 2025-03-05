@@ -1,5 +1,11 @@
 import { DisplayResultState, Pair, Substring } from "../types";
-import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { exportToFile } from "../utils/file-format";
 import {
   Button,
@@ -9,6 +15,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Box,
 } from "@mui/material";
 
 const COLOR_LIST = ["yellow", "orange", "pink", "gray"];
@@ -191,70 +198,72 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
 
   return (
     <>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Button onClick={exportResult} type='button' variant='contained'>
-          Save Project
-        </Button>
-        <Typography variant='body1' sx={{ ml: 2 }}>
-          Minimum Length: {result.minLength}
-        </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
-          Ratio: {result.ratio}
-        </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
-          Max Strikes: {result.maxStrikes}
-        </Typography>
-      </div>
       {isLoading ? (
         <Typography variant='body1'>Loading...</Typography>
       ) : (
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <Typography variant='h6'>Text A</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant='h6'>Text B</Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>
-                <Typography variant='body1'>
-                  {Array.from(result.textA).map((letter, index) => (
-                    <span
-                      ref={aRefs[index]}
-                      className='show-info spacing'
-                      key={index + result.textB.length}
-                      onMouseOver={() =>
-                        highlightFromCharIndex(index, "", "green")
-                      }
-                      onMouseLeave={() => reset(index)}
-                      onMouseDown={() => toggleHold(index)}
-                    >
-                      {letter}
-                    </span>
-                  ))}
-                </Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant='body1'>
-                  {Array.from(result.textB).map((letter, index) => (
-                    <span
-                      ref={bRefs[index]}
-                      className='show-info spacing'
-                      key={index}
-                    >
-                      {letter}
-                    </span>
-                  ))}
-                </Typography>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+        <Box>
+          <Box style={{ display: "flex", alignItems: "center" }}>
+            <Button onClick={exportResult} type='button' variant='contained'>
+              Save Project
+            </Button>
+            <Typography variant='body1' sx={{ ml: 2 }}>
+              Minimum Length: {result.minLength}
+            </Typography>
+            <Typography variant='body1' sx={{ ml: 2 }}>
+              Ratio: {result.ratio}
+            </Typography>
+            <Typography variant='body1' sx={{ ml: 2 }}>
+              Max Strikes: {result.maxStrikes}
+            </Typography>
+          </Box>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  <Typography variant='h6'>Text A</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant='h6'>Text B</Typography>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <Typography variant='body1'>
+                    {Array.from(result.textA).map((letter, index) => (
+                      <span
+                        ref={aRefs[index]}
+                        className='show-info spacing'
+                        key={index + result.textB.length}
+                        onMouseOver={() =>
+                          highlightFromCharIndex(index, "", "green")
+                        }
+                        onMouseLeave={() => reset(index)}
+                        onMouseDown={() => toggleHold(index)}
+                      >
+                        {letter}
+                      </span>
+                    ))}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant='body1'>
+                    {Array.from(result.textB).map((letter, index) => (
+                      <span
+                        ref={bRefs[index]}
+                        className='show-info spacing'
+                        key={index}
+                      >
+                        {letter}
+                      </span>
+                    ))}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Box>
       )}
     </>
   );
