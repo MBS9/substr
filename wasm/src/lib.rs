@@ -2,8 +2,8 @@ extern crate wasm_bindgen;
 use std::collections::{HashMap, HashSet};
 use std::panic::{self, PanicHookInfo};
 use std::{
-    cmp::min,
     cmp::max,
+    cmp::min,
     ops::{Index, IndexMut},
 };
 use wasm_bindgen::prelude::*;
@@ -14,8 +14,7 @@ struct MatrixElement {
 
 impl std::clone::Clone for MatrixElement {
     fn clone(&self) -> Self {
-        MatrixElement {
-            len: self.len,        }
+        MatrixElement { len: self.len }
     }
 }
 
@@ -372,7 +371,7 @@ pub fn process(
         max_strikes,
     );
 
-    let mut result: Vec<Result> = Vec::with_capacity(levenshtein_distances.len()*2 -1);
+    let mut result: Vec<Result> = Vec::with_capacity(levenshtein_distances.len() * 2 - 1);
 
     // It seems like this is not needed, as the levenshtein_distances are already sorted
     // levenshtein_distances.sort_unstable_by_key(|x| x.end_a);
