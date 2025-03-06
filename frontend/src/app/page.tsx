@@ -4,25 +4,34 @@ import * as SubstringAlgorithm from 'algo-wasm';
 import { InputForm } from './components/form';
 import { DisplayResultState, InputData } from './types';
 import { ShowDiff } from './components/displayResult';
-import Instructions from './components/instructions';
-import { Box, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import {
+  AppBar,
+  Button,
+  IconButton,
+  Toolbar,
+  Typography,
+  Box,
+} from "@mui/material";
+import ImportButton from "./components/importButton";
+import Link from "next/link";
+import { Header } from "./components/header";
 
 export default function Run() {
-  const [wasmLoading, setWasmLoading] = React.useState(true);
+  const [isReady, setIsReady] = React.useState(false);
   const [statusMessage, setStatusMessage] = React.useState(
     "Loading wasm module..."
   );
   useEffect(() => {
     SubstringAlgorithm.default().then(() => {
       console.log("Wasm initialized");
-      setWasmLoading(false);
+      setIsReady(true);
       setStatusMessage("Ready");
     });
   }, []);
   const [result, setResult] = React.useState<DisplayResultState | null>(null);
   const handleSubmit = React.useCallback(async (data: InputData) => {
     setStatusMessage("Processing... please wait");
+    setIsReady(false);
     const result = SubstringAlgorithm.process(
       await data.fileA.text(),
       await data.fileB.text(),
@@ -41,19 +50,29 @@ export default function Run() {
   }, []);
   if (result === null) {
     return (
-      <div style={{ placeItems: "center" }}>
-        <Typography variant='h4'>Substring Tiler</Typography>
-        <Typography variant='body1'>Status: {statusMessage}</Typography>
-        <Box sx={{ flexGrow: 1, width: "70%", placeContent: "center", mb: 5 }}>
-          <InputForm
-            onSubmit={handleSubmit}
-            disabled={wasmLoading}
-            onImport={setResult}
-          />
-        </Box>
-      </div>
+      <>
+        <main>
+          <div style={{ placeItems: "center" }}>
+            <Typography variant='h4'>Substring Tiler</Typography>
+            <Typography variant='body1'>Status: {statusMessage}</Typography>
+            <Box
+              sx={{ flexGrow: 1, width: "70%", placeContent: "center", mb: 5 }}
+            >
+              <InputForm
+                onSubmit={handleSubmit}
+                disabled={!isReady}
+                onImport={setResult}
+              />
+            </Box>
+          </div>
+        </main>
+      </>
     );
   } else {
-    return <ShowDiff result={result} />;
+    return (
+      <>
+        <ShowDiff result={result} />
+      </>
+    );
   }
 }

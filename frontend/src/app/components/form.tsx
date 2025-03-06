@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { Check as CheckIcon } from "@mui/icons-material";
 import Divider from "@mui/material/Divider";
+import ImportButton from "./importButton";
 
 type Props = {
   onSubmit: (data: InputData) => void;
@@ -34,26 +35,11 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
     },
     [onSubmit]
   );
-  const importCallback = React.useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) {
-        alert("No file selected");
-        return;
-      }
-      const input = await importFromFile(file);
-      onImport(input);
-    },
-    [onImport]
-  );
   return (
     <Box>
       <Box sx={{ mt: 4, placeItems: "center" }}>
         <Typography variant='h5'>Open or create a project</Typography>
-        <Button variant='contained' component='label'>
-          Import Existing Project
-          <input type='file' accept='*.tile' onChange={importCallback} hidden />
-        </Button>
+        <ImportButton onImport={onImport} variant='contained' />
       </Box>
       <form onSubmit={submitCallback}>
         <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>
@@ -109,6 +95,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
           type='number'
           name='min_length'
           label='Minimum Length'
+          placeholder='7'
         />
         <br />
 
@@ -132,6 +119,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
           type='number'
           name='strikes'
           label='Max Strikes'
+          placeholder='4'
         />
         <br />
         <Divider> </Divider>

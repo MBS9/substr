@@ -17,6 +17,8 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import { useResultAnalytics } from "./useResultAnalytics";
+import { Header } from "./header";
 
 const COLOR_LIST = ["yellow", "orange", "pink", "gray"];
 
@@ -24,6 +26,8 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
   const [isLoading, setIsLoading] = useState(true);
   const [aRefs, setARefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);
   const [bRefs, setBRefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);
+
+  const resultAnalytics = useResultAnalytics(result);
 
   const matchesA = useMemo(
     () =>
@@ -201,69 +205,99 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
       {isLoading ? (
         <Typography variant='body1'>Loading...</Typography>
       ) : (
-        <Box>
-          <Box style={{ display: "flex", alignItems: "center" }}>
-            <Button onClick={exportResult} type='button' variant='contained'>
-              Save Project
-            </Button>
-            <Typography variant='body1' sx={{ ml: 2 }}>
-              Minimum Length: {result.minLength}
+        <>
+          <header>
+            <Header>
+              <Button
+                onClick={exportResult}
+                type='button'
+                variant='outlined'
+                color='inherit'
+              >
+                Save Project
+              </Button>
+              <Typography variant='body1' sx={{ ml: 2 }}>
+                Minimum Length: {result.minLength}
+              </Typography>
+              <Typography variant='body1' sx={{ ml: 2 }}>
+                Ratio: {result.ratio}
+              </Typography>
+              <Typography variant='body1' sx={{ ml: 2 }}>
+                Max Strikes: {result.maxStrikes}
+              </Typography>
+            </Header>
+          </header>
+          <Box>
+            <Box sx={{ mt: 2, mb: 2 }}>
+              <Typography variant='h5'>Quick Summary</Typography>
+              <Typography variant='body1'>
+                Number of Levenshtein Matches:{" "}
+                {resultAnalytics.numberOfLevenshteinMatches}
+              </Typography>
+              <Typography variant='body1'>
+                Mean Levenshtein Match:{" "}
+                {resultAnalytics.avarageLevenshteinMatch.toPrecision(4)}
+              </Typography>
+              <Typography variant='body1'>
+                Mean Cosine Similarity:{" "}
+                {resultAnalytics.avarageCosineSimilarity.toPrecision(4)}
+              </Typography>
+            </Box>
+            <Typography variant='h5'>Text Comparison</Typography>
+            <Typography variant='body1'>
+              The two input texts are displayed below. With your cursor, hover
+              over the text to highlight the matches. To hold the highlighting,
+              click on the text.
             </Typography>
-            <Typography variant='body1' sx={{ ml: 2 }}>
-              Ratio: {result.ratio}
-            </Typography>
-            <Typography variant='body1' sx={{ ml: 2 }}>
-              Max Strikes: {result.maxStrikes}
-            </Typography>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Typography variant='h6'>Text A</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant='h6'>Text B</Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <Typography variant='body1'>
+                      {Array.from(result.textA).map((letter, index) => (
+                        <span
+                          ref={aRefs[index]}
+                          className='show-info spacing'
+                          key={index + result.textB.length}
+                          onMouseOver={() =>
+                            highlightFromCharIndex(index, "", "green")
+                          }
+                          onMouseLeave={() => reset(index)}
+                          onMouseDown={() => toggleHold(index)}
+                        >
+                          {letter}
+                        </span>
+                      ))}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant='body1'>
+                      {Array.from(result.textB).map((letter, index) => (
+                        <span
+                          ref={bRefs[index]}
+                          className='show-info spacing'
+                          key={index}
+                        >
+                          {letter}
+                        </span>
+                      ))}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </Box>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <Typography variant='h6'>Text A</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant='h6'>Text B</Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Typography variant='body1'>
-                    {Array.from(result.textA).map((letter, index) => (
-                      <span
-                        ref={aRefs[index]}
-                        className='show-info spacing'
-                        key={index + result.textB.length}
-                        onMouseOver={() =>
-                          highlightFromCharIndex(index, "", "green")
-                        }
-                        onMouseLeave={() => reset(index)}
-                        onMouseDown={() => toggleHold(index)}
-                      >
-                        {letter}
-                      </span>
-                    ))}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant='body1'>
-                    {Array.from(result.textB).map((letter, index) => (
-                      <span
-                        ref={bRefs[index]}
-                        className='show-info spacing'
-                        key={index}
-                      >
-                        {letter}
-                      </span>
-                    ))}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </Box>
+        </>
       )}
     </>
   );
