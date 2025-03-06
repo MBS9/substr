@@ -229,7 +229,7 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
           </header>
           <Box>
             <Box sx={{ mt: 2, mb: 2 }}>
-              <Typography variant='h5'>Quick Summary</Typography>
+              <Typography variant='h5'>Quick Summary of Results</Typography>
               <Typography variant='body1'>
                 Number of Levenshtein Matches:{" "}
                 {resultAnalytics.numberOfLevenshteinMatches}

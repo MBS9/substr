@@ -38,101 +38,109 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
   return (
     <Box>
       <Box sx={{ mt: 4, placeItems: "center" }}>
-        <Typography variant='h5'>Open or create a project</Typography>
+        <Typography variant='h5' sx={{ mb: 3 }}></Typography>
         <ImportButton onImport={onImport} variant='contained' />
       </Box>
       <form onSubmit={submitCallback}>
         <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>
           <Chip label='Upload new files' />
         </Divider>
-        <Typography variant='body1'>
-          Please click to upload two files to compare. The files should be in
-          plain text format.
-        </Typography>
-        <Button
-          variant='outlined'
-          component='label'
-          endIcon={fileASelected ? <CheckIcon /> : null}
-          sx={{ mr: 3 }}
-        >
-          File A
-          <input
-            type='file'
-            name='a'
-            hidden
-            onChange={(e) =>
-              e.target.files?.[0]
-                ? setFileASelected(true)
-                : setFileASelected(false)
-            }
-          />
-        </Button>
-        <Button
-          variant='outlined'
-          component='label'
-          endIcon={fileBSelected ? <CheckIcon /> : null}
-        >
-          File B
-          <input
-            type='file'
-            name='b'
-            hidden
-            onChange={(e) =>
-              e.target.files?.[0]
-                ? setFileBSelected(true)
-                : setFileBSelected(false)
-            }
-          />
-        </Button>
-        <br />
+        <Box sx={{ mt: 4, placeItems: "center" }}>
+          <Typography variant='body1'>
+            Please click to upload two files to compare. The files should be in
+            plain text format.
+          </Typography>
+          <Button
+            variant='outlined'
+            component='label'
+            endIcon={fileASelected ? <CheckIcon /> : null}
+            sx={{ mr: 3 }}
+          >
+            File A
+            <input
+              type='file'
+              name='a'
+              hidden
+              required
+              onChange={(e) =>
+                e.target.files?.[0]
+                  ? setFileASelected(true)
+                  : setFileASelected(false)
+              }
+            />
+          </Button>
+          <Button
+            variant='outlined'
+            component='label'
+            endIcon={fileBSelected ? <CheckIcon /> : null}
+          >
+            File B
+            <input
+              type='file'
+              name='b'
+              hidden
+              required
+              onChange={(e) =>
+                e.target.files?.[0]
+                  ? setFileBSelected(true)
+                  : setFileBSelected(false)
+              }
+            />
+          </Button>
+          <br />
+        </Box>
         <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>
           <Chip label='Enter a few configuration options for the new files' />
         </Divider>
-
-        <Typography variant='body1'>Minimum Length:</Typography>
-        <TextField
-          variant='standard'
-          type='number'
-          name='min_length'
-          label='Minimum Length'
-          placeholder='7'
-        />
-        <br />
-
-        <Box sx={{ width: 300 }}>
+        <Box sx={{ mt: 4, placeItems: "center" }}>
+          <Typography variant='body1'>Minimum Length:</Typography>
+          <TextField
+            variant='standard'
+            type='number'
+            name='min_length'
+            label='Minimum Length'
+            defaultValue='7'
+            required
+          />
+          <br />
           <Typography id='ratio_slider' gutterBottom>
             Ratio:
           </Typography>
-          <Slider
-            name='ratio'
-            defaultValue={0.8}
-            step={0.01}
-            min={0}
-            max={1}
-            valueLabelDisplay='auto'
-            aria-labelledby='ratio_slider'
+          <Box sx={{ width: 300 }}>
+            <Slider
+              name='ratio'
+              defaultValue={0.8}
+              step={0.01}
+              min={0}
+              max={1}
+              valueLabelDisplay='auto'
+              aria-labelledby='ratio_slider'
+            />
+          </Box>
+          <Typography variant='body1'>Max Strikes:</Typography>
+          <TextField
+            variant='standard'
+            type='number'
+            name='strikes'
+            label='Max Strikes'
+            defaultValue='4'
+            required
           />
+          <br />
         </Box>
-        <Typography variant='body1'>Max Strikes:</Typography>
-        <TextField
-          variant='standard'
-          type='number'
-          name='strikes'
-          label='Max Strikes'
-          placeholder='4'
-        />
-        <br />
-        <Divider> </Divider>
+        <Box sx={{ placeItems: "center" }}>
+          <Divider> </Divider>
 
-        <Button
-          variant='contained'
-          type='submit'
-          className='rounded-md py-1 text-center border-black border-4 px-5'
-          disabled={disabled}
-          sx={{ mt: 4 }}
-        >
-          Create new project
-        </Button>
+          <Button
+            variant='contained'
+            type='submit'
+            className='rounded-md py-1 text-center border-black border-4 px-5'
+            disabled={disabled}
+            sx={{ mt: 4 }}
+          >
+            Create new project
+          </Button>
+        </Box>
       </form>
     </Box>
   );
