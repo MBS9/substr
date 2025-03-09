@@ -5,8 +5,8 @@ import React from 'react';
 
 const COLOR_LIST = ["yellow", "orange", "pink", "gray"];
 
-export function DisplayHighlighting(props: { result: DisplayResultState }) {
-    const { result } = props
+export function DisplayHighlighting(props: { result: DisplayResultState, onCharClick?: (charIndex: number) => void }) {
+    const { result, onCharClick } = props
 
     const [isLoading, setIsLoading] = useState(true)
     const [aRefs, setARefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);
@@ -189,7 +189,7 @@ export function DisplayHighlighting(props: { result: DisplayResultState }) {
                                             highlightFromCharIndex(index, "", "green")
                                         }
                                         onMouseLeave={() => reset(index)}
-                                        onMouseDown={() => toggleHold(index)}
+                                        onMouseDown={() => (onCharClick ?? toggleHold)(index)}
                                     >
                                         {letter}
                                     </span>
