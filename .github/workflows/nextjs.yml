@@ -44,8 +44,6 @@ jobs:
         with:
           static_site_generator: next
           generator_config_file: ${{ github.workspace }}/frontend/next.config.js
-      - name: Update Rust
-        run: rustup update
       - name: Install dependencies
         run: npm ci
       - name: Build with Next.js
