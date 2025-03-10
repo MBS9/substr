@@ -11,7 +11,7 @@ export default function manifest(): MetadataRoute.Manifest {
       start_url: "index",
       display: "standalone",
       background_color: "#ffffff",
-      theme_color: "#000000",
+      theme_color: "rgb(25, 118, 210)",
       file_handlers: [
         {
           action: "openFile",
