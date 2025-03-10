@@ -5,16 +5,9 @@ import { InputForm } from './components/form';
 import { DisplayResultState, InputData } from './types';
 import { ShowDiff } from './components/displayResult';
 import {
-  AppBar,
-  Button,
-  IconButton,
-  Toolbar,
   Typography,
-  Box,
+  Box
 } from "@mui/material";
-import ImportButton from "./components/importButton";
-import Link from "next/link";
-import { Header } from "./components/header";
 
 export default function Run() {
   const [isReady, setIsReady] = React.useState(false);
