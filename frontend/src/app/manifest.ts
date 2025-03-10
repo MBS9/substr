@@ -8,7 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
       short_name: "SubstringTiler",
       description:
         "A tool for comparing two texts and highlighting their similarities/differences.",
-      start_url: "",
+      start_url: "index",
       display: "standalone",
       background_color: "#ffffff",
       theme_color: "#000000",
