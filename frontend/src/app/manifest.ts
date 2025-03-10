@@ -14,7 +14,7 @@ export default function manifest(): MetadataRoute.Manifest {
       theme_color: "#000000",
       file_handlers: [
         {
-          action: "/openFile",
+          action: "openFile",
           accept: {
             "application/octet-stream": [".tile"],
           },
