@@ -14,7 +14,6 @@ import { Header } from "./header";
 import { DisplayHighlighting } from './displayHighlighting';
 
 export function ShowDiff({ result }: { result: DisplayResultState }) {
-  const [isLoading, setIsLoading] = useState(true);
   const resultAnalytics = useResultAnalytics(result);
   const exportResult = useCallback(async () => {
     const jsResultCopy: DisplayResultState = {
@@ -44,27 +43,25 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
 
   return (
     <>
-      <header>
-        <Header>
-          <Button
-            onClick={exportResult}
-            type='button'
-            variant='outlined'
-            color='inherit'
-          >
-            Save Project
-          </Button>
-          <Typography variant='body1' sx={{ ml: 2 }}>
-            Minimum Length: {result.minLength}
-          </Typography>
-          <Typography variant='body1' sx={{ ml: 2 }}>
-            Ratio: {result.ratio}
-          </Typography>
-          <Typography variant='body1' sx={{ ml: 2 }}>
-            Max Strikes: {result.maxStrikes}
-          </Typography>
-        </Header>
-      </header>
+      <Header>
+        <Button
+          onClick={exportResult}
+          type='button'
+          variant='outlined'
+          color='inherit'
+        >
+          Save Project
+        </Button>
+        <Typography variant='body1' sx={{ ml: 2 }}>
+          Minimum Length: {result.minLength}
+        </Typography>
+        <Typography variant='body1' sx={{ ml: 2 }}>
+          Ratio: {result.ratio}
+        </Typography>
+        <Typography variant='body1' sx={{ ml: 2 }}>
+          Max Strikes: {result.maxStrikes}
+        </Typography>
+      </Header>
       <Box>
         <Box sx={{ mt: 2, mb: 2 }}>
           <Typography variant='h5'>Quick Summary of Results</Typography>

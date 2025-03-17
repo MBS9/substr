@@ -2,8 +2,7 @@ import { AppBar, Button, Link, Toolbar, Typography } from "@mui/material";
 
 export function Header(props: { children: React.ReactNode }) {
   return (
-    <header>
-      <AppBar position='static'>
+    <AppBar position='sticky'>
         <Toolbar variant='dense'>
           <Typography
             variant='h6'
@@ -15,7 +14,6 @@ export function Header(props: { children: React.ReactNode }) {
           </Typography>
           {props.children}
         </Toolbar>
-      </AppBar>
-    </header>
+    </AppBar>
   );
 }

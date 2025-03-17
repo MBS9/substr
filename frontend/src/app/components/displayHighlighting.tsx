@@ -1,4 +1,4 @@
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Grid2 as Grid, Typography } from '@mui/material';
 import { DisplayResultState, Pair, Substring } from '../types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import React from 'react';
@@ -165,53 +165,39 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
                 over the text to highlight the matches. To hold the highlighting,
                 click on the text.
             </Typography>
-            <Table stickyHeader>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>
-                            <Typography variant='h6'>Text A</Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography variant='h6'>Text B</Typography>
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    <TableRow>
-                        <TableCell>
-                            <Typography variant='body1'>
-                                {Array.from(result.textA).map((letter, index) => (
-                                    <span
-                                        ref={aRefs[index]}
-                                        className='show-info spacing'
-                                        key={index + result.textB.length}
-                                        onMouseOver={() =>
-                                            highlightFromCharIndex(index, "", "green")
-                                        }
-                                        onMouseLeave={() => reset(index)}
-                                        onMouseDown={() => (onCharClick ?? toggleHold)(index)}
-                                    >
-                                        {letter}
-                                    </span>
-                                ))}
-                            </Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography variant='body1'>
-                                {Array.from(result.textB).map((letter, index) => (
-                                    <span
-                                        ref={bRefs[index]}
-                                        className='show-info spacing'
-                                        key={index}
-                                    >
-                                        {letter}
-                                    </span>
-                                ))}
-                            </Typography>
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
+            <Grid container gap={3} sx={{ mt: 3 }}>
+                <Grid sx={{ width: '50%' }}>
+                    <Typography variant='body1'>
+                        {Array.from(result.textA).map((letter, index) => (
+                            <span
+                                ref={aRefs[index]}
+                                className='show-info spacing'
+                                key={index + result.textB.length}
+                                onMouseOver={() =>
+                                    highlightFromCharIndex(index, "", "green")
+                                }
+                                onMouseLeave={() => reset(index)}
+                                onMouseDown={() => (onCharClick ?? toggleHold)(index)}
+                            >
+                                {letter}
+                            </span>
+                        ))}
+                    </Typography>
+                </Grid>
+                <Grid size='grow'>
+                    <Typography variant='body1'>
+                        {Array.from(result.textB).map((letter, index) => (
+                            <span
+                                ref={bRefs[index]}
+                                className='show-info spacing'
+                                key={index}
+                            >
+                                {letter}
+                            </span>
+                        ))}
+                    </Typography>
+                </Grid>
+            </Grid>
         </Box>
     )
 }

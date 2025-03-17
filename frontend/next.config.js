@@ -4,7 +4,6 @@ const path = require("path");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
-  basePath: "/gello",
   webpack: (config, options) => {
     config.plugins.push(
       new WasmPackPlugin({

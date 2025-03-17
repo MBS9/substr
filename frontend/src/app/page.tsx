@@ -44,10 +44,12 @@ export default function Run() {
   if (result === null) {
     return (
       <>
+        <header style={{ textAlign: "center" }}>
+          <Typography variant='h4'>Substring Tiler</Typography>
+          <Typography variant='body1'>Status: {statusMessage}</Typography>
+        </header>
         <main>
           <div style={{ placeItems: "center" }}>
-            <Typography variant='h4'>Substring Tiler</Typography>
-            <Typography variant='body1'>Status: {statusMessage}</Typography>
             <Box
               sx={{ flexGrow: 1, width: "70%", placeContent: "center", mb: 5 }}
             >
