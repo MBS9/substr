@@ -3,7 +3,7 @@ import { DisplayResultState, Pair, Substring } from '../types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import React from 'react';
 
-const COLOR_LIST = ["yellow", "orange", "pink", "gray"];
+const COLOR_LIST = ["orange"];
 
 export function DisplayHighlighting(props: { result: DisplayResultState, onCharClick?: (charIndex: number) => void }) {
     const { result, onCharClick } = props
@@ -150,6 +150,7 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
     useEffect(() => {
         if (!isLoading) {
             result.pairs.forEach((pair, index) => {
+                pair.hold = pair.hold ?? true
                 if (pair.hold) {
                     highlightFromPair(pair, "", "green", index);
                 }
