@@ -172,6 +172,7 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
                         {Array.from(result.textA).map((letter, index) => (
                             <span
                                 ref={aRefs[index]}
+                                style={{ fontFamily: 'simsun' }}
                                 className='show-info spacing'
                                 key={index + result.textB.length}
                                 onMouseOver={() =>
@@ -191,6 +192,7 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
                             <span
                                 ref={bRefs[index]}
                                 className='show-info spacing'
+                                style={{ fontFamily: 'simsun' }}
                                 key={index}
                             >
                                 {letter}
