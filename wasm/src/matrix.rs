@@ -1,3 +1,5 @@
+use std::cmp::min;
+
 use crate::utils::*;
 
 pub fn find_levenshtein_matches(
@@ -6,12 +8,13 @@ pub fn find_levenshtein_matches(
     min_len: usize,
     ratio: f32,
     max_substrings: usize,
+    max_strikes: usize
 ) -> Vec<SubstringResult> {
     let mut ret: Vec<SubstringResult> = Vec::new();
     let mut l: EfficientMatrix<MatrixElement> =
-        EfficientMatrix::new(MatrixElement { len: 0 }, b.len());
-    for (i, c) in a.into_iter().enumerate() {
-        for (j, d) in b.into_iter().enumerate() {
+        EfficientMatrix::new(MatrixElement { len: 0 }, b.len()+1);
+    for (mut i, c) in a.into_iter().chain(&[char::from(0)]).enumerate() {
+        for (mut j, d) in b.into_iter().chain(&[char::from(1)]).enumerate() {
             l[i][j].zero();
             if c == d {
                 if i == 0 || j == 0 {
@@ -28,6 +31,9 @@ pub fn find_levenshtein_matches(
                 if len == 0 {
                     continue;
                 };
+                
+                i = min(i, a.len() - 1);
+                j = min(j, b.len() - 1);
 
                 // Calculate the edit ratio
                 let mut diffirent = levenshtein_edit_distance(
@@ -51,7 +57,7 @@ pub fn find_levenshtein_matches(
                 );
                 edit_ratio = ((len - diffirent) as f32) / (len as f32);
 
-                if len >= min_len {
+                if len >= min_len { // Possibly use 1 instead of minLen here? If so, we need to check this constraint later...
                     // We don't need the -1 because the range is exclusive on the right side
                     // We don't need the -1 in the main formula, because the array starts from 0, but string length starts from 1
                     ret.push(SubstringResult {
@@ -70,5 +76,12 @@ pub fn find_levenshtein_matches(
             }
         }
     }
+    expand_matches_left_and_right(
+        ret.as_mut_slice(),
+        a,
+        b,
+        ratio,
+        max_strikes,
+    );
     ret
 }

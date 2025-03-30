@@ -30,7 +30,10 @@ export default function Run() {
       await data.fileB.text(),
       data.minLength,
       data.ratio,
-      data.maxStrikes
+      data.maxStrikes,
+      2000,
+      4,
+      data.algorithmSelection,
     );
     setResult({
       textA: await data.fileA.text(),

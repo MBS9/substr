@@ -1,5 +1,5 @@
 extern crate wasm_bindgen;
-use std::collections::{HashMap, HashSet};
+use rustc_hash::FxHashMap;
 use std::{
     cmp::min,
     ops::{Index, IndexMut},
@@ -104,8 +104,8 @@ pub fn levenshtein_edit_distance(a_chars: &[char], b_chars: &[char]) -> usize {
 
 pub fn cosine_similarity(str_a: &[char], str_b: &[char]) -> f32 {
     // Find the frequency of each unicode character in the string
-    let mut a: HashMap<char, u32> = HashMap::new();
-    let mut b: HashMap<char, u32> = HashMap::new();
+    let mut a: FxHashMap<char, u32> = FxHashMap::default();
+    let mut b: FxHashMap<char, u32> = FxHashMap::default();
     for c in str_a {
         *a.entry(*c).or_insert(0) += 1;
     }
@@ -118,7 +118,7 @@ pub fn cosine_similarity(str_a: &[char], str_b: &[char]) -> f32 {
     let all_keys = a
         .keys()
         .chain(b.keys())
-        .collect::<HashSet<&char>>()
+        .collect::<Vec<_>>()
         .into_iter();
     for i in all_keys {
         let a_freq = *a.get(i).unwrap_or(&0);
@@ -146,7 +146,7 @@ fn recompute_ratio(
 
 // Helper function to expand matches
 // This function is problamatic: sometimes it takes forever to finish
-fn expand_matches(
+pub fn expand_matches(
     a: &[char],
     b: &[char],
     start_a: usize,
@@ -194,15 +194,71 @@ fn expand_matches(
     }
 }
 
-pub fn reset_end_and_len(
-    new_end_a: &mut usize,
-    new_end_b: &mut usize,
-    new_len: &mut usize,
-    ret: &SubstringResult,
+pub fn expand_match_left_and_right(
+    substr: &mut SubstringResult,
+    a: &[char],
+    b: &[char],
+    ratio: f32,
+    max_strike: usize,
 ) {
-    *new_end_a = ret.end_a;
-    *new_end_b = ret.end_b;
-    *new_len = ret.len;
+    let mut new_end_a: usize = substr.end_a;
+    let mut new_end_b: usize = substr.end_b;
+    let mut new_len: usize = substr.len;
+    let start_a = substr.start_a;
+    let start_b = substr.start_b;
+
+    // Expand both sides
+    expand_matches(
+        a,
+        b,
+        start_a,
+        start_b,
+        &mut new_end_a,
+        &mut new_end_b,
+        &mut new_len,
+        ratio,
+        max_strike,
+        substr,
+        true,
+        true,
+    );
+
+    // Expand only on one side (A)
+    new_end_a = substr.end_a;
+    new_end_b = substr.end_b;
+    new_len = substr.len;
+    expand_matches(
+        &a,
+        &b,
+        start_a,
+        start_b,
+        &mut new_end_a,
+        &mut new_end_b,
+        &mut new_len,
+        ratio,
+        max_strike,
+        substr,
+        true,
+        false,
+    );
+
+    new_end_a = substr.end_a;
+    new_end_b = substr.end_b;
+    new_len = substr.len;
+    expand_matches(
+        &a,
+        &b,
+        start_a,
+        start_b,
+        &mut new_end_a,
+        &mut new_end_b,
+        &mut new_len,
+        ratio,
+        max_strike,
+        substr,
+        false,
+        true,
+    );
 }
 
 pub fn expand_matches_left_and_right(
@@ -212,62 +268,7 @@ pub fn expand_matches_left_and_right(
     ratio: f32,
     max_strike: usize,
 ) {
-    let mut new_end_a: usize = 0;
-    let mut new_end_b: usize = 0;
-    let mut new_len: usize = 0;
-
     for substr in ret.iter_mut() {
-        let start_a = substr.start_a;
-        let start_b = substr.start_b;
-
-        // Expand both sides
-        reset_end_and_len(&mut new_end_a, &mut new_end_b, &mut new_len, substr);
-        expand_matches(
-            a,
-            b,
-            start_a,
-            start_b,
-            &mut new_end_a,
-            &mut new_end_b,
-            &mut new_len,
-            ratio,
-            max_strike,
-            substr,
-            true,
-            true,
-        );
-
-        // Expand only on one side (A)
-        reset_end_and_len(&mut new_end_a, &mut new_end_b, &mut new_len, substr);
-        expand_matches(
-            &a,
-            &b,
-            start_a,
-            start_b,
-            &mut new_end_a,
-            &mut new_end_b,
-            &mut new_len,
-            ratio,
-            max_strike,
-            substr,
-            true,
-            false,
-        );
-
-        reset_end_and_len(&mut new_end_a, &mut new_end_b, &mut new_len, substr);
-        expand_matches(
-            &a,
-            &b,
-            start_a,
-            start_b,
-            &mut new_end_a,
-            &mut new_end_b,
-            &mut new_len,
-            ratio,
-            max_strike,
-            substr,
-            false,
-            true,
-        );
+        expand_match_left_and_right(substr, a, b, ratio, max_strike);
     }
 }

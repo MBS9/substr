@@ -1,6 +1,5 @@
 import React from "react";
 import { InputData, DisplayResultState } from "../types";
-import { importFromFile } from "../utils/file-format";
 import {
   Button,
   TextField,
@@ -8,10 +7,13 @@ import {
   Slider,
   Box,
   Chip,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { Check as CheckIcon } from "@mui/icons-material";
 import Divider from "@mui/material/Divider";
 import ImportButton from "./importButton";
+import { Algorithm } from "algo-wasm";
 
 type Props = {
   onSubmit: (data: InputData) => void;
@@ -31,7 +33,9 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
       const minLength = parseInt(formData.get("min_length") as string);
       const ratio = parseFloat(formData.get("ratio") as string);
       const maxStrikes = parseInt(formData.get("strikes") as string);
-      onSubmit({ fileA, fileB, minLength, ratio, maxStrikes });
+      const kernelSize = parseInt(formData.get("kernel_size") as string);
+      const algorithmSelection = parseInt(formData.get("algorithm_selection") as string) as Algorithm;
+      onSubmit({ fileA, fileB, minLength, ratio, maxStrikes, kernelSize, algorithmSelection });
     },
     [onSubmit]
   );
@@ -127,6 +131,29 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
             required
           />
           <br />
+          <Typography variant='body1'>Kernel Size</Typography>
+          <TextField
+            variant='standard'
+            type='number'
+            name='kernel_size'
+            label='Kernel Size'
+            defaultValue='4'
+            required
+          />
+          <br />
+          <Typography variant='body1'>Algorithm Selection</Typography>
+          <Select
+            label='Algorithm'
+            name='algorithm_selection'
+            defaultValue={Algorithm.Comparativus}
+            variant='standard'
+            displayEmpty
+
+            inputProps={{ "aria-label": "Select algorithm" }}
+          >
+            <MenuItem value={Algorithm.Comparativus}>Comparativus</MenuItem>
+            <MenuItem value={Algorithm.Matrix}>Matrix</MenuItem>
+          </Select>
         </Box>
         <Box sx={{ placeItems: "center" }}>
           <Divider> </Divider>

@@ -1,4 +1,4 @@
-import { Substring as WasmSubstring, Result } from "algo-wasm";
+import { Substring as WasmSubstring, Result, Algorithm } from "algo-wasm";
 
 export type Substring = WasmSubstring;
 
@@ -21,6 +21,8 @@ export type InputData = {
     minLength: number,
     ratio: number,
     maxStrikes: number,
+    kernelSize: number,
+    algorithmSelection: Algorithm
 };
 
 interface LaunchParams {
