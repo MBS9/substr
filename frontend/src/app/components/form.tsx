@@ -120,7 +120,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
                 type='number'
                 name='strikes'
                 label='Max Strikes'
-                defaultValue='4'
+                defaultValue='3'
                 required
               />
             </Grid>
@@ -149,7 +149,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
               />
             </Grid>
             <Grid>
-              <Typography variant='body1'>Algorithm Selection</Typography>
+              <Typography variant='body1'>Algorithm</Typography>
               <Select
                 fullWidth
                 label='Algorithm'
