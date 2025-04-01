@@ -34,6 +34,7 @@ fn expand_all_matches(
     max_strike: usize,
     max_substrings: usize,
     base_match_size: usize,
+    min_len: usize
 ) {
     'outer: for occurance_a in occ_a {
         'nextMatch: for occurance_b in occ_b {
@@ -64,7 +65,7 @@ fn expand_all_matches(
                 ma.end_b -= 1;
             }
             utils::expand_match_left_and_right(&mut ma, text_a, text_b, ratio, max_strike);
-            results.push(ma);
+            if ma.len >= min_len { results.push(ma)};
         }
     }
 }
@@ -93,11 +94,11 @@ pub fn find_levenshtein_matches(
                 ratio,
                 max_strikes,
                 max_substrings,
-                base_match_size
+                base_match_size,
+                min_len,
             );
         }
     }
-    ret = ret.into_iter().filter(|x| x.len >= min_len).collect();
     ret.sort_unstable_by_key(|x| x.start_a);
     ret
 }
