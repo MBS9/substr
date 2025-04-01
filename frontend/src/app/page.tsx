@@ -33,7 +33,7 @@ export default function Run() {
       data.minLength,
       data.ratio,
       data.maxStrikes,
-      2000000000,
+      20000,
       data.kernelSize,
       data.baseMatchSize,
       data.algorithmSelection,
