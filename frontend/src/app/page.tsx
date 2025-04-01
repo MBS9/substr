@@ -32,7 +32,8 @@ export default function Run() {
       data.ratio,
       data.maxStrikes,
       2000,
-      4,
+      data.kernelSize,
+      data.baseMatchSize,
       data.algorithmSelection,
     );
     setResult({

@@ -131,7 +131,7 @@ pub fn cosine_similarity(str_a: &[char], str_b: &[char]) -> f32 {
     similarity
 }
 
-fn recompute_ratio(
+pub fn recompute_ratio(
     a: &[char],
     b: &[char],
     start_a: usize,

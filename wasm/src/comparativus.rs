@@ -32,8 +32,8 @@ fn expand_all_matches(
     results: &mut Vec<utils::SubstringResult>,
     ratio: f32,
     max_strike: usize,
-    kernel_size: usize,
     max_substrings: usize,
+    base_match_size: usize,
 ) {
     'outer: for occurance_a in occ_a {
         'nextMatch: for occurance_b in occ_b {
@@ -52,12 +52,17 @@ fn expand_all_matches(
             }
             let mut ma = utils::SubstringResult {
                 start_a: *occurance_a,
-                end_a: min(*occurance_a + kernel_size, text_a.len()),
+                end_a: min(*occurance_a + base_match_size, text_a.len()),
                 start_b: *occurance_b,
-                end_b: min(*occurance_b + kernel_size, text_b.len()),
-                len: kernel_size,
+                end_b: min(*occurance_b + base_match_size, text_b.len()),
+                len: base_match_size,
                 edit_ratio: 1.0,
             };
+            while ma.start_a < ma.end_a && ma.start_b < ma.end_b && utils::recompute_ratio(text_a, text_b, ma.start_a, ma.end_a, ma.start_b, ma.end_b, ma.len) < ratio {
+                ma.len -= 1;
+                ma.end_a -= 1;
+                ma.end_b -= 1;
+            }
             utils::expand_match_left_and_right(&mut ma, text_a, text_b, ratio, max_strike);
             results.push(ma);
         }
@@ -72,6 +77,7 @@ pub fn find_levenshtein_matches(
     max_substrings: usize,
     max_strikes: usize,
     kernel_size: usize,
+    base_match_size: usize
 ) -> Vec<SubstringResult> {
     let ngrams_a = build_ngrams(a, kernel_size);
     let ngrams_b = build_ngrams(b, kernel_size);
@@ -86,8 +92,8 @@ pub fn find_levenshtein_matches(
                 &mut ret,
                 ratio,
                 max_strikes,
-                kernel_size,
                 max_substrings,
+                base_match_size
             );
         }
     }

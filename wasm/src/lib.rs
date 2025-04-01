@@ -27,6 +27,7 @@ pub fn process(
     max_strikes: usize,
     max_substrings: usize,
     kernel_size: usize,
+    base_match_size: usize,
     levenshtein_algorithm: Algorithm,
 ) -> Vec<utils::Result> {
     let file_a: Vec<char> = str_a.chars().collect();
@@ -54,6 +55,7 @@ pub fn process(
                 max_substrings,
                 max_strikes,
                 kernel_size,
+                base_match_size,
             );
         }
     }

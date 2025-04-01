@@ -35,7 +35,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
       const maxStrikes = parseInt(formData.get("strikes") as string);
       const kernelSize = parseInt(formData.get("kernel_size") as string);
       const algorithmSelection = parseInt(formData.get("algorithm_selection") as string) as Algorithm;
-      onSubmit({ fileA, fileB, minLength, ratio, maxStrikes, kernelSize, algorithmSelection });
+      onSubmit({ fileA, fileB, minLength, ratio, maxStrikes, kernelSize, algorithmSelection, baseMatchSize: 10 });
     },
     [onSubmit]
   );

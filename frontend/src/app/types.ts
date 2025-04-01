@@ -22,6 +22,7 @@ export type InputData = {
     ratio: number,
     maxStrikes: number,
     kernelSize: number,
+    baseMatchSize: number,
     algorithmSelection: Algorithm
 };
 
