@@ -7,7 +7,6 @@ const COLOR_LIST = ["orange"];
 
 export function DisplayHighlighting(props: { result: DisplayResultState, onCharClick?: (charIndex: number) => void }) {
     const { result, onCharClick } = props
-
     const [isLoading, setIsLoading] = useState(true)
     const [aRefs, setARefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);
     const [bRefs, setBRefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);

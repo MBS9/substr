@@ -113,8 +113,17 @@ pub fn process(
     result
 }
 
+const PUNCTUATION: [char; 44] = ['.', ',','，', '。', '：', '；', '「', '」', '？', '\n', '、', '·', '》', '《', '“', '”', '‘', '’', '！', '（', '）', '【', '】', '『', '』', '—', '～', '\n', '\r', '\t', ' ', '*', '!', '?', ':', ';', '(', ')', '[', ']', '{', '}', '<', '>'];
+
+#[wasm_bindgen]
+pub fn clean_text(text: String) -> String {
+    let mut text = text;
+    text.retain(|c| !PUNCTUATION.contains(&c));
+    text
+}
+
 #[wasm_bindgen(start)]
-fn start() {
+pub fn start() {
     panic::set_hook(Box::new(|panic_info: &PanicHookInfo| {
         // Alert panic error message
         utils::alert(panic_info.payload().downcast_ref::<String>().unwrap());

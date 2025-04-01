@@ -24,10 +24,12 @@ export default function Run() {
   const [result, setResult] = React.useState<DisplayResultState | null>(null);
   const handleSubmit = React.useCallback(async (data: InputData) => {
     setStatusMessage("Processing... please wait");
+    const textA = SubstringAlgorithm.clean_text(await data.fileA.text());
+    const textB = SubstringAlgorithm.clean_text(await data.fileB.text());
     setIsReady(false);
     const result = SubstringAlgorithm.process(
-      await data.fileA.text(),
-      await data.fileB.text(),
+      textA,
+      textB,
       data.minLength,
       data.ratio,
       data.maxStrikes,
@@ -37,8 +39,8 @@ export default function Run() {
       data.algorithmSelection,
     );
     setResult({
-      textA: await data.fileA.text(),
-      textB: await data.fileB.text(),
+      textA: textA,
+      textB: textA,
       pairs: result,
       minLength: data.minLength,
       maxStrikes: data.maxStrikes,
