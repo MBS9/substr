@@ -4,7 +4,6 @@ use std::{
     cmp::max,
     cmp::min,
 };
-use utils::{alert, SubstringResult};
 use wasm_bindgen::prelude::*;
 
 mod matrix;
@@ -34,7 +33,7 @@ pub fn process(
     let file_a = file_a.as_slice();
     let file_b: Vec<char> = str_b.chars().collect();
     let file_b = file_b.as_slice();
-    let levenshtein_distances: Vec<SubstringResult>;
+    let levenshtein_distances: Vec<utils::SubstringResult>;
     match levenshtein_algorithm {
         Algorithm::Matrix => {
             levenshtein_distances = matrix::find_levenshtein_matches(
