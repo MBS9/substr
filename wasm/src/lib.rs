@@ -4,7 +4,7 @@ use std::{
     cmp::max,
     cmp::min,
 };
-use utils::SubstringResult;
+use utils::{alert, SubstringResult};
 use wasm_bindgen::prelude::*;
 
 mod matrix;
@@ -59,8 +59,10 @@ pub fn process(
             );
         }
     }
+    if levenshtein_distances.is_empty() {
+        return Vec::new();
+    }
     let mut result: Vec<utils::Result> = Vec::with_capacity(levenshtein_distances.len() * 2 - 1);
-
     for (elem, elem2) in levenshtein_distances[..levenshtein_distances.len() - 1]
         .iter()
         .zip(levenshtein_distances[1..].iter())

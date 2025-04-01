@@ -43,6 +43,9 @@ export default function Run() {
       minLength: data.minLength,
       maxStrikes: data.maxStrikes,
       ratio: data.ratio,
+      kernelSize: data.kernelSize,
+      baseMatchSize: data.baseMatchSize,
+      algorithmSelection: data.algorithmSelection,
     });
   }, []);
   if (result === null) {

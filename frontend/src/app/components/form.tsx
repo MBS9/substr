@@ -9,6 +9,7 @@ import {
   Chip,
   Select,
   MenuItem,
+  Grid2 as Grid
 } from "@mui/material";
 import { Check as CheckIcon } from "@mui/icons-material";
 import Divider from "@mui/material/Divider";
@@ -35,7 +36,8 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
       const maxStrikes = parseInt(formData.get("strikes") as string);
       const kernelSize = parseInt(formData.get("kernel_size") as string);
       const algorithmSelection = parseInt(formData.get("algorithm_selection") as string) as Algorithm;
-      onSubmit({ fileA, fileB, minLength, ratio, maxStrikes, kernelSize, algorithmSelection, baseMatchSize: 10 });
+      const baseMatchSize = parseInt(formData.get("base_match_size") as string);
+      onSubmit({ fileA, fileB, minLength, ratio, maxStrikes, kernelSize, algorithmSelection, baseMatchSize: baseMatchSize });
     },
     [onSubmit]
   );
@@ -97,20 +99,75 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
           <Chip label='Enter a few configuration options for the new files' />
         </Divider>
         <Box sx={{ mt: 4, placeItems: "center" }}>
-          <Typography variant='body1'>Minimum Length:</Typography>
-          <TextField
-            variant='standard'
-            type='number'
-            name='min_length'
-            label='Minimum Length'
-            defaultValue='7'
-            required
-          />
-          <br />
-          <Typography id='ratio_slider' gutterBottom>
-            Ratio:
-          </Typography>
-          <Box sx={{ width: 300 }}>
+          <Grid container spacing={3}>
+            <Grid>
+              <Typography variant='body1'>Minimum Length:</Typography>
+              <TextField
+                fullWidth
+                variant='standard'
+                type='number'
+                name='min_length'
+                label='Minimum Length'
+                defaultValue='7'
+                required
+              />
+            </Grid>
+            <Grid>
+              <Typography variant='body1'>Max Strikes:</Typography>
+              <TextField
+                fullWidth
+                variant='standard'
+                type='number'
+                name='strikes'
+                label='Max Strikes'
+                defaultValue='4'
+                required
+              />
+            </Grid>
+            <Grid>
+              <Typography variant='body1'>Kernel Size</Typography>
+              <TextField
+                fullWidth
+                variant='standard'
+                type='number'
+                name='kernel_size'
+                label='Kernel Size'
+                defaultValue='4'
+                required
+              />
+            </Grid>
+            <Grid>
+              <Typography variant='body1'>Base Match Size</Typography>
+              <TextField
+                fullWidth
+                variant='standard'
+                type='number'
+                name='base_match_size'
+                label='Base Match Size'
+                defaultValue='10'
+                required
+              />
+            </Grid>
+            <Grid>
+              <Typography variant='body1'>Algorithm Selection</Typography>
+              <Select
+                fullWidth
+                label='Algorithm'
+                name='algorithm_selection'
+                defaultValue={Algorithm.Comparativus}
+                variant='standard'
+                displayEmpty
+                inputProps={{ "aria-label": "Select algorithm" }}
+              >
+                <MenuItem value={Algorithm.Comparativus}>Comparativus</MenuItem>
+                <MenuItem value={Algorithm.Matrix}>Matrix</MenuItem>
+              </Select>
+            </Grid>
+          </Grid>
+          <Box sx={{ width: "50%", placeSelf: "center" }}>
+            <Typography id='ratio_slider' gutterBottom>
+              Ratio:
+            </Typography>
             <Slider
               name='ratio'
               defaultValue={0.8}
@@ -121,39 +178,6 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
               aria-labelledby='ratio_slider'
             />
           </Box>
-          <Typography variant='body1'>Max Strikes:</Typography>
-          <TextField
-            variant='standard'
-            type='number'
-            name='strikes'
-            label='Max Strikes'
-            defaultValue='4'
-            required
-          />
-          <br />
-          <Typography variant='body1'>Kernel Size</Typography>
-          <TextField
-            variant='standard'
-            type='number'
-            name='kernel_size'
-            label='Kernel Size'
-            defaultValue='4'
-            required
-          />
-          <br />
-          <Typography variant='body1'>Algorithm Selection</Typography>
-          <Select
-            label='Algorithm'
-            name='algorithm_selection'
-            defaultValue={Algorithm.Comparativus}
-            variant='standard'
-            displayEmpty
-
-            inputProps={{ "aria-label": "Select algorithm" }}
-          >
-            <MenuItem value={Algorithm.Comparativus}>Comparativus</MenuItem>
-            <MenuItem value={Algorithm.Matrix}>Matrix</MenuItem>
-          </Select>
         </Box>
         <Box sx={{ placeItems: "center" }}>
           <Divider> </Divider>

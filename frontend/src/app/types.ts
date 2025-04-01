@@ -7,12 +7,15 @@ export type Pair = Omit<Result, 'free'> & {
 };
 
 export type DisplayResultState = {
-  textA: string;
-  textB: string;
-  pairs: Pair[];
-  minLength: number;
-  ratio: number;
-  maxStrikes: number;
+    textA: string;
+    textB: string;
+    pairs: Pair[];
+    minLength: number;
+    ratio: number;
+    maxStrikes: number;
+    kernelSize?: number;
+    baseMatchSize?: number;
+    algorithmSelection: Algorithm;
 };
 
 export type InputData = {

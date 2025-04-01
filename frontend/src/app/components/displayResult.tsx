@@ -23,6 +23,9 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
       minLength: result.minLength,
       ratio: result.ratio,
       maxStrikes: result.maxStrikes,
+      kernelSize: result.kernelSize,
+      baseMatchSize: result.baseMatchSize,
+      algorithmSelection: result.algorithmSelection,
     };
     result.pairs.forEach((pair) => {
       jsResultCopy.pairs.push({
@@ -60,6 +63,15 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
         </Typography>
         <Typography variant='body1' sx={{ ml: 2 }}>
           Max Strikes: {result.maxStrikes}
+        </Typography>
+        <Typography variant='body1' sx={{ ml: 2 }}>
+          Kernel Size: {result.kernelSize}
+        </Typography>
+        <Typography variant='body1' sx={{ ml: 2 }}>
+          Base Match Size: {result.baseMatchSize}
+        </Typography>
+        <Typography variant='body1' sx={{ ml: 2 }}>
+          Algorithm: {result.algorithmSelection}
         </Typography>
       </Header>
       <Box>

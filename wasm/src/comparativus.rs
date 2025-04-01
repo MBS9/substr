@@ -3,7 +3,7 @@ use std::cmp::min;
 /*
 * This algorithm is equivalent to the algorithm at https://github.com/MGelein/comparativus
 */
-use crate::utils::{self};
+use crate::utils::{self, alert};
 use rustc_hash::{FxBuildHasher, FxHashMap};
 
 use crate::utils::SubstringResult;
@@ -97,6 +97,7 @@ pub fn find_levenshtein_matches(
             );
         }
     }
+    alert(ret.len().to_string().as_str());
     ret = ret.into_iter().filter(|x| x.len >= min_len).collect();
     ret.sort_unstable_by_key(|x| x.start_a);
     ret
