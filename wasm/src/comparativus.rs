@@ -39,6 +39,7 @@ fn expand_all_matches(
     'outer: for occurance_a in occ_a {
         'nextMatch: for occurance_b in occ_b {
             if results.len() >= max_substrings {
+                utils::alert("Max substrings reached, stopping search.");
                 break 'outer;
             }
             for ma in results.iter() {
