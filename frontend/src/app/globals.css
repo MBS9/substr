@@ -11,11 +11,12 @@ span.spacing {
 
 span.show-info:hover::after {
   content: attr(title);
-  padding:5px;
-  border:1px solid #ccc;
-  top:5px;
-  right:10%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  top: 5px;
+  right: 10%;
   background: #bada55;
   position: fixed;
   z-index: 100000;
+  font-family: 'Roboto';
 }
