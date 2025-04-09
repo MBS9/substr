@@ -1,4 +1,4 @@
-use std::cmp::min;
+use std::{cmp::min, str};
 
 /*
 * This algorithm is equivalent to the algorithm at https://github.com/MGelein/comparativus
@@ -11,8 +11,8 @@ use crate::utils::SubstringResult;
 type Ngrams<'a> = FxHashMap<&'a [char], Vec<usize>>;
 fn build_ngrams(text: &[char], kernel_size: usize) -> Ngrams {
     let mut ngrams: Ngrams =
-        FxHashMap::with_capacity_and_hasher(text.len() / kernel_size + 1, FxBuildHasher);
-    for i in (0..text.len()).into_iter().step_by(kernel_size) {
+        FxHashMap::with_capacity_and_hasher(text.len()-kernel_size, FxBuildHasher);
+    for i in (0..(text.len()-kernel_size)).into_iter() {
         let end_of_gram = min(i + kernel_size, text.len());
         let gram = &text[i..end_of_gram];
         if let Some(locs) = ngrams.get_mut(gram) {
