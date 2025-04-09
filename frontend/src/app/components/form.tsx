@@ -15,6 +15,7 @@ import { Check as CheckIcon } from "@mui/icons-material";
 import Divider from "@mui/material/Divider";
 import ImportButton from "./importButton";
 import { Algorithm } from "algo-wasm";
+import ConfigurationForm from "./configurationForm";
 
 type Props = {
   onSubmit: (data: InputData) => void;
@@ -98,99 +99,22 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
         <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>
           <Chip label='Enter a few configuration options for the new files' />
         </Divider>
-        <Box sx={{ mt: 4, placeItems: "center" }}>
-          <Grid container spacing={3}>
-            <Grid>
-              <Typography variant='body1'>Minimum Length:</Typography>
-              <TextField
-                fullWidth
-                variant='standard'
-                type='number'
-                name='min_length'
-                label='Minimum Length'
-                defaultValue='7'
-                required
-              />
-            </Grid>
-            <Grid>
-              <Typography variant='body1'>Max Strikes:</Typography>
-              <TextField
-                fullWidth
-                variant='standard'
-                type='number'
-                name='strikes'
-                label='Max Strikes'
-                defaultValue='3'
-                required
-              />
-            </Grid>
-            <Grid>
-              <Typography variant='body1'>Kernel Size</Typography>
-              <TextField
-                fullWidth
-                variant='standard'
-                type='number'
-                name='kernel_size'
-                label='Kernel Size'
-                defaultValue='4'
-                required
-              />
-            </Grid>
-            <Grid>
-              <Typography variant='body1'>Base Match Size</Typography>
-              <TextField
-                fullWidth
-                variant='standard'
-                type='number'
-                name='base_match_size'
-                label='Base Match Size'
-                defaultValue='10'
-                required
-              />
-            </Grid>
-            <Grid>
-              <Typography variant='body1'>Algorithm</Typography>
-              <Select
-                fullWidth
-                label='Algorithm'
-                name='algorithm_selection'
-                defaultValue={Algorithm.Comparativus}
-                variant='standard'
-                displayEmpty
-                inputProps={{ "aria-label": "Select algorithm" }}
+        <ConfigurationForm onSubmit={() => null} >
+          {(submit) => (
+            <>
+              <Divider> </Divider>
+              <Button
+                variant='contained'
+                type='submit'
+                disabled={disabled}
+                sx={{ mt: 4 }}
               >
-                <MenuItem value={Algorithm.Comparativus}>Comparativus</MenuItem>
-                <MenuItem value={Algorithm.Matrix}>Matrix</MenuItem>
-              </Select>
-            </Grid>
-          </Grid>
-          <Box sx={{ width: "50%", placeSelf: "center" }}>
-            <Typography id='ratio_slider' gutterBottom>
-              Ratio:
-            </Typography>
-            <Slider
-              name='ratio'
-              defaultValue={0.8}
-              step={0.01}
-              min={0}
-              max={1}
-              valueLabelDisplay='auto'
-              aria-labelledby='ratio_slider'
-            />
-          </Box>
-        </Box>
+                Create new project
+              </Button>
+            </>
+          )}
+        </ConfigurationForm>
         <Box sx={{ placeItems: "center" }}>
-          <Divider> </Divider>
-
-          <Button
-            variant='contained'
-            type='submit'
-            className='rounded-md py-1 text-center border-black border-4 px-5'
-            disabled={disabled}
-            sx={{ mt: 4 }}
-          >
-            Create new project
-          </Button>
         </Box>
       </form>
     </Box>

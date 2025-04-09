@@ -13,20 +13,23 @@ export type DisplayResultState = {
     minLength: number;
     ratio: number;
     maxStrikes: number;
-    kernelSize?: number;
-    baseMatchSize?: number;
+    kernelSize: number;
+    baseMatchSize: number;
     algorithmSelection: Algorithm;
 };
 
 export type InputData = {
     fileA: File,
     fileB: File,
-    minLength: number,
-    ratio: number,
-    maxStrikes: number,
-    kernelSize: number,
-    baseMatchSize: number,
-    algorithmSelection: Algorithm
+} & ConfigurationOptions;
+
+export type ConfigurationOptions = {
+    minLength: number;
+    ratio: number;
+    maxStrikes: number;
+    kernelSize: number;
+    baseMatchSize: number;
+    algorithmSelection: Algorithm;
 };
 
 interface LaunchParams {

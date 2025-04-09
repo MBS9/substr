@@ -148,6 +148,8 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
 
     useEffect(() => {
         if (!isLoading) {
+            resetRange(0, result.textA.length, aRefs);
+            resetRange(0, result.textB.length, bRefs);
             result.pairs.forEach((pair, index) => {
                 pair.hold = pair.hold ?? true
                 if (pair.hold) {

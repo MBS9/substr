@@ -1,4 +1,4 @@
-use std::{cmp::min, str};
+use std::cmp::min;
 
 /*
 * This algorithm is equivalent to the algorithm at https://github.com/MGelein/comparativus

@@ -1,4 +1,4 @@
-import { DisplayResultState } from "../types";
+import { ConfigurationOptions, DisplayResultState } from "../types";
 import React, {
   useState,
   useCallback,
@@ -8,13 +8,32 @@ import {
   Button,
   Typography,
   Box,
+  IconButton,
+  Snackbar,
 } from "@mui/material";
 import { useResultAnalytics } from "./useResultAnalytics";
 import { Header } from "./header";
 import { DisplayHighlighting } from './displayHighlighting';
+import SettingsIcon from '@mui/icons-material/Settings';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
+import CloseIcon from '@mui/icons-material/Close';
+import UpdateSettingsModal from "./updateSettingsModal";
 
-export function ShowDiff({ result }: { result: DisplayResultState }) {
+export function ShowDiff({ result, updateConfiguration }: { result: DisplayResultState, updateConfiguration: (result: ConfigurationOptions) => void }) {
   const resultAnalytics = useResultAnalytics(result);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const openModal = useCallback(() => {
+    setModalOpen(true);
+  }, [setModalOpen]);
+  const onSettingsChange = useCallback(
+    (settings: any) => {
+      setModalOpen(false);
+      updateConfiguration(settings);
+      setSnackbarOpen(true);
+    },
+    [setModalOpen]
+  );
   const exportResult = useCallback(async () => {
     const jsResultCopy: DisplayResultState = {
       textA: result.textA,
@@ -47,15 +66,17 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
   return (
     <>
       <Header>
-        <Button
+        <IconButton
           onClick={exportResult}
           type='button'
-          variant='outlined'
           color='inherit'
         >
-          Save Project
+          <SaveAsIcon color="inherit" />
+        </IconButton>
+        <Button onClick={openModal} color='inherit'>
+          <SettingsIcon color="inherit" />
         </Button>
-        <Typography variant='body1' sx={{ ml: 2 }}>
+        <Typography variant='body1' sx={{ ml: 4 }}>
           Minimum Length: {result.minLength}
         </Typography>
         <Typography variant='body1' sx={{ ml: 2 }}>
@@ -74,6 +95,18 @@ export function ShowDiff({ result }: { result: DisplayResultState }) {
           Algorithm: {result.algorithmSelection}
         </Typography>
       </Header>
+      <UpdateSettingsModal settings={result} onSubmit={onSettingsChange} open={modalOpen} />
+      <Snackbar
+        message="Settings updated successfully"
+        autoHideDuration={10000}
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        action={
+          <IconButton size="small" color="inherit" onClick={() => setSnackbarOpen(false)}>
+            <CloseIcon />
+          </IconButton>
+        }
+      />
       <Box>
         <Box sx={{ mt: 2, mb: 2 }}>
           <Typography variant='h5'>Quick Summary of Results</Typography>
