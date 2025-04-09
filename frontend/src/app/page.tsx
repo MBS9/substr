@@ -40,7 +40,7 @@ export default function Run() {
     );
     setResult({
       textA: textA,
-      textB: textA,
+      textB: textB,
       pairs: result,
       minLength: data.minLength,
       maxStrikes: data.maxStrikes,
