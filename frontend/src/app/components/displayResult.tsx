@@ -32,7 +32,7 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
       updateConfiguration(settings);
       setSnackbarOpen(true);
     },
-    [setModalOpen]
+    [setModalOpen, setSnackbarOpen, updateConfiguration]
   );
   const exportResult = useCallback(async () => {
     const jsResultCopy: DisplayResultState = {
