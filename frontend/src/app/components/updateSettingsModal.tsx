@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Modal, Paper, Card } from "@mui/material";
+import { Box, Typography, Button, Modal } from "@mui/material";
 import ConfigurationForm, { TConfigurationForm } from "./configurationForm";
 
 export default function UpdateSettingsModal(

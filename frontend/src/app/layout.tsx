@@ -4,6 +4,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 import type { Metadata, Viewport } from "next";
+import React from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 

@@ -46,7 +46,7 @@ export default function Run() {
       textB,
       data
     );
-  }, []);
+  }, [runAnalysisFromTextAndConfig]);
   const onConfigurationChange = React.useCallback(
     (data: ConfigurationOptions) => {
       if (result === null) return null;
@@ -56,7 +56,7 @@ export default function Run() {
         data
       );
     },
-    [result, setResult]
+    [result, runAnalysisFromTextAndConfig]
   );
   if (result === null) {
     return (

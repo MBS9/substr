@@ -157,7 +157,7 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
                 }
             });
         }
-    }, [isLoading, result.pairs, highlightFromPair]);
+    }, [isLoading, result.pairs, highlightFromPair, resetRange, result.textA.length, result.textB.length, aRefs, bRefs]);
 
     return (
         <Box>

@@ -1,5 +1,5 @@
 import { ConfigurationOptions, DisplayResultState } from "../types";
-import React, {
+import {
   useState,
   useCallback,
 } from "react";
@@ -25,14 +25,14 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const openModal = useCallback(() => {
     setModalOpen(true);
-  }, [setModalOpen]);
+  }, []);
   const onSettingsChange = useCallback(
-    (settings: any) => {
+    (settings: ConfigurationOptions) => {
       setModalOpen(false);
       updateConfiguration(settings);
       setSnackbarOpen(true);
     },
-    [setModalOpen, setSnackbarOpen, updateConfiguration]
+    [updateConfiguration]
   );
   const exportResult = useCallback(async () => {
     const jsResultCopy: DisplayResultState = {

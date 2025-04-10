@@ -7,6 +7,7 @@ export default function ImportButton(props: {
   onImport: (file: DisplayResultState) => void;
   variant?: "contained" | "outlined" | "text";
 }) {
+  const { onImport, variant } = props;
   const importCallback = React.useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -15,12 +16,12 @@ export default function ImportButton(props: {
         return;
       }
       const input = await importFromFile(file);
-      props.onImport(input);
+      onImport(input);
     },
-    [props.onImport]
+    [onImport]
   );
   return (
-    <Button variant={props.variant} component='label'>
+    <Button variant={variant} component='label'>
       Import Existing Project
       <input type='file' accept='*.tile' onChange={importCallback} hidden />
     </Button>

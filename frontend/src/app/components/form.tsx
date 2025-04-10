@@ -1,15 +1,8 @@
 import React from "react";
 import { InputData, DisplayResultState } from "../types";
 import {
-  Button,
-  TextField,
-  Typography,
-  Slider,
-  Box,
-  Chip,
-  Select,
-  MenuItem,
-  Grid2 as Grid
+  Button, Typography, Box,
+  Chip
 } from "@mui/material";
 import { Check as CheckIcon } from "@mui/icons-material";
 import Divider from "@mui/material/Divider";
@@ -100,7 +93,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
           <Chip label='Enter a few configuration options for the new files' />
         </Divider>
         <ConfigurationForm onSubmit={() => null} >
-          {(submit) => (
+          {() => (
             <>
               <Divider> </Divider>
               <Button
