@@ -146,51 +146,117 @@ pub fn recompute_ratio(
     ((new_len - edit_distance) as f32) / (new_len as f32)
 }
 
-// Helper function to expand matches
-pub fn expand_matches(
+// Helper function to expand matches forward (right)
+pub fn expand_matches_forward(
     a: &[char],
     b: &[char],
-    start_a: usize,
-    start_b: usize,
-    new_end_a: &mut usize,
-    new_end_b: &mut usize,
-    new_len: &mut usize,
     ratio: f32,
     max_strike: usize,
     ret: &mut SubstringResult,
     expand_a: bool,
     expand_b: bool,
 ) {
+    let mut new_end_a = ret.end_a;
+    let mut new_end_b = ret.end_b;
+    let mut new_len = ret.len;
+    let start_a = ret.start_a;
+    let start_b = ret.start_b;
     let mut strike = 0;
+    
     while strike < max_strike {
-        if expand_a {
-            *new_end_a += 1;
-            *new_len += 1;
+        // Check if we can expand forward
+        let can_expand_a = expand_a && new_end_a < a.len();
+        let can_expand_b = expand_b && new_end_b < b.len();
+        
+        if !can_expand_a && !can_expand_b {
+            break;
         }
-        if expand_b {
-            *new_end_b += 1;
-            if !expand_a {
-                *new_len += 1;
+        
+        // Expand
+        if can_expand_a {
+            new_end_a += 1;
+            new_len += 1;
+        }
+        
+        if can_expand_b {
+            new_end_b += 1;
+            if !can_expand_a {
+                new_len += 1;
             }
         }
-        if *new_end_a < a.len() && *new_end_b < b.len() {
-            let new_ratio =
-                recompute_ratio(a, b, start_a, *new_end_a, start_b, *new_end_b, *new_len);
-            if new_ratio < ratio {
-                strike += 1;
-            } else {
-                strike = 0;
-                if expand_a {
-                    ret.end_a = *new_end_a;
-                }
-                if expand_b {
-                    ret.end_b = *new_end_b;
-                }
-                ret.len = *new_len;
-                ret.edit_ratio = new_ratio;
-            }
+        
+        let new_ratio = recompute_ratio(a, b, start_a, new_end_a, start_b, new_end_b, new_len);
+        
+        if new_ratio < ratio {
+            strike += 1;
         } else {
-            strike = max_strike;
+            strike = 0;
+            if can_expand_a {
+                ret.end_a = new_end_a;
+            }
+            if can_expand_b {
+                ret.end_b = new_end_b;
+            }
+            ret.len = new_len;
+            ret.edit_ratio = new_ratio;
+        }
+    }
+}
+
+// Helper function to expand matches backward (left)
+pub fn expand_matches_backward(
+    a: &[char],
+    b: &[char],
+    ratio: f32,
+    max_strike: usize,
+    ret: &mut SubstringResult,
+    expand_a: bool,
+    expand_b: bool,
+) {
+    let mut new_start_a: usize = ret.start_a;
+    let mut new_start_b: usize = ret.start_b;
+    let mut new_len: usize = ret.len;
+    let end_a = ret.end_a;
+    let end_b = ret.end_b;
+    let mut strike = 0;
+    
+    while strike < max_strike {
+        // Check if we can expand backward
+        let can_expand_a = expand_a && new_start_a > 0;
+        let can_expand_b = expand_b && new_start_b > 0;
+        
+        if !can_expand_a && !can_expand_b {
+            break;
+        }
+        
+        // Expand
+        if can_expand_a {
+            new_start_a -= 1;
+            new_len += 1;
+        }
+        
+        if can_expand_b {
+            new_start_b -= 1;
+            if !can_expand_a {
+                new_len += 1;
+            }
+        }
+        
+        let new_ratio =
+            recompute_ratio(a, b, new_start_a, end_a, new_start_b, end_b, new_len);
+        
+        if new_ratio < ratio {
+            strike += 1;
+        } else {
+            strike = 0;
+            if can_expand_a {
+                ret.start_a = new_start_a;
+            }
+            if can_expand_b {
+                ret.start_b = new_start_b;
+            }
+            ret.len = new_len;
+            ret.edit_ratio = new_ratio;
         }
     }
 }
@@ -202,62 +268,25 @@ pub fn expand_match_left_and_right(
     ratio: f32,
     max_strike: usize,
 ) {
-    let mut new_end_a: usize = substr.end_a;
-    let mut new_end_b: usize = substr.end_b;
-    let mut new_len: usize = substr.len;
-    let start_a = substr.start_a;
-    let start_b = substr.start_b;
-
-    // Expand both sides
-    expand_matches(
+    // Expand to the right
+    expand_matches_forward(
         a,
         b,
-        start_a,
-        start_b,
-        &mut new_end_a,
-        &mut new_end_b,
-        &mut new_len,
         ratio,
         max_strike,
         substr,
         true,
         true,
     );
-
-    // Expand only on one side (A)
-    new_end_a = substr.end_a;
-    new_end_b = substr.end_b;
-    new_len = substr.len;
-    expand_matches(
-        &a,
-        &b,
-        start_a,
-        start_b,
-        &mut new_end_a,
-        &mut new_end_b,
-        &mut new_len,
+    
+    // Expand to the left
+    expand_matches_backward(
+        a,
+        b,
         ratio,
         max_strike,
         substr,
         true,
-        false,
-    );
-
-    new_end_a = substr.end_a;
-    new_end_b = substr.end_b;
-    new_len = substr.len;
-    expand_matches(
-        &a,
-        &b,
-        start_a,
-        start_b,
-        &mut new_end_a,
-        &mut new_end_b,
-        &mut new_len,
-        ratio,
-        max_strike,
-        substr,
-        false,
         true,
     );
 }
