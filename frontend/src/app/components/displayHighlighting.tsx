@@ -96,7 +96,7 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
             if (!color) color = COLOR_LIST[index % COLOR_LIST.length];
             const similarityType = pair.levenshteinMatch ? "Edit Ratio" : "Cosine";
             const title = `${similarityType} similarity: ${pair.similarity.toFixed(
-                2
+                4
             )}`;
             highlightRange(pair.b.start, pair.b.end, color, bRefs, title, matchesB);
             highlightRange(pair.a.start, pair.a.end, color, aRefs, title, matchesA);
