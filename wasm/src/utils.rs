@@ -191,12 +191,8 @@ pub fn expand_matches_forward(
             strike += 1;
         } else {
             strike = 0;
-            if can_expand_a {
-                ret.end_a = new_end_a;
-            }
-            if can_expand_b {
-                ret.end_b = new_end_b;
-            }
+            ret.end_a = new_end_a;
+            ret.end_b = new_end_b;
             ret.len = new_len;
             ret.edit_ratio = new_ratio;
         }
@@ -249,12 +245,8 @@ pub fn expand_matches_backward(
             strike += 1;
         } else {
             strike = 0;
-            if can_expand_a {
-                ret.start_a = new_start_a;
-            }
-            if can_expand_b {
-                ret.start_b = new_start_b;
-            }
+            ret.start_a = new_start_a;
+            ret.start_b = new_start_b;
             ret.len = new_len;
             ret.edit_ratio = new_ratio;
         }

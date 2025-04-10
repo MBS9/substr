@@ -43,10 +43,11 @@ fn expand_all_matches(
                 break 'outer;
             }
             for ma in results.iter() {
-                if *occurance_a <= ma.end_a
-                    && *occurance_a > ma.start_a
+                // Should we allow equality here?
+                if *occurance_a < ma.end_a
+                    && *occurance_a >= ma.start_a
                     && *occurance_b < ma.end_b
-                    && *occurance_b > ma.start_a
+                    && *occurance_b >= ma.start_a
                 {
                     // This match is embedded within an existing match, so we can safely skip
                     continue 'nextMatch;
@@ -60,6 +61,7 @@ fn expand_all_matches(
                 len: base_match_size,
                 edit_ratio: 1.0,
             };
+            ma.len = ma.end_a - ma.start_a; // This may not necessariy be the same as base_match_size
             while ma.start_a < ma.end_a && ma.start_b < ma.end_b && utils::recompute_ratio(text_a, text_b, ma.start_a, ma.end_a, ma.start_b, ma.end_b, ma.len) < ratio {
                 ma.len -= 1;
                 ma.end_a -= 1;
