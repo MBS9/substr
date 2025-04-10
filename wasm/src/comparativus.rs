@@ -45,9 +45,9 @@ fn expand_all_matches(
             for ma in results.iter() {
                 // Should we allow equality here?
                 if *occurance_a < ma.end_a
-                    && *occurance_a >= ma.start_a
+                    && *occurance_a > ma.start_a
                     && *occurance_b < ma.end_b
-                    && *occurance_b >= ma.start_a
+                    && *occurance_b > ma.start_b
                 {
                     // This match is embedded within an existing match, so we can safely skip
                     continue 'nextMatch;
