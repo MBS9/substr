@@ -8,6 +8,8 @@ import {
   Typography,
   Box
 } from "@mui/material";
+import useComputeAnylsis from './utils/recompute-project';
+import { importFromFile } from './utils/file-format';
 
 export default function Run() {
   const [isReady, setIsReady] = React.useState(false);
@@ -22,31 +24,17 @@ export default function Run() {
     });
   }, []);
   const [result, setResult] = React.useState<DisplayResultState | null>(null);
-  const runAnalysisFromTextAndConfig = React.useCallback(
-    (textA: string, textB: string, config: ConfigurationOptions) => {
-      const result = SubstringAlgorithm.process(
-        textA,
-        textB,
-        config.minLength,
-        config.ratio,
-        config.maxStrikes,
-        20000,
-        config.kernelSize,
-        config.baseMatchSize,
-        config.algorithmSelection
-      );
-      setResult({
-        textA: textA,
-        textB: textB,
-        pairs: result,
-        minLength: config.minLength,
-        maxStrikes: config.maxStrikes,
-        ratio: config.ratio,
-        kernelSize: config.kernelSize,
-        baseMatchSize: config.baseMatchSize,
-        algorithmSelection: config.algorithmSelection,
+  React.useEffect(() => {
+    if ("launchQueue" in window) {
+      window.launchQueue.setConsumer(async (launchParams) => {
+        if (launchParams.files.length > 0) {
+          const fileA = (await launchParams.files[0].getFile()) as File;
+          setResult(await importFromFile(fileA));
+        }
       });
-    }, [setResult]);
+    }
+  }, []);
+  const runAnalysisFromTextAndConfig = useComputeAnylsis(setResult);
   const handleSubmit = React.useCallback(async (data: InputData) => {
     setStatusMessage("Processing... please wait");
     const textA = SubstringAlgorithm.clean_text(await data.fileA.text());
