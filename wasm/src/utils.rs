@@ -1,5 +1,5 @@
 extern crate wasm_bindgen;
-use rustc_hash::FxHashMap;
+use rustc_hash::{FxHashMap, FxHashSet};
 use std::{
     cmp::min,
     ops::{Index, IndexMut},
@@ -120,7 +120,7 @@ pub fn cosine_similarity(str_a: &[char], str_b: &[char]) -> f32 {
     let all_keys = a
         .keys()
         .chain(b.keys())
-        .collect::<Vec<_>>()
+        .collect::<FxHashSet<_>>()
         .into_iter();
     for i in all_keys {
         let a_freq = *a.get(i).unwrap_or(&0);
@@ -153,8 +153,6 @@ pub fn expand_matches_forward(
     ratio: f32,
     max_strike: usize,
     ret: &mut SubstringResult,
-    expand_a: bool,
-    expand_b: bool,
 ) {
     let mut new_end_a = ret.end_a;
     let mut new_end_b = ret.end_b;
@@ -165,25 +163,17 @@ pub fn expand_matches_forward(
     
     while strike < max_strike {
         // Check if we can expand forward
-        let can_expand_a = expand_a && new_end_a < a.len();
-        let can_expand_b = expand_b && new_end_b < b.len();
+        let can_expand = new_end_a < a.len() && new_end_b < b.len();
         
-        if !can_expand_a && !can_expand_b {
+        if !can_expand {
+            // If we cannot complete what was requested, then exit early
             break;
         }
         
         // Expand
-        if can_expand_a {
-            new_end_a += 1;
-            new_len += 1;
-        }
-        
-        if can_expand_b {
-            new_end_b += 1;
-            if !can_expand_a {
-                new_len += 1;
-            }
-        }
+        new_end_a += 1;
+        new_len += 1;
+        new_end_b += 1;
         
         let new_ratio = recompute_ratio(a, b, start_a, new_end_a, start_b, new_end_b, new_len);
         
@@ -206,8 +196,6 @@ pub fn expand_matches_backward(
     ratio: f32,
     max_strike: usize,
     ret: &mut SubstringResult,
-    expand_a: bool,
-    expand_b: bool,
 ) {
     let mut new_start_a: usize = ret.start_a;
     let mut new_start_b: usize = ret.start_b;
@@ -218,25 +206,17 @@ pub fn expand_matches_backward(
     
     while strike < max_strike {
         // Check if we can expand backward
-        let can_expand_a = expand_a && new_start_a > 0;
-        let can_expand_b = expand_b && new_start_b > 0;
+        let can_expand = new_start_a > 0 && new_start_b > 0;
         
-        if !can_expand_a && !can_expand_b {
+        if !can_expand {
+            // If we cannot complete what was requested, then exit early
             break;
         }
         
         // Expand
-        if can_expand_a {
-            new_start_a -= 1;
-            new_len += 1;
-        }
-        
-        if can_expand_b {
-            new_start_b -= 1;
-            if !can_expand_a {
-                new_len += 1;
-            }
-        }
+        new_start_a -= 1;
+        new_len += 1;
+        new_start_b -= 1;
         
         let new_ratio =
             recompute_ratio(a, b, new_start_a, end_a, new_start_b, end_b, new_len);
@@ -267,8 +247,6 @@ pub fn expand_match_left_and_right(
         ratio,
         max_strike,
         substr,
-        true,
-        true,
     );
     
     // Expand to the left
@@ -278,8 +256,6 @@ pub fn expand_match_left_and_right(
         ratio,
         max_strike,
         substr,
-        true,
-        true,
     );
 }
 
