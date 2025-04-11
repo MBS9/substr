@@ -161,15 +161,7 @@ pub fn expand_matches_forward(
     let start_b = ret.start_b;
     let mut strike = 0;
     
-    while strike < max_strike {
-        // Check if we can expand forward
-        let can_expand = new_end_a < a.len() && new_end_b < b.len();
-        
-        if !can_expand {
-            // If we cannot complete what was requested, then exit early
-            break;
-        }
-        
+    while strike < max_strike && new_end_a < a.len() - 1 && new_end_b < b.len() - 1 {
         // Expand
         new_end_a += 1;
         new_len += 1;
@@ -204,14 +196,7 @@ pub fn expand_matches_backward(
     let end_b = ret.end_b;
     let mut strike = 0;
     
-    while strike < max_strike {
-        // Check if we can expand backward
-        let can_expand = new_start_a > 0 && new_start_b > 0;
-        
-        if !can_expand {
-            // If we cannot complete what was requested, then exit early
-            break;
-        }
+    while strike < max_strike && new_start_a > 0 && new_start_b > 0{
         
         // Expand
         new_start_a -= 1;
