@@ -12,15 +12,9 @@ type Ngrams<'a> = FxHashMap<&'a [char], Vec<usize>>;
 fn build_ngrams(text: &[char], kernel_size: usize) -> Ngrams {
     let mut ngrams: Ngrams =
         FxHashMap::with_capacity_and_hasher(text.len()-kernel_size, FxBuildHasher);
-    for i in (0..(text.len()-kernel_size)).into_iter() {
-        let end_of_gram = min(i + kernel_size, text.len());
-        let gram = &text[i..end_of_gram];
-        if let Some(locs) = ngrams.get_mut(gram) {
-            locs.push(i);
-        } else {
-            ngrams.insert(gram, vec![i]);
-        }
-    }
+    text.windows(kernel_size).enumerate().for_each(|(i, gram)| {
+        ngrams.entry(gram).or_insert_with(Vec::new).push(i);
+    });
     ngrams
 }
 
