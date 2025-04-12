@@ -81,10 +81,10 @@ pub fn find_levenshtein_matches(
     let ngrams_b = build_ngrams(b, kernel_size);
     let mut ret: Vec<utils::SubstringResult> = Vec::new();
     for (gram_a, occ_a) in ngrams_a {
-        if ngrams_b.contains_key(gram_a) {
+        if let Some(occ_b) = ngrams_b.get(gram_a) {
             expand_all_matches(
                 &occ_a,
-                &ngrams_b[gram_a],
+                occ_b,
                 a,
                 b,
                 &mut ret,

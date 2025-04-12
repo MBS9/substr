@@ -117,11 +117,9 @@ pub fn cosine_similarity(str_a: &[char], str_b: &[char]) -> f32 {
     let mut dot_product = 0;
     let mut norm_a = 0;
     let mut norm_b = 0;
-    let all_keys = a
-        .keys()
-        .chain(b.keys())
-        .collect::<FxHashSet<_>>()
-        .into_iter();
+    let mut all_keys = FxHashSet::default();
+    all_keys.extend(a.keys());
+    all_keys.extend(b.keys());
     for i in all_keys {
         let a_freq = *a.get(i).unwrap_or(&0);
         let b_freq = *b.get(i).unwrap_or(&0);
