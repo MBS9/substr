@@ -39,7 +39,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
     <Box>
       <Box sx={{ mt: 4, placeItems: "center" }}>
         <Typography variant='h5' sx={{ mb: 3 }}></Typography>
-        <ImportButton onImport={onImport} variant='contained' />
+        <ImportButton disabled={disabled} onImport={onImport} variant='contained' />
       </Box>
       <form onSubmit={submitCallback}>
         <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>

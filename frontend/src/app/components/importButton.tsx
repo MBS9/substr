@@ -6,6 +6,7 @@ import { DisplayResultState } from "../types";
 export default function ImportButton(props: {
   onImport: (file: DisplayResultState) => void;
   variant?: "contained" | "outlined" | "text";
+  disabled?: boolean
 }) {
   const { onImport, variant } = props;
   const importCallback = React.useCallback(
@@ -21,7 +22,7 @@ export default function ImportButton(props: {
     [onImport]
   );
   return (
-    <Button variant={variant} component='label'>
+    <Button variant={variant} disabled={props.disabled ?? false} component='label'>
       Import Existing Project
       <input type='file' accept='*.tile' onChange={importCallback} hidden />
     </Button>
