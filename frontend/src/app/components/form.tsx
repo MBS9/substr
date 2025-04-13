@@ -36,7 +36,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
     [onSubmit]
   );
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column", textAlign: "center", placeSelf: "center" }}>
       <Box sx={{ mt: 4, placeItems: "center" }}>
         <Typography variant='h5' sx={{ mb: 3 }}></Typography>
         <ImportButton disabled={disabled} onImport={onImport} variant='contained' />
