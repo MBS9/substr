@@ -13,6 +13,7 @@ extern "C" {
     pub fn log(s: &str);
 }
 
+#[derive(Debug)]
 #[wasm_bindgen]
 pub struct SubstringResult {
     pub start_a: usize,
@@ -223,23 +224,61 @@ pub fn expand_match_left_and_right(
     ratio: f32,
     max_strike: usize,
 ) {
-    // Expand to the right
-    expand_matches_forward(
-        a,
-        b,
-        ratio,
-        max_strike,
-        substr,
-    );
-    
-    // Expand to the left
-    expand_matches_backward(
-        a,
-        b,
-        ratio,
-        max_strike,
-        substr,
-    );
+    // // Expand to the right
+    // expand_matches_forward(
+    //     a,
+    //     b,
+    //     ratio,
+    //     max_strike,
+    //     substr,
+    // );
+    // 
+    // // Expand to the left
+    // expand_matches_backward(
+    //     a,
+    //     b,
+    //     ratio,
+    //     max_strike,
+    //     substr,
+    // );
+    let mut strikes = 0;
+    while strikes < 3 {
+        if recompute_ratio(a, b, substr.start_a, substr.end_a, substr.start_b, substr.end_b, substr.len) < ratio {
+            strikes += 1;
+        } else {
+            strikes = 0;
+        }
+        substr.end_a += 1;
+        substr.end_b += 1;
+        substr.len += 1;
+        if substr.end_a > a.len() || substr.end_b > b.len() {
+            break;
+        }
+        // substr.edit_ratio = recompute_ratio(a, b, substr.start_a, substr.end_a, substr.start_b, substr.end_b, substr.len);
+    }
+    substr.end_a -= strikes;
+    substr.end_b -= strikes;
+    substr.len -= strikes;
+    substr.edit_ratio = recompute_ratio(a, b, substr.start_a, substr.end_a, substr.start_b, substr.end_b, substr.len);
+    strikes = 0;
+    while strikes < 3 {
+        if recompute_ratio(a, b, substr.start_a, substr.end_a, substr.start_b, substr.end_b, substr.len) < ratio {
+            strikes += 1;
+        } else {
+            strikes = 0;
+        }
+        substr.start_a -= 1;
+        substr.start_b -= 1;
+        substr.len += 1;
+        if substr.start_a == 0 || substr.start_b == 0 {
+            break;
+        }
+        // substr.edit_ratio = recompute_ratio(a, b, substr.start_a, substr.end_a, substr.start_b, substr.end_b, substr.len);
+    }
+    substr.start_a += strikes;
+    substr.start_b += strikes;
+    substr.len -= strikes;
+    substr.edit_ratio = recompute_ratio(a, b, substr.start_a, substr.end_a, substr.start_b, substr.end_b, substr.len);
 }
 
 pub fn expand_matches_left_and_right(

@@ -66,6 +66,8 @@ fn expand_all_matches(
                     && *occurance_b < ma.end_b
                     && *occurance_b > ma.start_b
                 {
+                    // For debugging, print the match that is being skipped
+                    utils::log(format!("Skipping match: {:?}, {:?}", occurance_a, occurance_b).as_str());
                     // This match is embedded within an existing match, so we can safely skip
                     continue 'nextMatch;
                 }
