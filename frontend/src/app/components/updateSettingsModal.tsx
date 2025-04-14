@@ -11,10 +11,14 @@ export default function UpdateSettingsModal(
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: 400,
+                width: 450,
                 bgcolor: 'background.paper',
                 boxShadow: 24,
                 p: 4,
+                display: 'grid',
+                placeItems: 'center',
+                placeSelf: 'center',
+                textAlign: 'center',
             }}>
                 <Typography variant='h6' component='h2'>
                     Update Settings

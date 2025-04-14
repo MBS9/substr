@@ -65,18 +65,16 @@ export default function Run() {
           <Typography variant='h4'>Substring Tiler</Typography>
           <Typography variant='body1'>Status: {statusMessage}</Typography>
         </header>
-        <main>
-          <div style={{ placeItems: "center" }}>
-            <Box
-              sx={{ flexGrow: 1, width: "70%", placeContent: "center", mb: 5 }}
-            >
-              <InputForm
-                onSubmit={handleSubmit}
-                disabled={!isReady}
-                onImport={setResult}
-              />
-            </Box>
-          </div>
+        <main style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            sx={{ flexGrow: 1, width: "70%", mb: 5 }}
+          >
+            <InputForm
+              onSubmit={handleSubmit}
+              disabled={!isReady}
+              onImport={setResult}
+            />
+          </Box>
         </main>
       </>
     );

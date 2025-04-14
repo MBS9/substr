@@ -36,7 +36,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
     [onSubmit]
   );
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", textAlign: "center", placeSelf: "center" }}>
+    <Box sx={{ textAlign: "center", placeItems: "center", display: "grid", placeSelf: "center" }}>
       <Box sx={{ mt: 4, placeItems: "center" }}>
         <Typography variant='h5' sx={{ mb: 3 }}></Typography>
         <ImportButton disabled={disabled} onImport={onImport} variant='contained' />
@@ -92,22 +92,22 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
         <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>
           <Chip label='Enter a few configuration options for the new files' />
         </Divider>
-        <ConfigurationForm onSubmit={() => null} >
-          {() => (
-            <>
-              <Divider> </Divider>
-              <Button
-                variant='contained'
-                type='submit'
-                disabled={disabled}
-                sx={{ mt: 4 }}
-              >
-                Create new project
-              </Button>
-            </>
-          )}
-        </ConfigurationForm>
-        <Box sx={{ placeItems: "center" }}>
+        <Box sx={{ mt: 4, placeItems: "center", display: "flex", justifyContent: "center" }}>
+          <ConfigurationForm onSubmit={() => null} >
+            {() => (
+              <>
+                <Divider> </Divider>
+                <Button
+                  variant='contained'
+                  type='submit'
+                  disabled={disabled}
+                  sx={{ mt: 4 }}
+                >
+                  Create new project
+                </Button>
+              </>
+            )}
+          </ConfigurationForm>
         </Box>
       </form>
     </Box>

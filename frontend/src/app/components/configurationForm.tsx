@@ -19,7 +19,7 @@ export default function ConfigurationForm({ children, onSubmit, currentSettings 
     const [baseMatchSize, setBaseMatchSize] = React.useState(currentSettings?.baseMatchSize ?? 10);
 
     return (
-        <Box sx={{ mt: 4, placeItems: "center" }}>
+        <Box sx={{ mt: 4, placeItems: "center", display: "grid", placeSelf: "center" }}>
             <Grid container spacing={3}>
                 <Grid>
                     <Typography variant='body1'>Minimum Length:</Typography>
@@ -90,7 +90,7 @@ export default function ConfigurationForm({ children, onSubmit, currentSettings 
                     </Select>
                 </Grid>
             </Grid>
-            <Box sx={{ width: "50%", placeSelf: "center" }}>
+            <Box sx={{ width: "70%", placeItems: "center", display: "grid", placeSelf: "center" }}>
                 <Typography id='ratio_slider' gutterBottom>
                     Ratio:
                 </Typography>
