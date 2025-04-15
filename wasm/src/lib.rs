@@ -1,13 +1,10 @@
 extern crate wasm_bindgen;
 use std::panic::{self, PanicHookInfo};
-use std::{
-    cmp::max,
-    cmp::min,
-};
+use std::{cmp::max, cmp::min};
 use wasm_bindgen::prelude::*;
 
-mod matrix;
 mod comparativus;
+mod matrix;
 mod utils;
 
 #[derive(PartialEq)]
@@ -61,38 +58,11 @@ pub fn process(
     if levenshtein_distances.is_empty() {
         return Vec::new();
     }
-    let mut result: Vec<utils::Result> = Vec::with_capacity(levenshtein_distances.len() * 2 - 1);
-    for (elem, elem2) in levenshtein_distances[..levenshtein_distances.len() - 1]
-        .iter()
-        .zip(levenshtein_distances[1..].iter())
-    {
-        if elem.end_a >= elem2.start_a {
-            continue;
-        }
-        let start_b = min(elem2.end_b, elem.end_b);
-        let end_b = max(elem2.start_b, elem.start_b);
-        if start_b >= end_b {
-            continue;
-        }
-        let a = utils::Substring {
-            start: elem.end_a,
-            end: elem2.start_a,
-        };
-        let b = utils::Substring {
-            start: start_b,
-            end: end_b,
-        };
-        let similarity =
-            utils::cosine_similarity(&file_a[(a.start)..(a.end)], &file_b[(b.start)..(b.end)]);
-        result.push(utils::Result {
-            a,
-            b,
-            similarity,
-            levenshteinMatch: false,
-        });
-    }
 
-    for elem in levenshtein_distances.iter() {
+    fn add_levenshtein_match(
+        elem: &utils::SubstringResult,
+        result: &mut Vec<utils::Result>,
+    ) {
         let a = utils::Substring {
             start: elem.start_a,
             end: elem.end_a,
@@ -109,10 +79,54 @@ pub fn process(
             levenshteinMatch: true,
         });
     }
+
+    let mut result: Vec<utils::Result> = Vec::with_capacity(levenshtein_distances.len() * 2 - 1);
+    for (elem, elem2) in levenshtein_distances[..levenshtein_distances.len() - 1]
+        .iter()
+        .zip(levenshtein_distances[1..].iter())
+    {
+        {
+            add_levenshtein_match(elem, &mut result);
+        }
+        {
+            // Add cosine similarity match
+            if elem.end_a >= elem2.start_a {
+                continue;
+            }
+            let start_b = min(elem2.end_b, elem.end_b);
+            let end_b = max(elem2.start_b, elem.start_b);
+            if start_b >= end_b {
+                continue;
+            }
+            let a = utils::Substring {
+                start: elem.end_a,
+                end: elem2.start_a,
+            };
+            let b = utils::Substring {
+                start: start_b,
+                end: end_b,
+            };
+            let similarity =
+                utils::cosine_similarity(&file_a[(a.start)..(a.end)], &file_b[(b.start)..(b.end)]);
+            result.push(utils::Result {
+                a,
+                b,
+                similarity,
+                levenshteinMatch: false,
+            });
+        }
+    }
+    // Add last element
+    let elem = levenshtein_distances.last().unwrap();
+    add_levenshtein_match(elem, &mut result);
     result
 }
 
-const PUNCTUATION: [char; 44] = ['.', ',','，', '。', '：', '；', '「', '」', '？', '\n', '、', '·', '》', '《', '“', '”', '‘', '’', '！', '（', '）', '【', '】', '『', '』', '—', '～', '\n', '\r', '\t', ' ', '*', '!', '?', ':', ';', '(', ')', '[', ']', '{', '}', '<', '>'];
+const PUNCTUATION: [char; 44] = [
+    '.', ',', '，', '。', '：', '；', '「', '」', '？', '\n', '、', '·', '》', '《', '“', '”', '‘',
+    '’', '！', '（', '）', '【', '】', '『', '』', '—', '～', '\n', '\r', '\t', ' ', '*', '!', '?',
+    ':', ';', '(', ')', '[', ']', '{', '}', '<', '>',
+];
 
 #[wasm_bindgen]
 pub fn clean_text(text: String) -> String {
