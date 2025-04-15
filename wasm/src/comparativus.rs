@@ -8,12 +8,35 @@ use rustc_hash::{FxBuildHasher, FxHashMap};
 
 use crate::utils::SubstringResult;
 
-type Ngrams<'a> = FxHashMap<&'a [char], Vec<usize>>;
+struct Ngrams <'a> {
+    ngrams: FxHashMap<&'a [char], Vec<usize>>,
+    keys: Vec<&'a [char]>,
+}
+impl <'a> Ngrams<'a> {
+    fn new(size: usize) -> Self {
+        Ngrams {
+            ngrams: FxHashMap::with_capacity_and_hasher(size, FxBuildHasher),
+            keys: Vec::with_capacity(size),
+        }
+    }
+    fn add_gram(&mut self, gram: &'a [char], index: usize) {
+        if let Some(v) = self.ngrams.get_mut(gram) {
+            v.push(index);
+        } else {
+            self.ngrams.insert(gram, vec![index]);
+            self.keys.push(gram);
+        }
+    }
+    fn get(&self, gram: &'a [char]) -> Option<&Vec<usize>> {
+        self.ngrams.get(gram)
+    }
+}
+
 fn build_ngrams(text: &[char], kernel_size: usize) -> Ngrams {
     let mut ngrams: Ngrams =
-        FxHashMap::with_capacity_and_hasher(text.len()-kernel_size, FxBuildHasher);
+        Ngrams::new(text.len() - kernel_size);
     text.windows(kernel_size).enumerate().for_each(|(i, gram)| {
-        ngrams.entry(gram).or_insert_with(Vec::new).push(i);
+        ngrams.add_gram(gram, i);
     });
     ngrams
 }
@@ -80,10 +103,10 @@ pub fn find_levenshtein_matches(
     let ngrams_a = build_ngrams(a, kernel_size);
     let ngrams_b = build_ngrams(b, kernel_size);
     let mut ret: Vec<utils::SubstringResult> = Vec::new();
-    for (gram_a, occ_a) in ngrams_a {
+    for &gram_a in &ngrams_a.keys {
         if let Some(occ_b) = ngrams_b.get(gram_a) {
             expand_all_matches(
-                &occ_a,
+                ngrams_a.get(gram_a).unwrap(),
                 occ_b,
                 a,
                 b,
