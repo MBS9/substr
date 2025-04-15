@@ -92,7 +92,7 @@ export default function ConfigurationForm({ children, onSubmit, currentSettings 
             </Grid>
             <Box sx={{ width: "70%", placeItems: "center", display: "grid", placeSelf: "center" }}>
                 <Typography id='ratio_slider' gutterBottom>
-                    Ratio:
+                    Ratio: {ratio}
                 </Typography>
                 <Slider
                     name='ratio'
