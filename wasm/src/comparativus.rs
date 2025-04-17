@@ -8,11 +8,11 @@ use rustc_hash::{FxBuildHasher, FxHashMap};
 
 use crate::utils::SubstringResult;
 
-struct Ngrams <'a> {
+struct Ngrams<'a> {
     ngrams: FxHashMap<&'a [char], Vec<usize>>,
     keys: Vec<&'a [char]>,
 }
-impl <'a> Ngrams<'a> {
+impl<'a> Ngrams<'a> {
     fn new(size: usize) -> Self {
         Ngrams {
             ngrams: FxHashMap::with_capacity_and_hasher(size, FxBuildHasher),
@@ -33,8 +33,7 @@ impl <'a> Ngrams<'a> {
 }
 
 fn build_ngrams(text: &[char], kernel_size: usize) -> Ngrams {
-    let mut ngrams: Ngrams =
-        Ngrams::new(text.len() - kernel_size);
+    let mut ngrams: Ngrams = Ngrams::new(text.len() - kernel_size);
     text.windows(kernel_size).enumerate().for_each(|(i, gram)| {
         ngrams.add_gram(gram, i);
     });
@@ -47,11 +46,11 @@ fn expand_all_matches(
     text_a: &[char],
     text_b: &[char],
     results: &mut Vec<utils::SubstringResult>,
-    ratio: f32,
+    min_ratio: f32,
     max_strike: usize,
     max_substrings: usize,
     base_match_size: usize,
-    min_len: usize
+    min_len: usize,
 ) {
     'outer: for occurance_a in occ_a {
         'nextMatch: for occurance_b in occ_b {
@@ -79,13 +78,22 @@ fn expand_all_matches(
                 edit_ratio: 1.0,
             };
             ma.len = ma.end_a - ma.start_a; // This may not necessarily be the same as base_match_size
-            while ma.start_a < ma.end_a && ma.start_b < ma.end_b && utils::recompute_ratio(text_a, text_b, ma.start_a, ma.end_a, ma.start_b, ma.end_b, ma.len) < ratio {
+            ma.edit_ratio = utils::recompute_ratio(
+                // This is the ratio of the match, which has been set as 1.0 before, but we need the real value
+                text_a, text_b, ma.start_a, ma.end_a, ma.start_b, ma.end_b, ma.len,
+            );
+            while ma.start_a < ma.end_a && ma.start_b < ma.end_b && ma.edit_ratio < min_ratio {
                 ma.len -= 1;
                 ma.end_a -= 1;
                 ma.end_b -= 1;
+                ma.edit_ratio = utils::recompute_ratio(
+                    text_a, text_b, ma.start_a, ma.end_a, ma.start_b, ma.end_b, ma.len,
+                );
             }
-            utils::expand_match_left_and_right(&mut ma, text_a, text_b, ratio, max_strike);
-            if ma.len >= min_len { results.push(ma)};
+            utils::expand_match_left_and_right(&mut ma, text_a, text_b, min_ratio, max_strike);
+            if ma.len >= min_len {
+                results.push(ma)
+            };
         }
     }
 }
@@ -98,7 +106,7 @@ pub fn find_levenshtein_matches(
     max_substrings: usize,
     max_strikes: usize,
     kernel_size: usize,
-    base_match_size: usize
+    base_match_size: usize,
 ) -> Vec<SubstringResult> {
     let ngrams_a = build_ngrams(a, kernel_size);
     let ngrams_b = build_ngrams(b, kernel_size);
