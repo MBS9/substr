@@ -77,19 +77,18 @@ export default function ConfigurationForm({ children, onSubmit, currentSettings,
                 </Grid>
                 <Grid>
                     <Typography variant='body1'>Algorithm</Typography>
-                    <Select
+                    <TextField
                         disabled={UIDisabled}
+                        select
                         label='Algorithm'
                         name='algorithm_selection'
-                        onChange={(e) => setAlgorithmSelection(e.target.value as Algorithm)}
+                        onChange={(e) => setAlgorithmSelection(parseInt(e.target.value) as Algorithm)}
                         value={algorithmSelection}
                         variant='standard'
-                        size="medium"
-                        inputProps={{ "aria-label": "Select algorithm" }}
                     >
                         <MenuItem value={Algorithm.Comparativus}>Comparativus</MenuItem>
                         <MenuItem value={Algorithm.Matrix}>Matrix</MenuItem>
-                    </Select>
+                    </TextField>
                 </Grid>
             </Grid>
             <Box sx={{ width: "75%", placeItems: "center", display: "grid", placeSelf: "center", mt: 4 }}>
