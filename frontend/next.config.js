@@ -5,12 +5,16 @@ const path = require("path");
 const nextConfig = {
   output: "export",
   webpack: (config, options) => {
-    config.plugins.push(
-      new WasmPackPlugin({
-        crateDirectory: path.join(__dirname, "../wasm"),
-        extraArgs: "--target web",
-      })
-    );
+    if (!options.isServer) {
+      config.plugins.push(
+        new WasmPackPlugin({
+          crateDirectory: path.join(__dirname, "../wasm"),
+          extraArgs: "--target bundler",
+        })
+      );
+      config.output.environment = { ...config.output.environment, asyncFunction: true };
+    }
+    config.experiments.asyncWebAssembly = true;
     return config;
   },
 };

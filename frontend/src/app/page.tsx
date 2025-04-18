@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react';
+import React from 'react';
 import * as SubstringAlgorithm from 'algo-wasm';
 import { InputForm } from './components/form';
 import { ConfigurationOptions, DisplayResultState, InputData } from './types';
@@ -12,19 +12,13 @@ import useComputeAnylsis from './utils/recompute-project';
 import { importFromFile } from './utils/file-format';
 
 export default function Run() {
-  const [isReady, setIsReady] = React.useState(false);
+  const [isReady, setIsReady] = React.useState(true);
   const [statusMessage, setStatusMessage] = React.useState(
-    "Loading wasm module..."
+    "Loading... please wait"
   );
-  useEffect(() => {
-    SubstringAlgorithm.default().then(() => {
-      console.log("Wasm initialized");
-      setIsReady(true);
-      setStatusMessage("Ready");
-    });
-  }, []);
   const [result, setResult] = React.useState<DisplayResultState | null>(null);
   React.useEffect(() => {
+    setStatusMessage("Ready to process files");
     if ("launchQueue" in window) {
       window.launchQueue.setConsumer(async (launchParams) => {
         if (launchParams.files.length > 0) {

@@ -60,6 +60,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
             <input
               type='file'
               name='a'
+              accept="text/plain"
               hidden
               required
               onChange={(e) =>
@@ -79,6 +80,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
               type='file'
               name='b'
               hidden
+              accept="text/plain"
               required
               onChange={(e) =>
                 e.target.files?.[0]
