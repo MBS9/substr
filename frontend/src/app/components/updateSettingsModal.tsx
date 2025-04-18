@@ -17,7 +17,6 @@ export default function UpdateSettingsModal(
                 p: 4,
                 display: 'grid',
                 placeItems: 'center',
-                placeSelf: 'center',
                 textAlign: 'center',
             }}>
                 <Typography variant='h6' component='h2'>

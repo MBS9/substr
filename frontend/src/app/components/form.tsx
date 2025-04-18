@@ -53,6 +53,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
           <Button
             variant='outlined'
             component='label'
+            disabled={disabled}
             endIcon={fileASelected ? <CheckIcon /> : null}
             sx={{ mr: 3 }}
           >
@@ -73,6 +74,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
           <Button
             variant='outlined'
             component='label'
+            disabled={disabled}
             endIcon={fileBSelected ? <CheckIcon /> : null}
           >
             File B
@@ -94,8 +96,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
         <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>
           <Chip label='Enter a few configuration options for the new files' />
         </Divider>
-        <Box sx={{ mt: 4, placeItems: "center", display: "flex", justifyContent: "center" }}>
-          <ConfigurationForm onSubmit={() => null} >
+        <ConfigurationForm onSubmit={() => null} disabled={disabled}>
             {() => (
               <>
                 <Divider> </Divider>
@@ -109,8 +110,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
                 </Button>
               </>
             )}
-          </ConfigurationForm>
-        </Box>
+        </ConfigurationForm>
       </form>
     </Box>
   );

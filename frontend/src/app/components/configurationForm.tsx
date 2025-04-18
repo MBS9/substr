@@ -5,11 +5,12 @@ import { ConfigurationOptions } from "../types";
 
 export type TConfigurationForm = ConfigurationOptions
 
-export default function ConfigurationForm({ children, onSubmit, currentSettings }:
+export default function ConfigurationForm({ children, onSubmit, currentSettings, disabled }:
     {
         children: (submit: () => void) => JSX.Element,
         onSubmit: (data: TConfigurationForm) => void,
-        currentSettings?: TConfigurationForm
+        currentSettings?: TConfigurationForm,
+        disabled?: boolean,
     }) {
     const [minLength, setMinLength] = React.useState(currentSettings?.minLength ?? 7);
     const [ratio, setRatio] = React.useState(currentSettings?.ratio ?? 0.8);
@@ -17,14 +18,15 @@ export default function ConfigurationForm({ children, onSubmit, currentSettings 
     const [kernelSize, setKernelSize] = React.useState(currentSettings?.kernelSize ?? 4);
     const [algorithmSelection, setAlgorithmSelection] = React.useState(currentSettings?.algorithmSelection ?? Algorithm.Comparativus);
     const [baseMatchSize, setBaseMatchSize] = React.useState(currentSettings?.baseMatchSize ?? 10);
+    const UIDisabled = disabled ?? false;
 
     return (
-        <Box sx={{ mt: 4, placeItems: "center", display: "grid", placeSelf: "center" }}>
-            <Grid container spacing={3}>
+        <Box sx={{ mt: 4, placeContent: "center", display: "grid", justifyItems: "center" }}>
+            <Grid container spacing={3} sx={{ placeContent: "center" }}>
                 <Grid>
                     <Typography variant='body1'>Minimum Length:</Typography>
                     <TextField
-                        fullWidth
+                        disabled={UIDisabled}
                         variant='standard'
                         type='number'
                         name='min_length'
@@ -37,7 +39,7 @@ export default function ConfigurationForm({ children, onSubmit, currentSettings 
                 <Grid>
                     <Typography variant='body1'>Max Strikes:</Typography>
                     <TextField
-                        fullWidth
+                        disabled={UIDisabled}
                         variant='standard'
                         type='number'
                         name='strikes'
@@ -50,7 +52,7 @@ export default function ConfigurationForm({ children, onSubmit, currentSettings 
                 <Grid>
                     <Typography variant='body1'>Kernel Size</Typography>
                     <TextField
-                        fullWidth
+                        disabled={UIDisabled}
                         variant='standard'
                         type='number'
                         name='kernel_size'
@@ -63,7 +65,7 @@ export default function ConfigurationForm({ children, onSubmit, currentSettings 
                 <Grid>
                     <Typography variant='body1'>Base Match Size</Typography>
                     <TextField
-                        fullWidth
+                        disabled={UIDisabled}
                         variant='standard'
                         type='number'
                         name='base_match_size'
@@ -76,13 +78,13 @@ export default function ConfigurationForm({ children, onSubmit, currentSettings 
                 <Grid>
                     <Typography variant='body1'>Algorithm</Typography>
                     <Select
-                        fullWidth
+                        disabled={UIDisabled}
                         label='Algorithm'
                         name='algorithm_selection'
                         onChange={(e) => setAlgorithmSelection(e.target.value as Algorithm)}
                         value={algorithmSelection}
                         variant='standard'
-                        displayEmpty
+                        size="medium"
                         inputProps={{ "aria-label": "Select algorithm" }}
                     >
                         <MenuItem value={Algorithm.Comparativus}>Comparativus</MenuItem>
@@ -90,12 +92,13 @@ export default function ConfigurationForm({ children, onSubmit, currentSettings 
                     </Select>
                 </Grid>
             </Grid>
-            <Box sx={{ width: "70%", placeItems: "center", display: "grid", placeSelf: "center" }}>
+            <Box sx={{ width: "75%", placeItems: "center", display: "grid", placeSelf: "center", mt: 4 }}>
                 <Typography id='ratio_slider' gutterBottom>
                     Ratio: {ratio}
                 </Typography>
                 <Slider
                     name='ratio'
+                    disabled={UIDisabled}
                     onChange={(e, value) => setRatio(value as number)}
                     value={ratio}
                     step={0.01}

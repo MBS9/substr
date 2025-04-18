@@ -73,9 +73,9 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
         >
           <SaveAsIcon color="inherit" />
         </IconButton>
-        <Button onClick={openModal} color='inherit'>
+        <IconButton onClick={openModal} color='inherit'>
           <SettingsIcon color="inherit" />
-        </Button>
+        </IconButton>
         <Typography variant='body1' sx={{ ml: 4 }}>
           Minimum Length: {result.minLength}
         </Typography>
