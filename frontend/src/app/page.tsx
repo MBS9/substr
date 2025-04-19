@@ -18,16 +18,18 @@ export default function Run() {
   );
   const [result, setResult] = React.useState<DisplayResultState | null>(null);
   React.useEffect(() => {
-    setStatusMessage("Ready to process files");
-    setIsReady(true);
-    if ("launchQueue" in window) {
-      window.launchQueue.setConsumer(async (launchParams) => {
-        if (launchParams.files.length > 0) {
-          const fileA = (await launchParams.files[0].getFile()) as File;
-          setResult(await importFromFile(fileA));
-        }
-      });
-    }
+    SubstringAlgorithm.default().then(() => {
+      setStatusMessage("Ready to process files");
+      setIsReady(true);
+      if ("launchQueue" in window) {
+        window.launchQueue.setConsumer(async (launchParams) => {
+          if (launchParams.files.length > 0) {
+            const fileA = (await launchParams.files[0].getFile()) as File;
+            setResult(await importFromFile(fileA));
+          }
+        });
+      }
+    });
   }, []);
   const runAnalysisFromTextAndConfig = useComputeAnylsis(setResult);
   const handleSubmit = React.useCallback(async (data: InputData) => {
