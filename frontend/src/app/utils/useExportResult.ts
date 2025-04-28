@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { DisplayResultState } from "../types";
-import { exportToFile } from "../utils/file-format";
+import { exportToFile } from "./file-format";
 
 export default function useExportResult(result: DisplayResultState) {
     const exportResult = useCallback(async () => {
