@@ -2,9 +2,9 @@ use std::cmp::min;
 
 use crate::utils::*;
 
-pub fn find_levenshtein_matches(
-    a: &[char],
-    b: &[char],
+pub fn find_levenshtein_matches<T: Eq>(
+    a: &[T],
+    b: &[T],
     min_len: usize,
     ratio: f32,
     max_substrings: usize,
@@ -13,8 +13,9 @@ pub fn find_levenshtein_matches(
     let mut ret: Vec<SubstringResult> = Vec::new();
     let mut l: EfficientMatrix<MatrixElement> =
         EfficientMatrix::new(MatrixElement { len: 0 }, b.len()+1);
-    for (mut i, c) in a.into_iter().chain(&[char::from(0)]).enumerate() {
-        for (mut j, d) in b.into_iter().chain(&[char::from(1)]).enumerate() {
+    // There is a bug where the last element must be different from other last elements, or the last substring will be ignored
+    for (mut i, c) in a.into_iter().enumerate() {
+        for (mut j, d) in b.into_iter().enumerate() {
             l[i][j].zero();
             if c == d {
                 if i == 0 || j == 0 {

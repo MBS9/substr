@@ -14,7 +14,9 @@ export default function useComputeAnalsys(setResult: (result: DisplayResultState
                 20000,
                 config.kernelSize,
                 config.baseMatchSize,
-                config.algorithmSelection
+                config.algorithmSelection,
+                [],
+                []
             );
             setResult({
                 textA: textA,

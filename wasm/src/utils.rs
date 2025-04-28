@@ -85,7 +85,7 @@ impl<T> IndexMut<usize> for EfficientMatrix<T> {
     }
 }
 
-pub fn levenshtein_edit_distance(a_chars: &[char], b_chars: &[char]) -> usize {
+pub fn levenshtein_edit_distance<T: Eq>(a_chars: &[T], b_chars: &[T]) -> usize {
     let mut l = EfficientMatrix::new(0, b_chars.len() + 1);
 
     for j in 0..(b_chars.len() + 1) {
@@ -131,9 +131,9 @@ pub fn cosine_similarity(str_a: &[char], str_b: &[char]) -> f32 {
     similarity
 }
 
-pub fn recompute_ratio(
-    a: &[char],
-    b: &[char],
+pub fn recompute_ratio<T: Eq>(
+    a: &[T],
+    b: &[T],
     start_a: usize,
     new_end_a: usize,
     start_b: usize,
@@ -145,9 +145,9 @@ pub fn recompute_ratio(
 }
 
 // Helper function to expand matches forward (right)
-pub fn expand_matches_forward(
-    a: &[char],
-    b: &[char],
+pub fn expand_matches_forward<T: Eq>(
+    a: &[T],
+    b: &[T],
     ratio: f32,
     max_strike: usize,
     ret: &mut SubstringResult,
@@ -180,9 +180,9 @@ pub fn expand_matches_forward(
 }
 
 // Helper function to expand matches backward (left)
-pub fn expand_matches_backward(
-    a: &[char],
-    b: &[char],
+pub fn expand_matches_backward<T: Eq>(
+    a: &[T],
+    b: &[T],
     ratio: f32,
     max_strike: usize,
     ret: &mut SubstringResult,
@@ -216,10 +216,10 @@ pub fn expand_matches_backward(
     }
 }
 
-pub fn expand_match_left_and_right(
+pub fn expand_match_left_and_right<T: Eq>(
     substr: &mut SubstringResult,
-    a: &[char],
-    b: &[char],
+    a: &[T],
+    b: &[T],
     ratio: f32,
     max_strike: usize,
 ) {
@@ -242,10 +242,10 @@ pub fn expand_match_left_and_right(
     );
 }
 
-pub fn expand_matches_left_and_right(
+pub fn expand_matches_left_and_right<T: Eq>(
     ret: &mut [SubstringResult],
-    a: &[char],
-    b: &[char],
+    a: &[T],
+    b: &[T],
     ratio: f32,
     max_strike: usize,
 ) {

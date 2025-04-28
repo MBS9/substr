@@ -3,14 +3,14 @@ use std::cmp::min;
 /*
 * This algorithm is equivalent to the algorithm at https://github.com/MGelein/comparativus
 */
-use crate::utils::{self};
+use crate::{synonyms::Token, utils::{self}};
 use rustc_hash::{FxBuildHasher, FxHashMap};
 
 use crate::utils::SubstringResult;
 
 struct Ngrams<'a> {
-    ngrams: FxHashMap<&'a [char], Vec<usize>>,
-    keys: Vec<&'a [char]>,
+    ngrams: FxHashMap<&'a [Token<'a>], Vec<usize>>,
+    keys: Vec<&'a [Token<'a>]>,
 }
 impl<'a> Ngrams<'a> {
     fn new(size: usize) -> Self {
@@ -19,7 +19,7 @@ impl<'a> Ngrams<'a> {
             keys: Vec::with_capacity(size),
         }
     }
-    fn add_gram(&mut self, gram: &'a [char], index: usize) {
+    fn add_gram(&mut self, gram: &'a [Token], index: usize) {
         if let Some(v) = self.ngrams.get_mut(gram) {
             v.push(index);
         } else {
@@ -27,12 +27,19 @@ impl<'a> Ngrams<'a> {
             self.keys.push(gram);
         }
     }
-    fn get(&self, gram: &'a [char]) -> Option<&Vec<usize>> {
-        self.ngrams.get(gram)
+    fn get(&self, gram: &'a [Token]) -> Option<&Vec<usize>> {
+        for key in &self.keys {
+            if key == &gram {
+                return self.ngrams.get(key);
+            }
+        }
+
+        // If we don't find the key, we can return None
+        None
     }
 }
 
-fn build_ngrams(text: &[char], kernel_size: usize) -> Ngrams {
+fn build_ngrams<'a>(text: &'a [Token<'a>], kernel_size: usize) -> Ngrams<'a> {
     let mut ngrams: Ngrams = Ngrams::new(text.len() - kernel_size);
     text.windows(kernel_size).enumerate().for_each(|(i, gram)| {
         ngrams.add_gram(gram, i);
@@ -43,8 +50,8 @@ fn build_ngrams(text: &[char], kernel_size: usize) -> Ngrams {
 fn expand_all_matches(
     occ_a: &Vec<usize>,
     occ_b: &Vec<usize>,
-    text_a: &[char],
-    text_b: &[char],
+    text_a: &[Token],
+    text_b: &[Token],
     results: &mut Vec<utils::SubstringResult>,
     min_ratio: f32,
     max_strike: usize,
@@ -99,8 +106,8 @@ fn expand_all_matches(
 }
 
 pub fn find_levenshtein_matches(
-    a: &[char],
-    b: &[char],
+    a: &[Token],
+    b: &[Token],
     min_len: usize,
     ratio: f32,
     max_substrings: usize,
