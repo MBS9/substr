@@ -15,8 +15,8 @@ export default function useComputeAnalsys(setResult: (result: DisplayResultState
                 config.kernelSize,
                 config.baseMatchSize,
                 config.algorithmSelection,
-                [],
-                []
+                config.synoymsA,
+                config.synoymsB
             );
             setResult({
                 textA: textA,
@@ -28,6 +28,8 @@ export default function useComputeAnalsys(setResult: (result: DisplayResultState
                 kernelSize: config.kernelSize,
                 baseMatchSize: config.baseMatchSize,
                 algorithmSelection: config.algorithmSelection,
+                synoymsA: config.synoymsA,
+                synoymsB: config.synoymsB,
             });
         },
         [setResult]

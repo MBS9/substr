@@ -44,6 +44,8 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
       kernelSize: result.kernelSize,
       baseMatchSize: result.baseMatchSize,
       algorithmSelection: result.algorithmSelection,
+      synoymsA: [],
+      synoymsB: [],
     };
     result.pairs.forEach((pair) => {
       jsResultCopy.pairs.push({
@@ -52,6 +54,18 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
         similarity: pair.similarity,
         levenshteinMatch: pair.levenshteinMatch,
         hold: pair.hold,
+      });
+      result.synoymsA.forEach((synonym) => {
+        jsResultCopy.synoymsA.push({
+          synonyms: synonym.synonyms.map((s) => ({ start: s.start, end: s.end })),
+          word: { start: synonym.word.start, end: synonym.word.end } as any,
+        } as any);
+      });
+      result.synoymsB.forEach((synonym) => {
+        jsResultCopy.synoymsB.push({
+          synonyms: synonym.synonyms.map((s) => ({ start: s.start, end: s.end })),
+          word: { start: synonym.word.start, end: synonym.word.end } as any,
+        } as any);
       });
     });
     const file = await exportToFile(jsResultCopy);
