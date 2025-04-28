@@ -47,6 +47,8 @@ export default function Run() {
   const onConfigurationChange = React.useCallback(
     (data: ConfigurationOptions) => {
       if (result === null) return null;
+      alert(data.synoymsA)
+      alert(data.synoymsB)
       runAnalysisFromTextAndConfig(
         result.textA,
         result.textB,

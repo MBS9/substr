@@ -2,7 +2,7 @@ use std::hash::Hash;
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 #[wasm_bindgen]
 pub struct Word {
     pub start: usize,
@@ -10,6 +10,23 @@ pub struct Word {
 }
 
 #[wasm_bindgen]
+impl Word {
+    #[wasm_bindgen(constructor)]
+    pub fn new(start: usize, end: usize) -> Self {
+        Word { start, end }
+    }
+
+    #[wasm_bindgen]
+    pub fn clone(&self) -> Self {
+        Word {
+            start: self.start,
+            end: self.end,
+        }
+    }
+}
+
+#[wasm_bindgen]
+#[derive(Debug)]
 pub struct Synonym {
     pub word: Word,
     synonyms: Vec<Word>,
@@ -25,8 +42,16 @@ impl Synonym {
     pub fn set_synonyms(&mut self, synonyms: Vec<Word>) {
         self.synonyms = synonyms;
     }
+    #[wasm_bindgen(constructor)]
+    pub fn new(word: Word, synonyms: Vec<Word>) -> Self {
+        Synonym {
+            word: word,
+            synonyms: synonyms,
+        }
+    }
 }
 
+#[derive(Debug)]
 pub struct Token<'a> {
     pub start: usize,
     pub end: usize,

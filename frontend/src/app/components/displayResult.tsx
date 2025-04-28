@@ -3,12 +3,13 @@ import {
   useState,
   useCallback,
 } from "react";
-import { exportToFile } from "../utils/file-format";
 import {
   Typography,
   Box,
   IconButton,
   Snackbar,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import { useResultAnalytics } from "./useResultAnalytics";
 import { Header } from "./header";
@@ -17,6 +18,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import CloseIcon from '@mui/icons-material/Close';
 import UpdateSettingsModal from "./updateSettingsModal";
+import React from "react";
+import useExportResult from "./useExportResult";
+import { Synonym, Word } from "algo-wasm";
 
 export function ShowDiff({ result, updateConfiguration }: { result: DisplayResultState, updateConfiguration: (result: ConfigurationOptions) => void }) {
   const resultAnalytics = useResultAnalytics(result);
@@ -33,48 +37,67 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
     },
     [updateConfiguration]
   );
-  const exportResult = useCallback(async () => {
-    const jsResultCopy: DisplayResultState = {
-      textA: result.textA,
-      textB: result.textB,
-      pairs: [],
-      minLength: result.minLength,
-      ratio: result.ratio,
-      maxStrikes: result.maxStrikes,
-      kernelSize: result.kernelSize,
-      baseMatchSize: result.baseMatchSize,
-      algorithmSelection: result.algorithmSelection,
-      synoymsA: [],
-      synoymsB: [],
-    };
-    result.pairs.forEach((pair) => {
-      jsResultCopy.pairs.push({
-        a: { start: pair.a.start, end: pair.a.end } as any,
-        b: { start: pair.b.start, end: pair.b.end } as any,
-        similarity: pair.similarity,
-        levenshteinMatch: pair.levenshteinMatch,
-        hold: pair.hold,
+
+  const [contextMenu, setContextMenu] = React.useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+
+  const handleContextMenu = useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+
+    setContextMenu(
+      contextMenu === null
+        ? {
+          mouseX: event.clientX + 2,
+          mouseY: event.clientY - 6,
+        }
+        :  // Close context menu if it is already open
+        null,
+    );
+
+    const selection = document.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+
+      setTimeout(() => {
+        selection.addRange(range);
       });
-      result.synoymsA.forEach((synonym) => {
-        jsResultCopy.synoymsA.push({
-          synonyms: synonym.synonyms.map((s) => ({ start: s.start, end: s.end })),
-          word: { start: synonym.word.start, end: synonym.word.end } as any,
-        } as any);
-      });
-      result.synoymsB.forEach((synonym) => {
-        jsResultCopy.synoymsB.push({
-          synonyms: synonym.synonyms.map((s) => ({ start: s.start, end: s.end })),
-          word: { start: synonym.word.start, end: synonym.word.end } as any,
-        } as any);
-      });
-    });
-    const file = await exportToFile(jsResultCopy);
-    const url = URL.createObjectURL(file);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "myproject.tile";
-    a.click();
-  }, [result]);
+    }
+  }, []);
+
+  const handleAddSynonym = useCallback(() => {
+    const currentSelection = document.getSelection();
+    if (!currentSelection || currentSelection.rangeCount === 0) return;
+    const a = currentSelection.toString();
+    const b = prompt("Please enter the synonym for the selected text", a) as string;
+    const synonymsA = result.synoymsA;
+    const synonymsB = result.synoymsB;
+    const indexOfA = result.textA.indexOf(a);
+    const indexOfB = result.textB.indexOf(b);
+    const wordA = new Word(indexOfA, indexOfA + a.length);
+    const wordB = new Word(indexOfB, indexOfB + b.length);
+    const foundSynonymA = synonymsA.find((synonym) => synonym.word === wordA.clone());
+    if (foundSynonymA) {
+      foundSynonymA.synonyms.push(wordB.clone());
+    } else {
+      synonymsA.push(new Synonym(wordA.clone(), [wordB.clone()]));
+    }
+
+    const foundSynonymB = synonymsB.find((synonym) => synonym.word === wordB.clone());
+    if (foundSynonymB) {
+      foundSynonymB.synonyms.push(wordA.clone());
+    } else {
+      synonymsB.push(new Synonym(wordB.clone(), [wordA.clone()]));
+    }
+    setContextMenu(null);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setContextMenu(null);
+  }, []);
+
+  const exportResult = useExportResult(result);
 
   return (
     <>
@@ -108,7 +131,7 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
           Algorithm: {result.algorithmSelection}
         </Typography>
       </Header>
-      <UpdateSettingsModal settings={result} onSubmit={onSettingsChange} open={modalOpen} />
+      <UpdateSettingsModal settings={result} onSubmit={onSettingsChange} open={modalOpen} onClose={() => setModalOpen(false)} />
       <Snackbar
         message="Settings updated successfully"
         autoHideDuration={10000}
@@ -136,8 +159,20 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
             {resultAnalytics.avarageCosineSimilarity.toPrecision(4)}
           </Typography>
         </Box>
-        <DisplayHighlighting result={result} />
+        <DisplayHighlighting result={result} onContextMenu={(index, e) => { handleContextMenu(e as any) }} />
       </Box>
+      <Menu
+        open={contextMenu !== null}
+        onClose={handleClose}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem onClick={handleAddSynonym}>Add Synonym</MenuItem>
+      </Menu>
     </>
 
   );

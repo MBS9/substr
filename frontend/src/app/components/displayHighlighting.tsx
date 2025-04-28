@@ -5,8 +5,8 @@ import React from 'react';
 
 const COLOR_LIST = ["orange"];
 
-export function DisplayHighlighting(props: { result: DisplayResultState, onCharClick?: (charIndex: number) => void }) {
-    const { result, onCharClick } = props
+export function DisplayHighlighting(props: { result: DisplayResultState, onContextMenu?: (charIndex: number, e: PointerEvent) => void }) {
+    const { result, onContextMenu } = props
     const [isLoading, setIsLoading] = useState(true)
     const [aRefs, setARefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);
     const [bRefs, setBRefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);
@@ -180,7 +180,8 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
                                     highlightFromCharIndex(index, "", "green")
                                 }
                                 onMouseLeave={() => reset(index)}
-                                onMouseDown={() => (onCharClick ?? toggleHold)(index)}
+                                onMouseDown={() => toggleHold(index)}
+                                onContextMenu={(e) => onContextMenu ? onContextMenu(index, e as any) : undefined}
                             >
                                 {letter}
                             </span>
@@ -195,6 +196,7 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
                                 className='show-info spacing'
                                 style={{ fontFamily: 'simsun' }}
                                 key={index}
+                                // onContextMenu={(e) => onContextMenu ? onContextMenu(index, e as any) : undefined}
                             >
                                 {letter}
                             </span>
