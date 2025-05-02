@@ -25,6 +25,7 @@ import { useAddSynonym } from "../utils/add-synoym";
 export function ShowDiff({ result, updateConfiguration }: { result: DisplayResultState, updateConfiguration: (result: ConfigurationOptions) => void }) {
   const resultAnalytics = useResultAnalytics(result);
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const openModal = useCallback(() => {
     setModalOpen(true);
@@ -43,9 +44,9 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
     mouseY: number;
   } | null>(null);
 
-  const handleContextMenu = useCallback((event: React.MouseEvent) => {
+  const handleContextMenu = useCallback((index: number, event: React.MouseEvent) => {
     event.preventDefault();
-
+    setSelectedIndex(index);
     setContextMenu(
       contextMenu === null
         ? {
@@ -66,12 +67,12 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
     }
   }, [contextMenu]);
 
-  const addSynonym = useAddSynonym(result);
+  const addSynonym = useAddSynonym(result, updateConfiguration);
 
   const handleAddSynonym = useCallback(() => {
-    addSynonym();
+    addSynonym(selectedIndex);
     setContextMenu(null);
-  }, [addSynonym]);
+  }, [addSynonym, selectedIndex]);
 
   const handleClose = useCallback(() => {
     setContextMenu(null);
@@ -139,7 +140,7 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
             {resultAnalytics.avarageCosineSimilarity.toPrecision(4)}
           </Typography>
         </Box>
-        <DisplayHighlighting result={result} onContextMenu={(index, e) => { handleContextMenu(e as any) }} />
+        <DisplayHighlighting result={result} onContextMenu={(index, e) => { handleContextMenu(index, e as any) }} />
       </Box>
       <Menu
         open={contextMenu !== null}

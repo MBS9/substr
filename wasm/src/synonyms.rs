@@ -3,6 +3,8 @@ use std::hash::Hash;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::wasm_bindgen;
 
+use crate::utils;
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[wasm_bindgen]
 pub struct Word {
@@ -102,7 +104,7 @@ pub fn tokenize_text<'a>(
     while i < end {
         if current_synonym.is_some() {
             let synonym = current_synonym.unwrap();
-            if i >= synonym.word.start && i < synonym.word.end {
+            if i == synonym.word.start {
                 // We are in the synonym, so let's add it as a token
                 tokens.push(Token {
                     start: synonym.word.start,

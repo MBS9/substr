@@ -52,6 +52,24 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onConte
         []
     );
 
+    const underlineRange = useCallback(
+        (
+            left: number,
+            right: number,
+            color: string,
+            refSet: React.RefObject<HTMLSpanElement>[],
+        ) => {
+            for (let i = left; i < right; i++) {
+                const ref = refSet[i];
+                if (ref.current !== null) {
+                    ref.current.style.textDecoration = "underline";
+                    ref.current.style.textDecorationColor = color;
+                }
+            }
+        },
+        []
+    );
+
     const resetRange = useCallback(
         (
             left: number,
@@ -158,6 +176,26 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onConte
             });
         }
     }, [isLoading, result.pairs, highlightFromPair, resetRange, result.textA.length, result.textB.length, aRefs, bRefs]);
+
+    useEffect(() => {
+        if (isLoading) return;
+        result.synoymsA.forEach((synonym) => {
+            underlineRange(
+                synonym.word.start,
+                synonym.word.end,
+                "black",
+                aRefs
+            );
+        });
+        result.synoymsB.forEach((synonym) => {
+            underlineRange(
+                synonym.word.start,
+                synonym.word.end,
+                "black",
+                bRefs
+            );
+        });
+    }, [isLoading, result.synoymsA, result.synoymsB, aRefs, bRefs, underlineRange]);
 
     return (
         <Box>
