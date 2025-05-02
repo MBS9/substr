@@ -64,14 +64,14 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
         selection.addRange(range);
       });
     }
-  }, []);
+  }, [contextMenu]);
 
   const addSynonym = useAddSynonym(result);
 
   const handleAddSynonym = useCallback(() => {
     addSynonym();
     setContextMenu(null);
-  }, []);
+  }, [addSynonym]);
 
   const handleClose = useCallback(() => {
     setContextMenu(null);
@@ -154,6 +154,5 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
         <MenuItem onClick={handleAddSynonym}>Add Synonym</MenuItem>
       </Menu>
     </>
-
   );
 }
