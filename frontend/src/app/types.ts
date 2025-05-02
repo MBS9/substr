@@ -24,8 +24,8 @@ export type ConfigurationOptions = {
     kernelSize: number;
     baseMatchSize: number;
     algorithmSelection: Algorithm;
-    synoymsA: Synonym[];
-    synoymsB: Synonym[];
+    synoymsA: Omit<Synonym, 'free'>[];
+    synoymsB: Omit<Synonym, 'free'>[];
 };
 
 interface LaunchParams {

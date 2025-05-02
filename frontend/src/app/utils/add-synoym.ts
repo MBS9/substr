@@ -1,4 +1,3 @@
-import { Synonym, Word } from "algo-wasm";
 import { DisplayResultState } from "../types";
 import React from "react";
 
@@ -12,21 +11,21 @@ export function useAddSynonym(result: DisplayResultState) {
         const synonymsB = result.synoymsB;
         const indexOfA = result.textA.indexOf(a);
         const indexOfB = result.textB.indexOf(b);
-        const wordA = new Word(indexOfA, indexOfA + a.length);
-        const wordB = new Word(indexOfB, indexOfB + b.length);
-        const foundSynonymA = synonymsA.find((synonym) => synonym.word === wordA.clone());
+        const wordA = { start: indexOfA, end: indexOfA + a.length };
+        const wordB = { start: indexOfB, end: indexOfB + b.length };
+        const foundSynonymA = synonymsA.find((synonym) => synonym.word.end === wordA.end && synonym.word.start === wordA.start);
         if (foundSynonymA) {
-            foundSynonymA.synonyms.push(wordB.clone());
+            foundSynonymA.synonyms.push(wordB as any);
         } else {
-            synonymsA.push(new Synonym(wordA.clone(), [wordB.clone()]));
+            synonymsA.push({ synonyms: [wordB as any], word: wordA as any });
         }
 
-        const foundSynonymB = synonymsB.find((synonym) => synonym.word === wordB.clone());
+        const foundSynonymB = synonymsB.find((synonym) => synonym.word.end === wordB.end && synonym.word.start === wordB.start);
         if (foundSynonymB) {
-            foundSynonymB.synonyms.push(wordA.clone());
+            foundSynonymB.synonyms.push(wordA as any);
         } else {
-            synonymsB.push(new Synonym(wordB.clone(), [wordA.clone()]));
+            synonymsB.push({ synonyms: [wordA as any], word: wordB as any });
         }
-    }, []);
+    }, [result.synoymsA, result.synoymsB, result.textA, result.textB]);
     return handleAddSynonym;
 }

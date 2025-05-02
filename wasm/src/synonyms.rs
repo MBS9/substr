@@ -1,8 +1,9 @@
 use std::hash::Hash;
 
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::wasm_bindgen;
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[wasm_bindgen]
 pub struct Word {
     pub start: usize,
@@ -26,7 +27,7 @@ impl Word {
 }
 
 #[wasm_bindgen]
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Synonym {
     pub word: Word,
     synonyms: Vec<Word>,

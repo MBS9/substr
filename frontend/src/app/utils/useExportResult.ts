@@ -7,7 +7,7 @@ export default function useExportResult(result: DisplayResultState) {
         const jsResultCopy: DisplayResultState = {
             textA: result.textA,
             textB: result.textB,
-            pairs: [],
+            pairs: result.pairs,
             minLength: result.minLength,
             ratio: result.ratio,
             maxStrikes: result.maxStrikes,

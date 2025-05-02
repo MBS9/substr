@@ -1,6 +1,7 @@
 extern crate wasm_bindgen;
 use std::panic::{self, PanicHookInfo};
 use std::{cmp::max, cmp::min};
+use gloo_utils::format::JsValueSerdeExt;
 use wasm_bindgen::prelude::*;
 
 mod comparativus;
@@ -26,14 +27,14 @@ pub fn process(
     kernel_size: usize,
     base_match_size: usize,
     levenshtein_algorithm: Algorithm,
-    synonyms_a: Vec<synonyms::Synonym>,
-    synonyms_b: Vec<synonyms::Synonym>,
-) -> Vec<utils::Result> {
+    synonyms_a: JsValue,
+    synonyms_b: JsValue,
+) -> JsValue {
     let file_a: Vec<char> = str_a.chars().collect();
     let file_b: Vec<char> = str_b.chars().collect();
-    let mut synonyms_a = synonyms_a;
+    let mut synonyms_a = synonyms_a.into_serde::<Vec<synonyms::Synonym>>().unwrap();
     synonyms_a.sort_unstable_by_key(|s| s.word.start);
-    let mut synonyms_b = synonyms_b;
+    let mut synonyms_b = synonyms_b.into_serde::<Vec<synonyms::Synonym>>().unwrap();
     synonyms_b.sort_unstable_by_key(|s| s.word.start);
     let token_a = synonyms::tokenize_text(0, file_a.len(), &synonyms_a, file_a.as_slice());
     let token_b = synonyms::tokenize_text(0, file_b.len(), &synonyms_b, file_b.as_slice());
@@ -63,7 +64,7 @@ pub fn process(
         }
     }
     if levenshtein_distances.is_empty() {
-        return Vec::new();
+        return JsValue::from_serde(&Vec::<utils::Result>::new()).unwrap();
     }
 
     fn add_levenshtein_match(elem: &utils::SubstringResult, result: &mut Vec<utils::Result>) {
@@ -144,7 +145,7 @@ pub fn process(
         edit_ratio: token.edit_ratio,
     };
     add_levenshtein_match(&elem, &mut result);
-    result
+    return JsValue::from_serde(&result).unwrap();
 }
 
 const PUNCTUATION: [char; 44] = [

@@ -1,5 +1,6 @@
 extern crate wasm_bindgen;
 use rustc_hash::{FxHashMap, FxHashSet};
+use serde::{Deserialize, Serialize};
 use std::{
     cmp::min,
     ops::{Index, IndexMut},
@@ -25,12 +26,14 @@ pub struct SubstringResult {
 
 #[wasm_bindgen]
 #[derive(Clone, Copy)]
+#[derive(Serialize, Deserialize)]
 pub struct Substring {
     pub start: usize,
     pub end: usize,
 }
 
 #[wasm_bindgen]
+#[derive(Serialize, Deserialize)]
 pub struct Result {
     pub a: Substring,
     pub b: Substring,
