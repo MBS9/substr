@@ -3,8 +3,6 @@ use std::hash::Hash;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::utils;
-
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Serialize, Deserialize)]
 #[wasm_bindgen]
 pub struct Word {
