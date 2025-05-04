@@ -174,28 +174,24 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onConte
                     highlightFromPair(pair, "", "green", index);
                 }
             });
+            result.synonymsA.forEach((synonym) => {
+                underlineRange(
+                    synonym.word.start,
+                    synonym.word.end,
+                    "black",
+                    aRefs
+                );
+            });
+            result.synonymsB.forEach((synonym) => {
+                underlineRange(
+                    synonym.word.start,
+                    synonym.word.end,
+                    "black",
+                    bRefs
+                );
+            });
         }
-    }, [isLoading, result.pairs, highlightFromPair, resetRange, result.textA.length, result.textB.length, aRefs, bRefs]);
-
-    useEffect(() => {
-        if (isLoading) return;
-        result.synonymsA.forEach((synonym) => {
-            underlineRange(
-                synonym.word.start,
-                synonym.word.end,
-                "black",
-                aRefs
-            );
-        });
-        result.synonymsB.forEach((synonym) => {
-            underlineRange(
-                synonym.word.start,
-                synonym.word.end,
-                "black",
-                bRefs
-            );
-        });
-    }, [isLoading, result.synonymsA, result.synonymsB, aRefs, bRefs, underlineRange]);
+    }, [isLoading, result.pairs, highlightFromPair, resetRange, result.textA.length, result.textB.length, aRefs, bRefs, result.synonymsA, result.synonymsB, underlineRange]);
 
     return (
         <Box>
