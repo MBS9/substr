@@ -18,7 +18,7 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 import UpdateSettingsModal from "./updateSettingsModal";
 import React from "react";
 import useExportResult from "../utils/useExportResult";
-import { useAddSynonym } from "../utils/add-synoym";
+import { useAddSynonym } from "../utils/add-synonym";
 import { useNotification } from './showNotification';
 
 export function ShowDiff({ result, updateConfiguration }: { result: DisplayResultState, updateConfiguration: (result: ConfigurationOptions) => void }) {

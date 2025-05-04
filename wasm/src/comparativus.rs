@@ -30,7 +30,7 @@ impl<'a> Ngrams<'a> {
     fn get(&self, gram: &'a [Token]) -> Option<&Vec<usize>> {
         for key in &self.keys {
             if key == &gram {
-                // This is necessary becuase the Hash trait for Token is broken
+                // This is necessary because the Hash trait for Token is broken
                 // so we need to make sure that it is exactly the same key
                 return self.ngrams.get(key);
             }
