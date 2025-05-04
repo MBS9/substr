@@ -17,8 +17,8 @@ export default function useComputeAnalysis(
         config.kernelSize,
         config.baseMatchSize,
         config.algorithmSelection,
-        config.synoymsA,
-        config.synoymsB
+        config.synonymsA,
+        config.synonymsB
       );
       setResult({
         textA: textA,
@@ -30,8 +30,8 @@ export default function useComputeAnalysis(
         kernelSize: config.kernelSize,
         baseMatchSize: config.baseMatchSize,
         algorithmSelection: config.algorithmSelection,
-        synoymsA: config.synoymsA,
-        synoymsB: config.synoymsB,
+        synonymsA: config.synonymsA,
+        synonymsB: config.synonymsB,
       });
     },
     [setResult]

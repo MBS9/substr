@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import useComputeAnylsis from './utils/recompute-project';
 import { importFromFile } from './utils/file-format';
+import { ShowNotification } from './components/showNotification';
 
 let hotReloadCounter = 0;
 
@@ -81,9 +82,9 @@ export default function Run() {
     );
   } else {
     return (
-      <>
+      <ShowNotification>
         <ShowDiff result={result} updateConfiguration={onConfigurationChange} />
-      </>
+      </ShowNotification>
     );
   }
 }

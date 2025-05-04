@@ -7,7 +7,6 @@ import {
   Typography,
   Box,
   IconButton,
-  Snackbar,
   Menu,
   MenuItem,
 } from "@mui/material";
@@ -16,17 +15,16 @@ import { Header } from "./header";
 import { DisplayHighlighting } from './displayHighlighting';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import CloseIcon from '@mui/icons-material/Close';
 import UpdateSettingsModal from "./updateSettingsModal";
 import React from "react";
 import useExportResult from "../utils/useExportResult";
 import { useAddSynonym } from "../utils/add-synoym";
+import { useNotification } from './showNotification';
 
 export function ShowDiff({ result, updateConfiguration }: { result: DisplayResultState, updateConfiguration: (result: ConfigurationOptions) => void }) {
   const resultAnalytics = useResultAnalytics(result);
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const showNotification = useNotification();
   const openModal = useCallback(() => {
     setModalOpen(true);
   }, []);
@@ -34,9 +32,9 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
     (settings: ConfigurationOptions) => {
       setModalOpen(false);
       updateConfiguration(settings);
-      setSnackbarOpen(true);
+      showNotification("Settings updated and analysis has been re-run.");
     },
-    [updateConfiguration]
+    [showNotification, updateConfiguration]
   );
 
   const [contextMenu, setContextMenu] = React.useState<{
@@ -46,7 +44,6 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
 
   const handleContextMenu = useCallback((index: number, event: React.MouseEvent) => {
     event.preventDefault();
-    setSelectedIndex(index);
     setContextMenu(
       contextMenu === null
         ? {
@@ -70,9 +67,9 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
   const addSynonym = useAddSynonym(result, updateConfiguration);
 
   const handleAddSynonym = useCallback(() => {
-    addSynonym(selectedIndex);
+    addSynonym();
     setContextMenu(null);
-  }, [addSynonym, selectedIndex]);
+  }, [addSynonym]);
 
   const handleClose = useCallback(() => {
     setContextMenu(null);
@@ -113,17 +110,6 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
         </Typography>
       </Header>
       <UpdateSettingsModal settings={result} onSubmit={onSettingsChange} open={modalOpen} onClose={() => setModalOpen(false)} />
-      <Snackbar
-        message="Settings updated successfully"
-        autoHideDuration={10000}
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-        action={
-          <IconButton size="small" color="inherit" onClick={() => setSnackbarOpen(false)}>
-            <CloseIcon />
-          </IconButton>
-        }
-      />
       <Box>
         <Box sx={{ mt: 2, mb: 2 }}>
           <Typography variant='h5'>Quick Summary of Results</Typography>

@@ -18,14 +18,14 @@ export type InputData = {
 } & ConfigurationOptions;
 
 export type ConfigurationOptions = {
-    minLength: number;
-    ratio: number;
-    maxStrikes: number;
-    kernelSize: number;
-    baseMatchSize: number;
-    algorithmSelection: Algorithm;
-    synoymsA: Omit<Synonym, 'free'>[];
-    synoymsB: Omit<Synonym, 'free'>[];
+  minLength: number;
+  ratio: number;
+  maxStrikes: number;
+  kernelSize: number;
+  baseMatchSize: number;
+  algorithmSelection: Algorithm;
+  synonymsA: Omit<Synonym, "free">[];
+  synonymsB: Omit<Synonym, "free">[];
 };
 
 interface LaunchParams {

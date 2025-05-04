@@ -179,7 +179,7 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onConte
 
     useEffect(() => {
         if (isLoading) return;
-        result.synoymsA.forEach((synonym) => {
+        result.synonymsA.forEach((synonym) => {
             underlineRange(
                 synonym.word.start,
                 synonym.word.end,
@@ -187,7 +187,7 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onConte
                 aRefs
             );
         });
-        result.synoymsB.forEach((synonym) => {
+        result.synonymsB.forEach((synonym) => {
             underlineRange(
                 synonym.word.start,
                 synonym.word.end,
@@ -195,7 +195,7 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onConte
                 bRefs
             );
         });
-    }, [isLoading, result.synoymsA, result.synoymsB, aRefs, bRefs, underlineRange]);
+    }, [isLoading, result.synonymsA, result.synonymsB, aRefs, bRefs, underlineRange]);
 
     return (
         <Box>
@@ -220,6 +220,7 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onConte
                                 onMouseLeave={() => reset(index)}
                                 onMouseDown={() => toggleHold(index)}
                                 onContextMenu={(e) => onContextMenu ? onContextMenu(index, e as any) : undefined}
+                                id={`a-${index}`}
                             >
                                 {letter}
                             </span>
@@ -234,7 +235,8 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onConte
                                 className='show-info spacing'
                                 style={{ fontFamily: 'simsun' }}
                                 key={index}
-                                // onContextMenu={(e) => onContextMenu ? onContextMenu(index, e as any) : undefined}
+                                onContextMenu={(e) => onContextMenu ? onContextMenu(index, e as any) : undefined}
+                                id={`b-${index}`}
                             >
                                 {letter}
                             </span>
