@@ -10,6 +10,9 @@ import {
 } from "@mui/material";
 import useComputeAnylsis from './utils/recompute-project';
 import { importFromFile } from './utils/file-format';
+import { ShowNotification } from './components/showNotification';
+
+let hotReloadCounter = 0;
 
 export default function Run() {
   const [isReady, setIsReady] = React.useState(false);
@@ -17,6 +20,7 @@ export default function Run() {
     "Loading... please wait"
   );
   const [result, setResult] = React.useState<DisplayResultState | null>(null);
+  if (process.env.NODE_ENV === "development") hotReloadCounter++;
   React.useEffect(() => {
     SubstringAlgorithm.default().then(() => {
       setStatusMessage("Ready to process files");
@@ -30,7 +34,8 @@ export default function Run() {
         });
       }
     });
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hotReloadCounter]);
   const runAnalysisFromTextAndConfig = useComputeAnylsis(setResult);
   const handleSubmit = React.useCallback(async (data: InputData) => {
     setStatusMessage("Processing... please wait");
@@ -77,9 +82,9 @@ export default function Run() {
     );
   } else {
     return (
-      <>
+      <ShowNotification>
         <ShowDiff result={result} updateConfiguration={onConfigurationChange} />
-      </>
+      </ShowNotification>
     );
   }
 }

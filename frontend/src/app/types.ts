@@ -1,4 +1,4 @@
-import { Substring as WasmSubstring, Result, Algorithm } from "algo-wasm";
+import { Substring as WasmSubstring, Result, Algorithm, Synonym } from "algo-wasm";
 
 export type Substring = WasmSubstring;
 
@@ -10,13 +10,7 @@ export type DisplayResultState = {
     textA: string;
     textB: string;
     pairs: Pair[];
-    minLength: number;
-    ratio: number;
-    maxStrikes: number;
-    kernelSize: number;
-    baseMatchSize: number;
-    algorithmSelection: Algorithm;
-};
+} & ConfigurationOptions;
 
 export type InputData = {
     fileA: File,
@@ -24,12 +18,14 @@ export type InputData = {
 } & ConfigurationOptions;
 
 export type ConfigurationOptions = {
-    minLength: number;
-    ratio: number;
-    maxStrikes: number;
-    kernelSize: number;
-    baseMatchSize: number;
-    algorithmSelection: Algorithm;
+  minLength: number;
+  ratio: number;
+  maxStrikes: number;
+  kernelSize: number;
+  baseMatchSize: number;
+  algorithmSelection: Algorithm;
+  synonymsA: Omit<Synonym, "free">[];
+  synonymsB: Omit<Synonym, "free">[];
 };
 
 interface LaunchParams {

@@ -2,10 +2,10 @@ import { Box, Typography, Button, Modal } from "@mui/material";
 import ConfigurationForm, { TConfigurationForm } from "./configurationForm";
 
 export default function UpdateSettingsModal(
-    { open, onSubmit, settings }:
-        { open: boolean; onSubmit: (settings: TConfigurationForm) => void; settings: TConfigurationForm }) {
+    { open, onSubmit, settings, onClose }:
+        { open: boolean; onSubmit: (settings: TConfigurationForm) => void; settings: TConfigurationForm, onClose: () => void; }) {
     return (
-        <Modal open={open}>
+        <Modal open={open} onClose={onClose}>
             <Box sx={{
                 position: 'absolute',
                 top: '50%',

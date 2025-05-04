@@ -1,11 +1,13 @@
 extern crate wasm_bindgen;
 use std::panic::{self, PanicHookInfo};
 use std::{cmp::max, cmp::min};
+use gloo_utils::format::JsValueSerdeExt;
 use wasm_bindgen::prelude::*;
 
 mod comparativus;
 mod matrix;
 mod utils;
+mod synonyms;
 
 #[derive(PartialEq)]
 #[wasm_bindgen]
@@ -25,17 +27,23 @@ pub fn process(
     kernel_size: usize,
     base_match_size: usize,
     levenshtein_algorithm: Algorithm,
-) -> Vec<utils::Result> {
+    synonyms_a: JsValue,
+    synonyms_b: JsValue,
+) -> JsValue {
     let file_a: Vec<char> = str_a.chars().collect();
-    let file_a = file_a.as_slice();
     let file_b: Vec<char> = str_b.chars().collect();
-    let file_b = file_b.as_slice();
+    let mut synonyms_a = synonyms_a.into_serde::<Vec<synonyms::Synonym>>().unwrap();
+    synonyms_a.sort_unstable_by_key(|s| s.word.start);
+    let mut synonyms_b = synonyms_b.into_serde::<Vec<synonyms::Synonym>>().unwrap();
+    synonyms_b.sort_unstable_by_key(|s| s.word.start);
+    let token_a = synonyms::tokenize_text(0, file_a.len(), &synonyms_a, file_a.as_slice());
+    let token_b = synonyms::tokenize_text(0, file_b.len(), &synonyms_b, file_b.as_slice());
     let levenshtein_distances: Vec<utils::SubstringResult>;
     match levenshtein_algorithm {
         Algorithm::Matrix => {
             levenshtein_distances = matrix::find_levenshtein_matches(
-                file_a,
-                file_b,
+                token_a.as_slice(),
+                token_b.as_slice(),
                 min_length,
                 ratio,
                 max_substrings,
@@ -44,8 +52,8 @@ pub fn process(
         }
         Algorithm::Comparativus => {
             levenshtein_distances = comparativus::find_levenshtein_matches(
-                file_a,
-                file_b,
+                token_a.as_slice(),
+                token_b.as_slice(),
                 min_length,
                 ratio,
                 max_substrings,
@@ -56,7 +64,7 @@ pub fn process(
         }
     }
     if levenshtein_distances.is_empty() {
-        return Vec::new();
+        return JsValue::from_serde(&Vec::<utils::Result>::new()).unwrap();
     }
 
     fn add_levenshtein_match(elem: &utils::SubstringResult, result: &mut Vec<utils::Result>) {
@@ -78,12 +86,28 @@ pub fn process(
     }
 
     let mut result: Vec<utils::Result> = Vec::with_capacity(levenshtein_distances.len() * 2 - 1);
-    for (elem, elem2) in levenshtein_distances[..levenshtein_distances.len() - 1]
+    for (tokens1, tokens2) in levenshtein_distances[..levenshtein_distances.len() - 1]
         .iter()
         .zip(levenshtein_distances[1..].iter())
     {
+        let elem = utils::SubstringResult{
+            start_a: token_a[tokens1.start_a].start,
+            end_a: token_a[tokens1.end_a-1].end,
+            start_b: token_b[tokens1.start_b].start,
+            end_b: token_b[tokens1.end_b-1].end,
+            len: tokens1.len,
+            edit_ratio: tokens1.edit_ratio,
+        };
+        let elem2 = utils::SubstringResult{
+            start_a: token_a[tokens2.start_a].start,
+            end_a: token_a[tokens2.end_a-1].end,
+            start_b: token_b[tokens2.start_b].start,
+            end_b: token_b[tokens2.end_b-1].end,
+            len: tokens2.len,
+            edit_ratio: tokens2.edit_ratio,
+        };
         // Add levenshtein match
-        add_levenshtein_match(elem, &mut result);
+        add_levenshtein_match(&elem, &mut result);
         // Add cosine similarity match
         if elem.end_a >= elem2.start_a {
             continue;
@@ -111,9 +135,17 @@ pub fn process(
         });
     }
     // Add last element
-    let elem = levenshtein_distances.last().unwrap();
-    add_levenshtein_match(elem, &mut result);
-    result
+    let token = levenshtein_distances.last().unwrap();
+    let elem = utils::SubstringResult{
+        start_a: token_a[token.start_a].start,
+        end_a: token_a[token.end_a-1].end,
+        start_b: token_b[token.start_b].start,
+        end_b: token_b[token.end_b-1].end,
+        len: token.len,
+        edit_ratio: token.edit_ratio,
+    };
+    add_levenshtein_match(&elem, &mut result);
+    return JsValue::from_serde(&result).unwrap();
 }
 
 const PUNCTUATION: [char; 44] = [

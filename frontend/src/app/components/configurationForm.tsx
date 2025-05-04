@@ -114,7 +114,9 @@ export default function ConfigurationForm({ children, onSubmit, currentSettings,
                     maxStrikes,
                     kernelSize,
                     algorithmSelection,
-                    baseMatchSize
+                    baseMatchSize,
+                    synonymsA: currentSettings?.synonymsA ?? [],
+                    synonymsB: currentSettings?.synonymsB ?? [],
                 });
             })}
         </Box>

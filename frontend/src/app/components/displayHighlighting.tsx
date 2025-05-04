@@ -5,8 +5,8 @@ import React from 'react';
 
 const COLOR_LIST = ["orange"];
 
-export function DisplayHighlighting(props: { result: DisplayResultState, onCharClick?: (charIndex: number) => void }) {
-    const { result, onCharClick } = props
+export function DisplayHighlighting(props: { result: DisplayResultState, onContextMenu?: (charIndex: number, e: PointerEvent) => void }) {
+    const { result, onContextMenu } = props
     const [isLoading, setIsLoading] = useState(true)
     const [aRefs, setARefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);
     const [bRefs, setBRefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);
@@ -46,6 +46,24 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
                     }
                     ref.current.style.backgroundColor = color;
                     ref.current.title = text;
+                }
+            }
+        },
+        []
+    );
+
+    const underlineRange = useCallback(
+        (
+            left: number,
+            right: number,
+            color: string,
+            refSet: React.RefObject<HTMLSpanElement>[],
+        ) => {
+            for (let i = left; i < right; i++) {
+                const ref = refSet[i];
+                if (ref.current !== null) {
+                    ref.current.style.textDecoration = "underline";
+                    ref.current.style.textDecorationColor = color;
                 }
             }
         },
@@ -156,8 +174,24 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
                     highlightFromPair(pair, "", "green", index);
                 }
             });
+            result.synonymsA.forEach((synonym) => {
+                underlineRange(
+                    synonym.word.start,
+                    synonym.word.end,
+                    "black",
+                    aRefs
+                );
+            });
+            result.synonymsB.forEach((synonym) => {
+                underlineRange(
+                    synonym.word.start,
+                    synonym.word.end,
+                    "black",
+                    bRefs
+                );
+            });
         }
-    }, [isLoading, result.pairs, highlightFromPair, resetRange, result.textA.length, result.textB.length, aRefs, bRefs]);
+    }, [isLoading, result.pairs, highlightFromPair, resetRange, result.textA.length, result.textB.length, aRefs, bRefs, result.synonymsA, result.synonymsB, underlineRange]);
 
     return (
         <Box>
@@ -180,7 +214,9 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
                                     highlightFromCharIndex(index, "", "green")
                                 }
                                 onMouseLeave={() => reset(index)}
-                                onMouseDown={() => (onCharClick ?? toggleHold)(index)}
+                                onMouseDown={() => toggleHold(index)}
+                                onContextMenu={(e) => onContextMenu ? onContextMenu(index, e as any) : undefined}
+                                id={`a-${index}`}
                             >
                                 {letter}
                             </span>
@@ -195,6 +231,8 @@ export function DisplayHighlighting(props: { result: DisplayResultState, onCharC
                                 className='show-info spacing'
                                 style={{ fontFamily: 'simsun' }}
                                 key={index}
+                                onContextMenu={(e) => onContextMenu ? onContextMenu(index, e as any) : undefined}
+                                id={`b-${index}`}
                             >
                                 {letter}
                             </span>
