@@ -14,36 +14,10 @@ export default function useExportResult(result: DisplayResultState) {
           kernelSize: result.kernelSize,
           baseMatchSize: result.baseMatchSize,
           algorithmSelection: result.algorithmSelection,
-          synonymsA: [],
-          synonymsB: [],
+          synonymsA: result.synonymsA,
+          synonymsB: result.synonymsB,
         };
-        result.pairs.forEach((pair) => {
-          jsResultCopy.pairs.push({
-            a: { start: pair.a.start, end: pair.a.end } as any,
-            b: { start: pair.b.start, end: pair.b.end } as any,
-            similarity: pair.similarity,
-            levenshteinMatch: pair.levenshteinMatch,
-            hold: pair.hold,
-          });
-          result.synonymsA.forEach((synonym) => {
-            jsResultCopy.synonymsA.push({
-              synonyms: synonym.synonyms.map((s) => ({
-                start: s.start,
-                end: s.end,
-              })),
-              word: { start: synonym.word.start, end: synonym.word.end } as any,
-            } as any);
-          });
-          result.synonymsB.forEach((synonym) => {
-            jsResultCopy.synonymsB.push({
-              synonyms: synonym.synonyms.map((s) => ({
-                start: s.start,
-                end: s.end,
-              })),
-              word: { start: synonym.word.start, end: synonym.word.end } as any,
-            } as any);
-          });
-        });
+
         const file = await exportToFile(jsResultCopy);
         const url = URL.createObjectURL(file);
         const a = document.createElement("a");
