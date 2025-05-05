@@ -164,8 +164,7 @@ pub fn clean_text(text: String) -> String {
 #[wasm_bindgen(start)]
 pub fn start() {
     panic::set_hook(Box::new(|panic_info: &PanicHookInfo| {
-        // Alert panic error message
-        utils::alert(panic_info.payload().downcast_ref::<String>().unwrap());
-        utils::alert(panic_info.location().unwrap().to_string().as_str());
+        utils::error(panic_info.payload().downcast_ref::<String>().unwrap());
+        utils::error(panic_info.location().unwrap().to_string().as_str());
     }));
 }
