@@ -2,16 +2,18 @@ import { Box, Grid2 as Grid, Typography, TextField, MenuItem, Slider } from "@mu
 import { Algorithm } from "algo-wasm";
 import React from "react";
 import { ConfigurationOptions } from "../types";
+import { useProject } from '../utils/useProject';
 
 export type TConfigurationForm = ConfigurationOptions
 
-export default function ConfigurationForm({ children, onSubmit, currentSettings, disabled }:
+export default function ConfigurationForm({ children, onSubmit, disabled }:
     {
         children: (submit: () => void) => JSX.Element,
         onSubmit: (data: TConfigurationForm) => void,
-        currentSettings?: TConfigurationForm,
         disabled?: boolean,
     }) {
+    const { project } = useProject();
+    const currentSettings: TConfigurationForm | null = project;
     const [minLength, setMinLength] = React.useState(currentSettings?.minLength ?? 7);
     const [ratio, setRatio] = React.useState(currentSettings?.ratio ?? 0.8);
     const [maxStrikes, setMaxStrikes] = React.useState(currentSettings?.maxStrikes ?? 3);

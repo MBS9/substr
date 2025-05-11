@@ -4,8 +4,7 @@ body {
 }
 
 span.spacing {
-  border-width: 3px;
-  border-color: transparent;
+  padding-left: 3px;
 }
 
 

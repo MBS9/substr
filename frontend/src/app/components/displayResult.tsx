@@ -1,4 +1,4 @@
-import { ConfigurationOptions, DisplayResultState } from "../types";
+import { ConfigurationOptions } from "../types";
 import {
   useState,
   useCallback,
@@ -20,8 +20,11 @@ import React from "react";
 import useExportResult from "../utils/useExportResult";
 import { useAddSynonym } from "../utils/add-synonym";
 import { useNotification } from './showNotification';
+import { useProject } from '../utils/useProject';
 
-export function ShowDiff({ result, updateConfiguration }: { result: DisplayResultState, updateConfiguration: (result: ConfigurationOptions) => void }) {
+export function ShowDiff() {
+  const { project, setOptions: updateConfiguration } = useProject();
+  const result = project!;
   const resultAnalytics = useResultAnalytics(result);
   const [modalOpen, setModalOpen] = useState(false);
   const showNotification = useNotification();
@@ -64,7 +67,7 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
     }
   }, [contextMenu]);
 
-  const addSynonym = useAddSynonym(result, updateConfiguration);
+  const addSynonym = useAddSynonym();
 
   const handleAddSynonym = useCallback(() => {
     addSynonym();
@@ -75,7 +78,7 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
     setContextMenu(null);
   }, []);
 
-  const exportResult = useExportResult(result);
+  const exportResult = useExportResult();
 
   return (
     <>
@@ -90,22 +93,22 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
         <IconButton onClick={openModal} color='inherit'>
           <SettingsIcon color="inherit" />
         </IconButton>
-        <Typography variant='body1' sx={{ ml: 4 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Minimum Length: {result.minLength}
         </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Ratio: {result.ratio}
         </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Max Strikes: {result.maxStrikes}
         </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Kernel Size: {result.kernelSize}
         </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Base Match Size: {result.baseMatchSize}
         </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Algorithm: {result.algorithmSelection}
         </Typography>
       </Header>
@@ -126,7 +129,7 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
             {resultAnalytics.avarageCosineSimilarity.toPrecision(4)}
           </Typography>
         </Box>
-        <DisplayHighlighting result={result} onContextMenu={(index, e) => { handleContextMenu(index, e as any) }} />
+        <DisplayHighlighting onContextMenu={(index, e) => { handleContextMenu(index, e as any) }} />
       </Box>
       <Menu
         open={contextMenu !== null}
@@ -143,3 +146,5 @@ export function ShowDiff({ result, updateConfiguration }: { result: DisplayResul
     </>
   );
 }
+
+const headingStyle = { ml: 2 };
