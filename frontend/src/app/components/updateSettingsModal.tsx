@@ -2,7 +2,7 @@ import { Box, Typography, Button, Modal } from "@mui/material";
 import ConfigurationForm, { TConfigurationForm } from "./configurationForm";
 
 export default function UpdateSettingsModal(
-    { open, onSubmit, settings, onClose }:
+    { open, onSubmit, onClose }:
         { open: boolean; onSubmit: (settings: TConfigurationForm) => void; settings: TConfigurationForm, onClose: () => void; }) {
     return (
         <Modal open={open} onClose={onClose}>
@@ -22,7 +22,7 @@ export default function UpdateSettingsModal(
                 <Typography variant='h6' component='h2'>
                     Update Settings
                 </Typography>
-                <ConfigurationForm onSubmit={onSubmit} currentSettings={settings}>
+                <ConfigurationForm onSubmit={onSubmit}>
                     {(submit) => (
                         <Button onClick={submit} variant='contained' color='primary'>
                             Save Changes

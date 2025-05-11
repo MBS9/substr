@@ -1,11 +1,10 @@
 import { useNotification } from "../components/showNotification";
-import { ConfigurationOptions, DisplayResultState } from "../types";
 import React from "react";
+import { useProject } from "./useProject";
 
-export function useAddSynonym(
-  result: DisplayResultState,
-  setConfiguration: (result: ConfigurationOptions) => void
-) {
+export function useAddSynonym() {
+  const { project, setOptions: setConfiguration } = useProject();
+  const result = project!;
   const { synonymsA, synonymsB } = result;
   const [priorSelection, setPriorSelection] = React.useState<Range | null>(
     null

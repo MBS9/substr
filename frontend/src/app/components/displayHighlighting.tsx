@@ -1,12 +1,15 @@
 import { Box, Grid2 as Grid, Typography } from '@mui/material';
-import { DisplayResultState, Pair, Substring } from '../types';
+import { Pair, Substring } from '../types';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import React from 'react';
+import { useProject } from '../utils/useProject';
 
 const COLOR_LIST = ["orange"];
 
-export function DisplayHighlighting(props: { result: DisplayResultState, onContextMenu?: (charIndex: number, e: PointerEvent) => void }) {
-    const { result, onContextMenu } = props
+export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number, e: PointerEvent) => void }) {
+    const { project } = useProject();
+    const result = project!;
+    const { onContextMenu } = props
     const [isLoading, setIsLoading] = useState(true)
     const [aRefs, setARefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);
     const [bRefs, setBRefs] = useState<React.RefObject<HTMLSpanElement>[]>([]);

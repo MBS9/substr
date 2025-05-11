@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import useComputeAnylsis from './utils/recompute-project';
 import { importFromFile } from './utils/file-format';
-import { ShowNotification } from './components/showNotification';
+import { ProjectContext } from './utils/useProject';
 
 let hotReloadCounter = 0;
 
@@ -60,31 +60,35 @@ export default function Run() {
     },
     [result, runAnalysisFromTextAndConfig]
   );
-  if (result === null) {
-    return (
-      <>
-        <header style={{ textAlign: "center" }}>
-          <Typography variant='h4' component='h1'>Substring Tiler</Typography>
-          <Typography variant='subtitle1'>Status: {statusMessage}</Typography>
-        </header>
-        <main style={{ display: "flex", justifyContent: "center" }}>
-          <Box
-            sx={{ flexGrow: 1, width: "70%", mb: 5 }}
-          >
-            <InputForm
-              onSubmit={handleSubmit}
-              disabled={!isReady}
-              onImport={setResult}
-            />
-          </Box>
-        </main>
-      </>
-    );
-  } else {
-    return (
-      <ShowNotification>
-        <ShowDiff result={result} updateConfiguration={onConfigurationChange} />
-      </ShowNotification>
-    );
-  }
+  return (
+    <ProjectContext.Provider value={{ project: result, setOptions: onConfigurationChange }}>
+      {(() => {
+        if (result === null) {
+          return (
+            <>
+              <header style={{ textAlign: "center" }}>
+                <Typography variant='h4' component='h1'>Substring Tiler</Typography>
+                <Typography variant='subtitle1'>Status: {statusMessage}</Typography>
+              </header>
+              <main style={{ display: "flex", justifyContent: "center" }}>
+                <Box
+                  sx={{ flexGrow: 1, width: "70%", mb: 5 }}
+                >
+                  <InputForm
+                    onSubmit={handleSubmit}
+                    disabled={!isReady}
+                    onImport={setResult}
+                  />
+                </Box>
+              </main>
+            </>
+          );
+        } else {
+          return (
+            <ShowDiff />
+          );
+        }
+      })()}
+    </ProjectContext.Provider>
+  );
 }

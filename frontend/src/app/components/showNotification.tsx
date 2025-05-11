@@ -1,3 +1,4 @@
+"use client";
 import { IconButton, Snackbar } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
@@ -11,7 +12,7 @@ const NotificationContext = React.createContext<NotificationContextType | undefi
 
 export function useNotification() {
     const context = React.useContext(NotificationContext);
-    return context?.setMessage ?? (() => { console.error('ERROR! Notification context not available'); });
+    return context?.setMessage ?? (() => { throw new Error('ERROR! Notification context not available'); });
 }
 
 export function ShowNotification({ children }: { children: React.ReactNode }) {
