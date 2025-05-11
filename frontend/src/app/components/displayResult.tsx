@@ -93,22 +93,22 @@ export function ShowDiff() {
         <IconButton onClick={openModal} color='inherit'>
           <SettingsIcon color="inherit" />
         </IconButton>
-        <Typography variant='body1' sx={{ ml: 4 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Minimum Length: {result.minLength}
         </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Ratio: {result.ratio}
         </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Max Strikes: {result.maxStrikes}
         </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Kernel Size: {result.kernelSize}
         </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Base Match Size: {result.baseMatchSize}
         </Typography>
-        <Typography variant='body1' sx={{ ml: 2 }}>
+        <Typography variant='body1' sx={headingStyle}>
           Algorithm: {result.algorithmSelection}
         </Typography>
       </Header>
@@ -146,3 +146,5 @@ export function ShowDiff() {
     </>
   );
 }
+
+const headingStyle = { ml: 2 };
