@@ -135,6 +135,8 @@ export function ShowDiff() {
         open={contextMenu !== null}
         onClose={handleClose}
         anchorReference="anchorPosition"
+        autoFocus={false}
+        disableAutoFocus
         anchorPosition={
           contextMenu !== null
             ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
