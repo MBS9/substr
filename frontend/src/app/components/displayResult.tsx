@@ -58,8 +58,10 @@ export function ShowDiff() {
     );
 
     const selection = document.getSelection();
+    console.info("Number of ranges: ", selection?.rangeCount);
     if (selection && selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
+      console.info("Range: ", range);
 
       setTimeout(() => {
         selection.addRange(range);
