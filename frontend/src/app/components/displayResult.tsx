@@ -26,6 +26,7 @@ export function ShowDiff() {
   const { project, setOptions: updateConfiguration } = useProject();
   const result = project!;
   const resultAnalytics = useResultAnalytics(result);
+  const [selectedRange, setSelectedRange] = useState<Range | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const showNotification = useNotification();
   const openModal = useCallback(() => {
@@ -47,6 +48,16 @@ export function ShowDiff() {
 
   const handleContextMenu = useCallback((index: number, event: React.MouseEvent) => {
     event.preventDefault();
+
+    const selection = document.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      setSelectedRange(range.cloneRange());
+
+      setTimeout(() => {
+        selection.addRange(range);
+      });
+    }
     setContextMenu(
       contextMenu === null
         ? {
@@ -56,25 +67,18 @@ export function ShowDiff() {
         :  // Close context menu if it is already open
         null,
     );
-
-    const selection = document.getSelection();
-    console.info("Number of ranges: ", selection?.rangeCount);
-    if (selection && selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      console.info("Range: ", range);
-
-      setTimeout(() => {
-        selection.addRange(range);
-      });
-    }
   }, [contextMenu]);
 
   const addSynonym = useAddSynonym();
 
   const handleAddSynonym = useCallback(() => {
-    addSynonym();
+    if (!selectedRange) {
+      showNotification("Please select a word to add a synonym.");
+      return;
+    }
+    addSynonym(selectedRange);
     setContextMenu(null);
-  }, [addSynonym]);
+  }, [addSynonym, selectedRange, showNotification]);
 
   const handleClose = useCallback(() => {
     setContextMenu(null);
@@ -137,8 +141,6 @@ export function ShowDiff() {
         open={contextMenu !== null}
         onClose={handleClose}
         anchorReference="anchorPosition"
-        autoFocus={false}
-        disableAutoFocus
         anchorPosition={
           contextMenu !== null
             ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
