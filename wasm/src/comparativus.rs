@@ -1,9 +1,9 @@
-use std::cmp::min;
+use std::cmp::{max, min};
 
 /*
 * This algorithm is equivalent to the algorithm at https://github.com/MGelein/comparativus
 */
-use crate::{synonyms::Token, utils::{self}};
+use crate::{synonyms::Token, utils};
 use rustc_hash::{FxBuildHasher, FxHashMap};
 
 use crate::utils::SubstringResult;
@@ -86,13 +86,22 @@ fn expand_all_matches(
                 len: base_match_size,
                 edit_ratio: 1.0,
             };
-            ma.len = ma.end_a - ma.start_a; // This may not necessarily be the same as base_match_size
+
+            let mut len = 0;
+
+            let tokens_a = &text_a[ma.start_a..ma.end_a];
+            let tokens_b = &text_b[ma.start_b..ma.end_b];
+            for (token_a, token_b) in tokens_a.iter().zip(tokens_b.iter()) {
+                len += max(token_a.len(), token_b.len());
+            }
+
+            ma.len = len; // This may not necessarily be the same as base_match_size
             ma.edit_ratio = utils::recompute_ratio(
                 // This is the ratio of the match, which has been set as 1.0 before, but we need the real value
                 text_a, text_b, ma.start_a, ma.end_a, ma.start_b, ma.end_b, ma.len,
             );
             while ma.start_a < ma.end_a && ma.start_b < ma.end_b && ma.edit_ratio < min_ratio {
-                ma.len -= 1;
+                ma.len -= max(text_a[ma.end_a].len(), text_b[ma.end_b].len());
                 ma.end_a -= 1;
                 ma.end_b -= 1;
                 ma.edit_ratio = utils::recompute_ratio(

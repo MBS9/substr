@@ -92,6 +92,7 @@ impl<T> IndexMut<usize> for EfficientMatrix<T> {
     }
 }
 
+
 pub fn levenshtein_edit_distance<T: Eq>(a_chars: &[T], b_chars: &[T]) -> usize {
     let mut l = EfficientMatrix::new(0, b_chars.len() + 1);
 
