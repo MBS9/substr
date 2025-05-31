@@ -1,10 +1,10 @@
 use std::cmp::min;
 
-use crate::utils::*;
+use crate::{synonyms::Token, utils::*};
 
-pub fn find_levenshtein_matches<T: Eq>(
-    a: &[T],
-    b: &[T],
+pub fn find_levenshtein_matches(
+    a: &[Token],
+    b: &[Token],
     min_len: usize,
     ratio: f32,
     max_substrings: usize,

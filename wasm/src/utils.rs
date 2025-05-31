@@ -2,10 +2,12 @@ extern crate wasm_bindgen;
 use rustc_hash::{FxHashMap, FxHashSet};
 use serde::{Deserialize, Serialize};
 use std::{
-    cmp::min,
+    cmp::{max, min},
     ops::{Index, IndexMut},
 };
 use wasm_bindgen::prelude::*;
+
+use crate::synonyms::Token;
 
 #[wasm_bindgen]
 extern "C" {
@@ -136,9 +138,9 @@ pub fn cosine_similarity(str_a: &[char], str_b: &[char]) -> f32 {
     similarity
 }
 
-pub fn recompute_ratio<T: Eq>(
-    a: &[T],
-    b: &[T],
+pub fn recompute_ratio(
+    a: &[Token],
+    b: &[Token],
     start_a: usize,
     new_end_a: usize,
     start_b: usize,
@@ -150,9 +152,9 @@ pub fn recompute_ratio<T: Eq>(
 }
 
 // Helper function to expand matches forward (right)
-pub fn expand_matches_forward<T: Eq>(
-    a: &[T],
-    b: &[T],
+pub fn expand_matches_forward(
+    a: &[Token],
+    b: &[Token],
     ratio: f32,
     max_strike: usize,
     ret: &mut SubstringResult,
@@ -164,10 +166,10 @@ pub fn expand_matches_forward<T: Eq>(
     let start_b = ret.start_b;
     let mut strike = 0;
     
-    while strike < max_strike && new_end_a < a.len() - 1 && new_end_b < b.len() - 1 {
+    while strike < max_strike && new_end_a < a.len() && new_end_b < b.len() {
         // Expand
         new_end_a += 1;
-        new_len += 1;
+        new_len += max(a[new_end_a-1].len(), b[new_end_b-1].len());
         new_end_b += 1;
         
         let new_ratio = recompute_ratio(a, b, start_a, new_end_a, start_b, new_end_b, new_len);
@@ -185,9 +187,9 @@ pub fn expand_matches_forward<T: Eq>(
 }
 
 // Helper function to expand matches backward (left)
-pub fn expand_matches_backward<T: Eq>(
-    a: &[T],
-    b: &[T],
+pub fn expand_matches_backward(
+    a: &[Token],
+    b: &[Token],
     ratio: f32,
     max_strike: usize,
     ret: &mut SubstringResult,
@@ -203,7 +205,7 @@ pub fn expand_matches_backward<T: Eq>(
         
         // Expand
         new_start_a -= 1;
-        new_len += 1;
+        new_len += max(a[new_start_a].len(), b[new_start_b].len());
         new_start_b -= 1;
         
         let new_ratio =
@@ -221,10 +223,10 @@ pub fn expand_matches_backward<T: Eq>(
     }
 }
 
-pub fn expand_match_left_and_right<T: Eq>(
+pub fn expand_match_left_and_right(
     substr: &mut SubstringResult,
-    a: &[T],
-    b: &[T],
+    a: &[Token],
+    b: &[Token],
     ratio: f32,
     max_strike: usize,
 ) {
@@ -247,10 +249,10 @@ pub fn expand_match_left_and_right<T: Eq>(
     );
 }
 
-pub fn expand_matches_left_and_right<T: Eq>(
+pub fn expand_matches_left_and_right(
     ret: &mut [SubstringResult],
-    a: &[T],
-    b: &[T],
+    a: &[Token],
+    b: &[Token],
     ratio: f32,
     max_strike: usize,
 ) {

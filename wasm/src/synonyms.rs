@@ -88,6 +88,12 @@ impl Hash for Token<'_> {
     }
 }
 
+impl<'a> Token<'a> {
+    pub fn len(&self) -> usize {
+        self.end - self.start
+    }
+}
+
 pub fn tokenize_text<'a>(
     start: usize,
     end: usize,
