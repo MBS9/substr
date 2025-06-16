@@ -1,15 +1,12 @@
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
+import { Roboto } from 'next/font/google';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 
 import type { Metadata, Viewport } from "next";
 import React from "react";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ShowNotification } from './components/showNotification';
-
-const inter = Inter({ subsets: ["latin"] });
+import { ThemeProvider } from '@mui/material';
+import theme from './theme';
 
 export const metadata: Metadata = {
   title: "Substring Tiler",
@@ -21,6 +18,12 @@ export const viewport: Viewport = {
   themeColor: 'rgb(25, 118, 210)',
 }
 
+const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-roboto',
+});
 
 export default function RootLayout({
   children,
@@ -28,9 +31,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
-      <body className={inter.className}>
-        <ShowNotification>{children}</ShowNotification>
+    <html lang='en' className={roboto.variable}>
+      <body>
+        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+          <ThemeProvider theme={theme}>
+            <ShowNotification>{children}</ShowNotification>
+          </ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

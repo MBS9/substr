@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from 'react';
 import * as SubstringAlgorithm from 'algo-wasm';
 import { InputForm } from './components/form';
