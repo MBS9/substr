@@ -73,7 +73,7 @@ export function ShowDiff() {
 
   const handleAddSynonym = useCallback(() => {
     if (!selectedRange) {
-      showNotification("Please select a word to add a synonym.");
+      showNotification("No word selected. Please select a word to add a synonym.", "warning");
       return;
     }
     addSynonym(selectedRange);
