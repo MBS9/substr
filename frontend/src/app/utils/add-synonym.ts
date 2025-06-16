@@ -14,7 +14,7 @@ export function useAddSynonym() {
     (range: Range) => {
       if (priorSelection === null) {
         setPriorSelection(range.cloneRange());
-        showNotification("Please select the second word.");
+        showNotification("Please select the second word.", "info");
         return;
       }
       // Get the element ids of the first and last element for both selections
@@ -34,7 +34,15 @@ export function useAddSynonym() {
         firstElements.includes(undefined) ||
         secondElements.includes(undefined)
       ) {
-        showNotification("An error occured while adding the synonym.");
+        showNotification("An error occured while adding the synonym.", "error");
+        return;
+      }
+
+      if (
+        (firstElements[0]?.includes("b") && secondElements[1]?.includes("b")) ||
+        (firstElements[0]?.includes("a") && secondElements[1]?.includes("a"))
+      ) {
+        showNotification("Please select words from different texts.", "error");
         return;
       }
 
@@ -88,7 +96,7 @@ export function useAddSynonym() {
         synonymsA: synonymsA,
         synonymsB: synonymsB,
       });
-      showNotification("Synonym added");
+      showNotification("Synonym added", "success");
     },
     [
       priorSelection,

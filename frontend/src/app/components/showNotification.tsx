@@ -1,11 +1,18 @@
 "use client";
-import { IconButton, Snackbar } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Alert, Snackbar, AlertProps } from '@mui/material';
+import Slide, { SlideProps } from '@mui/material/Slide';
 import React from 'react';
+
+type Severity = AlertProps['severity'];
 
 type NotificationContextType = {
     message: string;
-    setMessage: (message: string) => void;
+    severity: Severity;
+    setMessage: (message: string, severity?: Severity) => void;
+}
+
+function SlideTransition(props: SlideProps) {
+    return <Slide {...props} direction="right" />;
 }
 
 const NotificationContext = React.createContext<NotificationContextType | undefined>(undefined);
@@ -18,27 +25,34 @@ export function useNotification() {
 export function ShowNotification({ children }: { children: React.ReactNode }) {
     const [snackbarOpen, setSnackbarOpen] = React.useState(false);
     const [message, setMessage] = React.useState<string>('');
-    const setMessageCallback = React.useCallback((message: string) => {
+    const [severity, setSeverity] = React.useState<Severity>('info');
+    const setMessageCallback = React.useCallback((message: string, severity: Severity = 'info') => {
         setMessage(message);
+        setSeverity(severity)
         setSnackbarOpen(true);
     }, [setMessage]);
 
     return (
         <>
-            <NotificationContext.Provider value={{ message: message, setMessage: setMessageCallback }}>
+            <NotificationContext.Provider value={{ message: message, severity: severity, setMessage: setMessageCallback }}>
                 {children}
             </NotificationContext.Provider>
             <Snackbar
-                message={message}
                 autoHideDuration={10000}
                 open={snackbarOpen}
+                slots={{ transition: SlideTransition }}
                 onClose={() => setSnackbarOpen(false)}
-                action={
-                    <IconButton size="small" color="inherit" onClick={() => setSnackbarOpen(false)}>
-                        <CloseIcon />
-                    </IconButton>
-                }
-            />
+
+            >
+                <Alert
+                    severity={severity}
+                    variant='filled'
+                    sx={{ width: '100%' }}
+                    onClose={() => setSnackbarOpen(false)}
+                >
+                    {message}
+                </Alert>
+            </Snackbar>
         </>
     );
 }

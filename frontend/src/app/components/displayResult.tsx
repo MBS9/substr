@@ -36,7 +36,7 @@ export function ShowDiff() {
     (settings: ConfigurationOptions) => {
       setModalOpen(false);
       updateConfiguration(settings);
-      showNotification("Settings updated and analysis has been re-run.");
+      showNotification("Settings updated and analysis has been re-run.", "success");
     },
     [showNotification, updateConfiguration]
   );
