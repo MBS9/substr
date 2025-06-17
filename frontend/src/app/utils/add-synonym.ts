@@ -27,9 +27,6 @@ export function useAddSynonym() {
         range.endContainer.parentElement?.id,
       ]
 
-      console.log("firstElements", firstElements)
-      console.log("secondElements", secondElements)
-
       if (
         firstElements.includes(undefined) ||
         secondElements.includes(undefined)
