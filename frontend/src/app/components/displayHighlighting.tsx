@@ -43,7 +43,7 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
         if (ref.current !== null) {
           if (
             matches.findIndex((match) => match.start <= i && i < match.end) !==
-                        -1
+            -1
           ) {
             ref.current.style.border = "3px solid green"
           }

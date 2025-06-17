@@ -8,7 +8,6 @@ const theme = createTheme({
   },
   components: {
     MuiInputLabel: {
-      //Place the label in the center, above the input
       styleOverrides: {
         root: {
           textAlign: "center",
