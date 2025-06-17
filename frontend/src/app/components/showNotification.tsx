@@ -40,9 +40,13 @@ export function ShowNotification({ children }: { children: React.ReactNode }) {
     const [message, setMessage] = React.useState<string>('');
     const [severity, setSeverity] = React.useState<Severity>('info');
     const setMessageCallback = React.useCallback((message: string, severity: Severity = 'info') => {
-        setMessage(message);
-        setSeverity(severity)
-        setSnackbarOpen(true);
+        setSnackbarOpen(false);
+        // Delay setting the message to allow the snackbar to close before showing a new one
+        setTimeout(() => {
+            setMessage(message);
+            setSeverity(severity)
+            setSnackbarOpen(true);
+        });
     }, [setMessage]);
 
     const handleClose = React.useCallback((event?: React.SyntheticEvent<any> | Event, reason?: SnackbarCloseReason) => {
@@ -59,7 +63,7 @@ export function ShowNotification({ children }: { children: React.ReactNode }) {
                 {children}
             </NotificationContext.Provider>
             <Snackbar
-                autoHideDuration={10000}
+                autoHideDuration={9000}
                 open={snackbarOpen}
                 slots={{ transition: SlideTransition }}
                 onClose={handleClose}
