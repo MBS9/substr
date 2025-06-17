@@ -36,7 +36,7 @@ export function ShowDiff() {
     (settings: ConfigurationOptions) => {
       setModalOpen(false);
       updateConfiguration(settings);
-      showNotification("Settings have been updated, and the text has been reanalyzed.", "success");
+      showNotification("Settings have been updated, and the texts have been reanalyzed.", "success");
     },
     [showNotification, updateConfiguration]
   );
