@@ -1,10 +1,12 @@
 const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 const path = require("path");
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
+const { env } = require('process');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
+  basePath: env.NEXT_PUBLIC_BASE_PATH || "",
   compiler: {
     removeConsole: {
       exclude: ['error'],
