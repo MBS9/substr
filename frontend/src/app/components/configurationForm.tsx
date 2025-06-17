@@ -26,7 +26,7 @@ export default function ConfigurationForm({ children, onSubmit, disabled }:
         <Box sx={{ mt: 4, placeContent: "center", display: "grid", justifyItems: "center" }}>
             <Grid container spacing={3} sx={{ placeContent: "center" }}>
                 <Grid>
-                    <Typography variant='body1'>Minimum Length:</Typography>
+                    <Typography>Minimum Length:</Typography>
                     <TextField
                         disabled={UIDisabled}
                         variant='standard'
@@ -39,7 +39,7 @@ export default function ConfigurationForm({ children, onSubmit, disabled }:
                     />
                 </Grid>
                 <Grid>
-                    <Typography variant='body1'>Max Strikes:</Typography>
+                    <Typography>Max Strikes:</Typography>
                     <TextField
                         disabled={UIDisabled}
                         variant='standard'
@@ -52,7 +52,7 @@ export default function ConfigurationForm({ children, onSubmit, disabled }:
                     />
                 </Grid>
                 <Grid>
-                    <Typography variant='body1'>Kernel Size</Typography>
+                    <Typography>Kernel Size</Typography>
                     <TextField
                         disabled={UIDisabled}
                         variant='standard'
@@ -65,7 +65,7 @@ export default function ConfigurationForm({ children, onSubmit, disabled }:
                     />
                 </Grid>
                 <Grid>
-                    <Typography variant='body1'>Base Match Size</Typography>
+                    <Typography>Base Match Size</Typography>
                     <TextField
                         disabled={UIDisabled}
                         variant='standard'
@@ -78,7 +78,7 @@ export default function ConfigurationForm({ children, onSubmit, disabled }:
                     />
                 </Grid>
                 <Grid>
-                    <Typography variant='body1'>Algorithm</Typography>
+                    <Typography>Algorithm</Typography>
                     <TextField
                         disabled={UIDisabled}
                         select

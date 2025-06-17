@@ -36,7 +36,7 @@ export function ShowDiff() {
     (settings: ConfigurationOptions) => {
       setModalOpen(false);
       updateConfiguration(settings);
-      showNotification("Settings updated and analysis has been re-run.", "success");
+      showNotification("Settings have been updated, and the text has been reanalyzed.", "success");
     },
     [showNotification, updateConfiguration]
   );
@@ -99,22 +99,22 @@ export function ShowDiff() {
         <IconButton onClick={openModal} color='inherit'>
           <SettingsIcon color="inherit" />
         </IconButton>
-        <Typography variant='body1' sx={headingStyle}>
+        <Typography sx={headingStyle}>
           Minimum Length: {result.minLength}
         </Typography>
-        <Typography variant='body1' sx={headingStyle}>
+        <Typography sx={headingStyle}>
           Ratio: {result.ratio}
         </Typography>
-        <Typography variant='body1' sx={headingStyle}>
+        <Typography sx={headingStyle}>
           Max Strikes: {result.maxStrikes}
         </Typography>
-        <Typography variant='body1' sx={headingStyle}>
+        <Typography sx={headingStyle}>
           Kernel Size: {result.kernelSize}
         </Typography>
-        <Typography variant='body1' sx={headingStyle}>
+        <Typography sx={headingStyle}>
           Base Match Size: {result.baseMatchSize}
         </Typography>
-        <Typography variant='body1' sx={headingStyle}>
+        <Typography sx={headingStyle}>
           Algorithm: {result.algorithmSelection}
         </Typography>
       </Header>
@@ -122,15 +122,15 @@ export function ShowDiff() {
       <Box>
         <Box sx={{ mt: 2, mb: 2 }}>
           <Typography variant='h5'>Quick Summary of Results</Typography>
-          <Typography variant='body1'>
+          <Typography>
             Number of Levenshtein Matches:{" "}
             {resultAnalytics.numberOfLevenshteinMatches}
           </Typography>
-          <Typography variant='body1'>
+          <Typography>
             Mean Levenshtein Match:{" "}
             {resultAnalytics.avarageLevenshteinMatch.toPrecision(4)}
           </Typography>
-          <Typography variant='body1'>
+          <Typography>
             Mean Cosine Similarity:{" "}
             {resultAnalytics.avarageCosineSimilarity.toPrecision(4)}
           </Typography>

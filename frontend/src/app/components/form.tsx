@@ -46,7 +46,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
           <Chip label='Upload new files' />
         </Divider>
         <Box sx={{ mt: 4, placeItems: "center" }}>
-          <Typography variant='body1'>
+          <Typography>
             Please click to upload two files to compare. The files should be in
             plain text format.
           </Typography>

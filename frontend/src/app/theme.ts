@@ -16,6 +16,11 @@ const theme = createTheme({
         },
       },
     },
+    MuiTypography: {
+      defaultProps: {
+        variant: "body1",
+      },
+    },
   },
 });
 

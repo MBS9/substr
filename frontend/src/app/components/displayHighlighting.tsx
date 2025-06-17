@@ -199,14 +199,14 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
     return (
         <Box>
             <Typography variant='h5'>Text Comparison</Typography>
-            <Typography variant='body1'>
+            <Typography>
                 The two input texts are displayed below. With your cursor, hover
                 over the text to highlight the matches. To hold the highlighting,
                 click on the text.
             </Typography>
             <Grid container gap={3} sx={{ mt: 3 }}>
                 <Grid sx={{ width: '50%' }}>
-                    <Typography variant='body1'>
+                    <Typography>
                         {Array.from(result.textA).map((letter, index) => (
                             <span
                                 ref={aRefs[index]}
@@ -227,7 +227,7 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
                     </Typography>
                 </Grid>
                 <Grid size='grow'>
-                    <Typography variant='body1'>
+                    <Typography>
                         {Array.from(result.textB).map((letter, index) => (
                             <span
                                 ref={bRefs[index]}

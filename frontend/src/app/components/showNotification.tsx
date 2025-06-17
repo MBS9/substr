@@ -24,7 +24,7 @@ const NotificationContext = React.createContext<NotificationContextType | undefi
 
 export function useNotification() {
     const context = React.useContext(NotificationContext);
-    return context?.setMessage ?? (() => { throw new Error('ERROR! Notification context not available'); });
+    return context?.setMessage ?? (() => { throw new Error('Notification context not available'); });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type

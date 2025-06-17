@@ -35,6 +35,7 @@ export function useAddSynonym() {
         secondElements.includes(undefined)
       ) {
         showNotification("An error occured while adding the synonym.", "error");
+        setPriorSelection(null);
         return;
       }
 
@@ -96,7 +97,10 @@ export function useAddSynonym() {
         synonymsA: synonymsA,
         synonymsB: synonymsB,
       });
-      showNotification("Synonym added", "success");
+      showNotification(
+        "The synonym was added, and the texts were reanalyzed.",
+        "success"
+      );
     },
     [
       priorSelection,
