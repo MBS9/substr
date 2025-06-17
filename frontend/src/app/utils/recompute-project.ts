@@ -1,9 +1,9 @@
-import React from "react";
-import { ConfigurationOptions, DisplayResultState } from "../types";
-import * as SubstringAlgorithm from "algo-wasm";
+import React from "react"
+import { ConfigurationOptions, DisplayResultState } from "../types"
+import * as SubstringAlgorithm from "algo-wasm"
 
 export default function useComputeAnalysis(
-  setResult: (result: DisplayResultState) => void
+  setResult: (result: DisplayResultState) => void,
 ) {
   const computeAnalysis = React.useCallback(
     (textA: string, textB: string, config: ConfigurationOptions) => {
@@ -18,8 +18,8 @@ export default function useComputeAnalysis(
         config.baseMatchSize,
         config.algorithmSelection,
         config.synonymsA,
-        config.synonymsB
-      );
+        config.synonymsB,
+      )
       setResult({
         textA: textA,
         textB: textB,
@@ -32,9 +32,9 @@ export default function useComputeAnalysis(
         algorithmSelection: config.algorithmSelection,
         synonymsA: config.synonymsA,
         synonymsB: config.synonymsB,
-      });
+      })
     },
-    [setResult]
-  );
-  return computeAnalysis;
+    [setResult],
+  )
+  return computeAnalysis
 }

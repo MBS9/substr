@@ -1,62 +1,62 @@
-import { ConfigurationOptions } from "../types";
+import { ConfigurationOptions } from "../types"
 import {
   useState,
   useCallback,
-} from "react";
+} from "react"
 import {
   Typography,
   Box,
   IconButton,
   Menu,
   MenuItem,
-} from "@mui/material";
-import { useResultAnalytics } from "../utils/useResultAnalytics";
-import { Header } from "./header";
-import { DisplayHighlighting } from './displayHighlighting';
-import SettingsIcon from '@mui/icons-material/Settings';
-import SaveAsIcon from '@mui/icons-material/SaveAs';
-import UpdateSettingsModal from "./updateSettingsModal";
-import React from "react";
-import useExportResult from "../utils/useExportResult";
-import { useAddSynonym } from "../utils/add-synonym";
-import { useNotification } from './showNotification';
-import { useProject } from '../utils/useProject';
+} from "@mui/material"
+import { useResultAnalytics } from "../utils/useResultAnalytics"
+import { Header } from "./header"
+import { DisplayHighlighting } from "./displayHighlighting"
+import SettingsIcon from "@mui/icons-material/Settings"
+import SaveAsIcon from "@mui/icons-material/SaveAs"
+import UpdateSettingsModal from "./updateSettingsModal"
+import React from "react"
+import useExportResult from "../utils/useExportResult"
+import { useAddSynonym } from "../utils/add-synonym"
+import { useNotification } from "./showNotification"
+import { useProject } from "../utils/useProject"
 
 export function ShowDiff() {
-  const { project, setOptions: updateConfiguration } = useProject();
-  const result = project!;
-  const resultAnalytics = useResultAnalytics(result);
-  const [selectedRange, setSelectedRange] = useState<Range | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const showNotification = useNotification();
+  const { project, setOptions: updateConfiguration } = useProject()
+  const result = project!
+  const resultAnalytics = useResultAnalytics(result)
+  const [selectedRange, setSelectedRange] = useState<Range | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const showNotification = useNotification()
   const openModal = useCallback(() => {
-    setModalOpen(true);
-  }, []);
+    setModalOpen(true)
+  }, [])
   const onSettingsChange = useCallback(
     (settings: ConfigurationOptions) => {
-      setModalOpen(false);
-      updateConfiguration(settings);
-      showNotification("Settings have been updated, and the texts have been reanalyzed.", "success");
+      setModalOpen(false)
+      updateConfiguration(settings)
+      showNotification("Settings have been updated, and the texts have been reanalyzed.", "success")
     },
-    [showNotification, updateConfiguration]
-  );
+    [showNotification, updateConfiguration],
+  )
 
   const [contextMenu, setContextMenu] = React.useState<{
     mouseX: number;
     mouseY: number;
-  } | null>(null);
+  } | null>(null)
 
   const handleContextMenu = useCallback((index: number, event: React.MouseEvent) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    const selection = document.getSelection();
+    const selection = document.getSelection()
     if (selection && selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      setSelectedRange(range.cloneRange());
+      const range = selection.getRangeAt(0)
+      setSelectedRange(range.cloneRange())
 
       setTimeout(() => {
-        selection.addRange(range);
-      });
+        selection.addRange(range)
+      })
     }
     setContextMenu(
       contextMenu === null
@@ -66,25 +66,25 @@ export function ShowDiff() {
         }
         :  // Close context menu if it is already open
         null,
-    );
-  }, [contextMenu]);
+    )
+  }, [contextMenu])
 
-  const addSynonym = useAddSynonym();
+  const addSynonym = useAddSynonym()
 
   const handleAddSynonym = useCallback(() => {
     if (!selectedRange) {
-      showNotification("No word selected. Please select a word to add a synonym.", "warning");
-      return;
+      showNotification("No word selected. Please select a word to add a synonym.", "warning")
+      return
     }
-    addSynonym(selectedRange);
-    setContextMenu(null);
-  }, [addSynonym, selectedRange, showNotification]);
+    addSynonym(selectedRange)
+    setContextMenu(null)
+  }, [addSynonym, selectedRange, showNotification])
 
   const handleClose = useCallback(() => {
-    setContextMenu(null);
-  }, []);
+    setContextMenu(null)
+  }, [])
 
-  const exportResult = useExportResult();
+  const exportResult = useExportResult()
 
   return (
     <>
@@ -150,7 +150,7 @@ export function ShowDiff() {
         <MenuItem onClick={handleAddSynonym}>Add Synonym</MenuItem>
       </Menu>
     </>
-  );
+  )
 }
 
-const headingStyle = { ml: 2 };
+const headingStyle = { ml: 2 }

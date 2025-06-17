@@ -1,11 +1,11 @@
-import { useCallback } from "react";
-import { DisplayResultState } from "../types";
-import { exportToFile } from "./file-format";
-import { useProject } from "./useProject";
+import { useCallback } from "react"
+import { DisplayResultState } from "../types"
+import { exportToFile } from "./file-format"
+import { useProject } from "./useProject"
 
 export default function useExportResult() {
-  const { project } = useProject();
-  const result = project!;
+  const { project } = useProject()
+  const result = project!
   const exportResult = useCallback(async () => {
     const jsResultCopy: DisplayResultState = {
       textA: result.textA,
@@ -19,14 +19,14 @@ export default function useExportResult() {
       algorithmSelection: result.algorithmSelection,
       synonymsA: result.synonymsA,
       synonymsB: result.synonymsB,
-    };
+    }
 
-    const file = await exportToFile(jsResultCopy);
-    const url = URL.createObjectURL(file);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "myproject.tile";
-    a.click();
-  }, [result]);
-  return exportResult;
+    const file = await exportToFile(jsResultCopy)
+    const url = URL.createObjectURL(file)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "myproject.tile"
+    a.click()
+  }, [result])
+  return exportResult
 }

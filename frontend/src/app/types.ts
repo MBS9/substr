@@ -1,21 +1,21 @@
-import { Substring as WasmSubstring, Result, Algorithm, Synonym } from "algo-wasm";
+import { Substring as WasmSubstring, Result, Algorithm, Synonym } from "algo-wasm"
 
-export type Substring = WasmSubstring;
+export type Substring = WasmSubstring
 
-export type Pair = Omit<Result, 'free'> & {
-    hold?: boolean;
-};
+export type Pair = Omit<Result, "free"> & {
+  hold?: boolean;
+}
 
 export type DisplayResultState = {
-    textA: string;
-    textB: string;
-    pairs: Pair[];
-} & ConfigurationOptions;
+  textA: string;
+  textB: string;
+  pairs: Pair[];
+} & ConfigurationOptions
 
 export type InputData = {
-    fileA: File,
-    fileB: File,
-} & ConfigurationOptions;
+  fileA: File,
+  fileB: File,
+} & ConfigurationOptions
 
 export type ConfigurationOptions = {
   minLength: number;
@@ -26,19 +26,19 @@ export type ConfigurationOptions = {
   algorithmSelection: Algorithm;
   synonymsA: Omit<Synonym, "free">[];
   synonymsB: Omit<Synonym, "free">[];
-};
+}
 
 interface LaunchParams {
-    files: any[];
-    targetURL: string;
+  files: any[];
+  targetURL: string;
 }
 
 declare global {
-    interface Window {
-        launchQueue: {
-            setConsumer: (
-                consumer: (launchParams: LaunchParams) => void
-            ) => void
-        };
-    }
+  interface Window {
+    launchQueue: {
+      setConsumer: (
+        consumer: (launchParams: LaunchParams) => void
+      ) => void
+    };
+  }
 }
