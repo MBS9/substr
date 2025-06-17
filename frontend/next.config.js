@@ -27,7 +27,7 @@ const nextConfig = {
 
 module.exports = (phase, { defaultConfig }) => {
   if (phase === PHASE_DEVELOPMENT_SERVER) {
-    nextConfig.compiler.removeConsole = {};
+    delete nextConfig.compiler.removeConsole;
   }
   return { ...defaultConfig, ...nextConfig };
 };
