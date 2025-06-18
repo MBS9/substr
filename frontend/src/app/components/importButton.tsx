@@ -1,7 +1,7 @@
 import { Button } from "@mui/material"
 import React from "react"
 import { importFromFile } from "../utils/file-format"
-import { DisplayResultState } from "../types"
+import type { DisplayResultState } from "../types"
 
 export default function ImportButton(props: {
   onImport: (file: DisplayResultState) => void;

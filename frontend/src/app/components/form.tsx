@@ -1,13 +1,13 @@
 import React from "react"
-import { InputData, DisplayResultState } from "../types"
+import type { DisplayResultState, InputData } from "../types"
 import {
-  Button, Typography, Box,
-  Chip,
+  Box, Button, Chip,
+  Typography,
 } from "@mui/material"
 import { Check as CheckIcon } from "@mui/icons-material"
 import Divider from "@mui/material/Divider"
 import ImportButton from "./importButton"
-import { Algorithm } from "algo-wasm"
+import type { Algorithm } from "algo-wasm"
 import ConfigurationForm from "./configurationForm"
 
 type Props = {

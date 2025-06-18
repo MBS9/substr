@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { DisplayResultState } from "../types"
+import type { DisplayResultState } from "../types"
 import { exportToFile } from "./file-format"
 import { useProject } from "./useProject"
 

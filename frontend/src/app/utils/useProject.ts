@@ -1,5 +1,5 @@
 import React from "react"
-import { ConfigurationOptions, DisplayResultState } from "../types"
+import type { ConfigurationOptions, DisplayResultState } from "../types"
 
 type ProjectContextType = {
   project: DisplayResultState | null;

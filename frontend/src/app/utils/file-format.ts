@@ -1,4 +1,4 @@
-import { DisplayResultState } from "frontend/app/types"
+import type { DisplayResultState } from "frontend/app/types"
 
 export async function exportToFile(data: DisplayResultState) {
   const jsonStream = new ReadableStream({

@@ -2,7 +2,7 @@ import { Roboto } from "next/font/google"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter"
 
 import type { Metadata, Viewport } from "next"
-import React from "react"
+import type React from "react"
 import "./globals.css"
 import { ShowNotification } from "./components/showNotification"
 import { ThemeProvider } from "@mui/material"

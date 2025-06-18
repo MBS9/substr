@@ -1,5 +1,5 @@
 import React from "react"
-import { DisplayResultState } from "../types"
+import type { DisplayResultState } from "../types"
 
 export function useResultAnalytics(result: DisplayResultState) {
   const numberOfLevenshteinMatches = React.useMemo(() => {

@@ -1,7 +1,7 @@
-import { Box, Grid2 as Grid, Typography, TextField, MenuItem, Slider } from "@mui/material"
+import { Box, Grid2 as Grid, MenuItem, Slider, TextField, Typography } from "@mui/material"
 import { Algorithm } from "algo-wasm"
 import React from "react"
-import { ConfigurationOptions } from "../types"
+import type { ConfigurationOptions } from "../types"
 import { useProject } from "../utils/useProject"
 
 export type TConfigurationForm = ConfigurationOptions

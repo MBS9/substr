@@ -1,5 +1,6 @@
-import { Box, Typography, Button, Modal } from "@mui/material"
-import ConfigurationForm, { TConfigurationForm } from "./configurationForm"
+import { Box, Button, Modal, Typography } from "@mui/material"
+import type { TConfigurationForm } from "./configurationForm"
+import ConfigurationForm from "./configurationForm"
 
 export default function UpdateSettingsModal(
   { open, onSubmit, onClose }:

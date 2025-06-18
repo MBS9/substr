@@ -1,5 +1,5 @@
 import { Box, Grid2 as Grid, Typography } from "@mui/material"
-import { Pair, Substring } from "../types"
+import type { Pair, Substring } from "../types"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import React from "react"
 import { useProject } from "../utils/useProject"

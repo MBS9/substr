@@ -1,12 +1,14 @@
 "use client"
-import { Alert, Snackbar, AlertProps, SnackbarCloseReason, SvgIconTypeMap } from "@mui/material"
-import Slide, { SlideProps } from "@mui/material/Slide"
+import type { AlertProps, SnackbarCloseReason, SvgIconTypeMap } from "@mui/material"
+import { Alert, Snackbar } from "@mui/material"
+import type { SlideProps } from "@mui/material/Slide"
+import Slide from "@mui/material/Slide"
 import CheckIcon from "@mui/icons-material/Check"
 import ErrorIcon from "@mui/icons-material/Error"
 import WarningIcon from "@mui/icons-material/Warning"
 import InfoIcon from "@mui/icons-material/Info"
 import React from "react"
-import { OverridableComponent } from "@mui/material/OverridableComponent"
+import type { OverridableComponent } from "@mui/material/OverridableComponent"
 
 type Severity = AlertProps["severity"] extends undefined | (infer U) ? U : never
 

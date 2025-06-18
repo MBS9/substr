@@ -46,6 +46,7 @@ export default defineConfig([
   {
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/consistent-type-imports": "error",
       "react-hooks/rules-of-hooks": "error", // For checking rules of hooks
       "react-hooks/exhaustive-deps": "error", // For checking hook dependencies,
     },

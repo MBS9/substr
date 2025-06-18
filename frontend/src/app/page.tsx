@@ -2,11 +2,11 @@
 import React from "react"
 import * as SubstringAlgorithm from "algo-wasm"
 import { InputForm } from "./components/form"
-import { ConfigurationOptions, DisplayResultState, InputData } from "./types"
+import type { ConfigurationOptions, DisplayResultState, InputData } from "./types"
 import { ShowDiff } from "./components/displayResult"
 import {
-  Typography,
   Box,
+  Typography,
 } from "@mui/material"
 import useComputeAnylsis from "./utils/recompute-project"
 import { importFromFile } from "./utils/file-format"

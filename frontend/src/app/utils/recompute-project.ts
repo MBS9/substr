@@ -1,5 +1,5 @@
 import React from "react"
-import { ConfigurationOptions, DisplayResultState } from "../types"
+import type { ConfigurationOptions, DisplayResultState } from "../types"
 import * as SubstringAlgorithm from "algo-wasm"
 
 export default function useComputeAnalysis(

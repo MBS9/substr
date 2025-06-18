@@ -1,4 +1,4 @@
-import { Substring as WasmSubstring, Result, Algorithm, Synonym } from "algo-wasm"
+import type { Algorithm, Result, Synonym, Substring as WasmSubstring } from "algo-wasm"
 
 export type Substring = WasmSubstring
 

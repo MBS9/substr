@@ -1,14 +1,14 @@
-import { ConfigurationOptions } from "../types"
+import type { ConfigurationOptions } from "../types"
 import {
-  useState,
   useCallback,
+  useState,
 } from "react"
 import {
-  Typography,
   Box,
   IconButton,
   Menu,
   MenuItem,
+  Typography,
 } from "@mui/material"
 import { useResultAnalytics } from "../utils/useResultAnalytics"
 import { Header } from "./header"

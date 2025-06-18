@@ -1,4 +1,4 @@
-import React from "react"
+import type React from "react"
 import { AppBar, Toolbar, Typography } from "@mui/material"
 
 export function Header(props: { children: React.ReactNode }) {
