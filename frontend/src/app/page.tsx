@@ -11,6 +11,7 @@ import {
 import useComputeAnylsis from "./utils/recompute-project"
 import { importFromFile } from "./utils/file-format"
 import { ProjectContext } from "./utils/useProject"
+import { useNotification } from "./components/showNotification"
 
 let hotReloadCounter = 0
 
@@ -20,6 +21,7 @@ export default function Run() {
     "Loading... please wait",
   )
   const [result, setResult] = React.useState<DisplayResultState | null>(null)
+  const showNotification = useNotification()
   if (process.env.NODE_ENV === "development") hotReloadCounter++
   React.useEffect(() => {
     SubstringAlgorithm.default().then(() => {
@@ -56,11 +58,11 @@ export default function Run() {
       )
     } catch (error) {
       console.error("Error processing files:", error)
-      setStatusMessage("Failed to process files, please check the file format and try again.")
+      showNotification("Failed to process files", "error")
       setIsReady(true)
       return
     }
-  }, [runAnalysisFromTextAndConfig])
+  }, [runAnalysisFromTextAndConfig, showNotification])
   const onConfigurationChange = React.useCallback(
     (data: ConfigurationOptions) => {
       if (result === null) return null
