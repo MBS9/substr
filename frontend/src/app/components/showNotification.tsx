@@ -10,7 +10,7 @@ import { OverridableComponent } from "@mui/material/OverridableComponent"
 
 type Severity = AlertProps["severity"] extends undefined | (infer U) ? U : never
 
-type NotificationContextType = {
+interface NotificationContextType {
   message: string;
   severity: Severity;
   setMessage: (message: string, severity?: Severity) => void;
@@ -28,7 +28,7 @@ export function useNotification() {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-const ICONS: { [Key in Severity]: OverridableComponent<SvgIconTypeMap<{}, "svg">> } = {
+const ICONS: Record<Severity, OverridableComponent<SvgIconTypeMap<{}, "svg">>> = {
   "success": CheckIcon,
   "info": InfoIcon,
   "warning": WarningIcon,
