@@ -24,9 +24,7 @@ jobs:
           node-version: "22"
       - name: Install dependencies
         run: npm ci
-      - name: Setup Rust Modules
+      - name: Build with Next.js
         run: npm run build
       - name: Lint with ESLint
         run: npm run lint
-      - name: Build with Next.js
-        run: npm run build
