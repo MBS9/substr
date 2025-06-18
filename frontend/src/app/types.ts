@@ -17,7 +17,7 @@ export type InputData = {
   fileB: File,
 } & ConfigurationOptions
 
-export type ConfigurationOptions = {
+export interface ConfigurationOptions {
   minLength: number;
   ratio: number;
   maxStrikes: number;
@@ -37,7 +37,7 @@ declare global {
   interface Window {
     launchQueue: {
       setConsumer: (
-        consumer: (launchParams: LaunchParams) => void
+        consumer: (launchParams: LaunchParams) => Promise<void> | void
       ) => void
     };
   }

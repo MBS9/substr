@@ -28,26 +28,38 @@ export default function Run() {
       if ("launchQueue" in window) {
         window.launchQueue.setConsumer(async (launchParams) => {
           if (launchParams.files.length > 0) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             const fileA = (await launchParams.files[0].getFile()) as File
             setResult(await importFromFile(fileA))
           }
         })
       }
+    }).catch((err) => {
+      console.error("Failed to load algorithm:", err)
+      setStatusMessage("Failed to load algorithm! Please try again later.")
+      setIsReady(false)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hotReloadCounter])
   const runAnalysisFromTextAndConfig = useComputeAnylsis(setResult)
   const handleSubmit = React.useCallback(async (data: InputData) => {
     setStatusMessage("Processing... please wait")
-    const textA = SubstringAlgorithm.clean_text(await data.fileA.text())
-    const textB = SubstringAlgorithm.clean_text(await data.fileB.text())
+    try {
+      const textA = SubstringAlgorithm.clean_text(await data.fileA.text())
+      const textB = SubstringAlgorithm.clean_text(await data.fileB.text())
 
-    setIsReady(false)
-    runAnalysisFromTextAndConfig(
-      textA,
-      textB,
-      data,
-    )
+      setIsReady(false)
+      runAnalysisFromTextAndConfig(
+        textA,
+        textB,
+        data,
+      )
+    } catch (error) {
+      console.error("Error processing files:", error)
+      setStatusMessage("Failed to process files, please check the file format and try again.")
+      setIsReady(true)
+      return
+    }
   }, [runAnalysisFromTextAndConfig])
   const onConfigurationChange = React.useCallback(
     (data: ConfigurationOptions) => {
@@ -68,14 +80,14 @@ export default function Run() {
             <>
               <header style={{ textAlign: "center" }}>
                 <Typography variant='h4' component='h1'>Substring Tiler</Typography>
-                <Typography variant='subtitle1'>Status: {statusMessage}</Typography>
+                <Typography variant='subtitle1'>Status: <i>{statusMessage}</i></Typography>
               </header>
               <main style={{ display: "flex", justifyContent: "center" }}>
                 <Box
                   sx={{ flexGrow: 1, width: "70%", mb: 5 }}
                 >
                   <InputForm
-                    onSubmit={handleSubmit}
+                    onSubmit={(data) => { void handleSubmit(data) }}
                     disabled={!isReady}
                     onImport={setResult}
                   />

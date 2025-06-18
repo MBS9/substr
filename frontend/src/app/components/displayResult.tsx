@@ -90,7 +90,9 @@ export function ShowDiff() {
     <>
       <Header>
         <IconButton
-          onClick={exportResult}
+          onClick={() => {
+            void exportResult()
+          }}
           type='button'
           color='inherit'
         >

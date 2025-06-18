@@ -1,7 +1,7 @@
 import React from "react"
 import type { ConfigurationOptions, DisplayResultState } from "../types"
 
-type ProjectContextType = {
+interface ProjectContextType {
   project: DisplayResultState | null;
   setOptions: (project: ConfigurationOptions) => void;
 }

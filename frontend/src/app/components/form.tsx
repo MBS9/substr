@@ -10,7 +10,7 @@ import ImportButton from "./importButton"
 import type { Algorithm } from "algo-wasm"
 import ConfigurationForm from "./configurationForm"
 
-type Props = {
+interface Props {
   onSubmit: (data: InputData) => void;
   disabled: boolean;
   onImport: (data: DisplayResultState) => void;

@@ -24,7 +24,7 @@ export default function ImportButton(props: {
   return (
     <Button variant={variant} disabled={props.disabled ?? false} component='label'>
       Import Existing Project
-      <input type='file' accept='.tile' onChange={importCallback} hidden />
+      <input type='file' accept='.tile' onChange={(e) => { void importCallback(e) }} hidden />
     </Button>
   )
 }
