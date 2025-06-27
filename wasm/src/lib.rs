@@ -67,7 +67,14 @@ pub fn process(
         return JsValue::from_serde(&Vec::<utils::Result>::new()).unwrap();
     }
 
-    fn add_levenshtein_match(elem: &utils::SubstringResult, result: &mut Vec<utils::Result>) {
+    let mut matches_a = levenshtein_distances[..].to_vec();
+    matches_a.sort_unstable_by_key(|x| x.start_a);
+    let mut matches_b = levenshtein_distances[..].to_vec();
+    matches_b.sort_unstable_by_key(|x| x.start_b);
+
+    let mut result: Vec<utils::Result> = Vec::with_capacity(levenshtein_distances.len() * 2 + 1);
+
+    let mut add_levenshtein_match = |elem: &utils::SubstringResult| {
         let a = utils::Substring {
             start: elem.start_a,
             end: elem.end_a,
@@ -83,16 +90,10 @@ pub fn process(
             similarity,
             levenshteinMatch: true,
         });
-    }
+    };
 
-    let mut matches_a = levenshtein_distances[..].to_vec();
-    matches_a.sort_unstable_by_key(|x| x.start_a);
-    let mut matches_b = levenshtein_distances[..].to_vec();
-    matches_b.sort_unstable_by_key(|x| x.start_b);
-
-    let mut result: Vec<utils::Result> = Vec::with_capacity(levenshtein_distances.len() * 2 + 1);
     matches_a.iter().for_each(|elem| {
-        add_levenshtein_match(&elem, &mut result);
+        add_levenshtein_match(&elem);
     });
 
     // Merge overlapping matches in both lists
