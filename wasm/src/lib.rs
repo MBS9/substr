@@ -94,6 +94,31 @@ pub fn process(
     matches_a.iter().for_each(|elem| {
         add_levenshtein_match(&elem, &mut result);
     });
+
+    // Merge overlapping matches in both lists
+    matches_a.dedup_by(|a, b| {
+        if a.start_a <= b.end_a && b.start_a <= a.end_a {
+            a.start_a = a.start_a.min(b.start_a);
+            a.end_a = a.end_a.max(b.end_a);
+            b.start_a = a.start_a;
+            b.end_a = a.end_a;
+            true
+        } else {
+            false
+        }
+    });
+    matches_b.dedup_by(|a, b| {
+        if a.start_b <= b.end_b && b.start_b <= a.end_b {
+            a.start_b = a.start_b.min(b.start_b);
+            a.end_b = a.end_b.max(b.end_b);
+            b.start_b = a.start_b;
+            b.end_b = a.end_b;
+            true
+        } else {
+            false
+        }
+    });
+
     let add_cosine_similarity_to_result = |cosine: &mut utils::Result| {
         if cosine.a.start < cosine.a.end && cosine.b.start < cosine.b.end {
             cosine.similarity = utils::cosine_similarity(
