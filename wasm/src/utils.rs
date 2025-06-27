@@ -19,6 +19,7 @@ extern "C" {
 }
 
 #[wasm_bindgen]
+#[derive(Clone)]
 pub struct SubstringResult {
     pub start_a: usize,
     pub end_a: usize,
@@ -37,7 +38,7 @@ pub struct Substring {
 }
 
 #[wasm_bindgen]
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Copy)]
 pub struct Result {
     pub a: Substring,
     pub b: Substring,

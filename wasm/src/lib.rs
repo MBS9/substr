@@ -1,13 +1,13 @@
 extern crate wasm_bindgen;
-use std::panic::{self, PanicHookInfo};
-use std::{cmp::max, cmp::min};
 use gloo_utils::format::JsValueSerdeExt;
+use std::panic::{self, PanicHookInfo};
 use wasm_bindgen::prelude::*;
+
 
 mod comparativus;
 mod matrix;
-mod utils;
 mod synonyms;
+mod utils;
 
 #[derive(PartialEq)]
 #[wasm_bindgen]
@@ -67,7 +67,14 @@ pub fn process(
         return JsValue::from_serde(&Vec::<utils::Result>::new()).unwrap();
     }
 
-    fn add_levenshtein_match(elem: &utils::SubstringResult, result: &mut Vec<utils::Result>) {
+    let mut matches_a = levenshtein_distances[..].to_vec();
+    matches_a.sort_unstable_by_key(|x| x.start_a);
+    let mut matches_b = levenshtein_distances[..].to_vec();
+    matches_b.sort_unstable_by_key(|x| x.start_b);
+
+    let mut result: Vec<utils::Result> = Vec::with_capacity(levenshtein_distances.len() * 2 + 1);
+
+    let mut add_levenshtein_match = |elem: &utils::SubstringResult| {
         let a = utils::Substring {
             start: elem.start_a,
             end: elem.end_a,
@@ -83,68 +90,87 @@ pub fn process(
             similarity,
             levenshteinMatch: true,
         });
-    }
-
-    let mut result: Vec<utils::Result> = Vec::with_capacity(levenshtein_distances.len() * 2 - 1);
-    for (tokens1, tokens2) in levenshtein_distances[..levenshtein_distances.len() - 1]
-        .iter()
-        .zip(levenshtein_distances[1..].iter())
-    {
-        let elem = utils::SubstringResult{
-            start_a: token_a[tokens1.start_a].start,
-            end_a: token_a[tokens1.end_a-1].end,
-            start_b: token_b[tokens1.start_b].start,
-            end_b: token_b[tokens1.end_b-1].end,
-            len: tokens1.len,
-            edit_ratio: tokens1.edit_ratio,
-        };
-        let elem2 = utils::SubstringResult{
-            start_a: token_a[tokens2.start_a].start,
-            end_a: token_a[tokens2.end_a-1].end,
-            start_b: token_b[tokens2.start_b].start,
-            end_b: token_b[tokens2.end_b-1].end,
-            len: tokens2.len,
-            edit_ratio: tokens2.edit_ratio,
-        };
-        // Add levenshtein match
-        add_levenshtein_match(&elem, &mut result);
-        // Add cosine similarity match
-        if elem.end_a >= elem2.start_a {
-            continue;
-        }
-        let start_b = min(elem2.end_b, elem.end_b);
-        let end_b = max(elem2.start_b, elem.start_b);
-        if start_b >= end_b {
-            continue;
-        }
-        let a = utils::Substring {
-            start: elem.end_a,
-            end: elem2.start_a,
-        };
-        let b = utils::Substring {
-            start: start_b,
-            end: end_b,
-        };
-        let similarity =
-            utils::cosine_similarity(&file_a[(a.start)..(a.end)], &file_b[(b.start)..(b.end)]);
-        result.push(utils::Result {
-            a,
-            b,
-            similarity,
-            levenshteinMatch: false,
-        });
-    }
-    // Add last element
-    let token = levenshtein_distances.last().unwrap();
-    let elem = utils::SubstringResult{
-        start_a: token_a[token.start_a].start,
-        end_a: token_a[token.end_a-1].end,
-        start_b: token_b[token.start_b].start,
-        end_b: token_b[token.end_b-1].end,
-        len: token.len,
-        edit_ratio: token.edit_ratio,
     };
-    add_levenshtein_match(&elem, &mut result);
+
+    matches_a.iter().for_each(|elem| {
+        add_levenshtein_match(&elem);
+    });
+
+    // Merge overlapping matches in both lists
+    matches_a.dedup_by(|a, b| {
+        if a.start_a <= b.end_a && b.start_a <= a.end_a {
+            a.start_a = a.start_a.min(b.start_a);
+            a.end_a = a.end_a.max(b.end_a);
+            b.start_a = a.start_a;
+            b.end_a = a.end_a;
+            true
+        } else {
+            false
+        }
+    });
+    matches_b.dedup_by(|a, b| {
+        if a.start_b <= b.end_b && b.start_b <= a.end_b {
+            a.start_b = a.start_b.min(b.start_b);
+            a.end_b = a.end_b.max(b.end_b);
+            b.start_b = a.start_b;
+            b.end_b = a.end_b;
+            true
+        } else {
+            false
+        }
+    });
+
+    let add_cosine_similarity_to_result = |cosine: &mut utils::Result| {
+        if cosine.a.start < cosine.a.end && cosine.b.start < cosine.b.end {
+            cosine.similarity = utils::cosine_similarity(
+                &file_a[cosine.a.start..cosine.a.end],
+                &file_b[cosine.b.start..cosine.b.end],
+            );
+        } else {
+            cosine.similarity = 0.0;
+        }
+        *cosine
+    };
+    result.push(add_cosine_similarity_to_result(&mut utils::Result {
+        a: utils::Substring {
+            start: 0,
+            end: matches_a.first().unwrap().start_a,
+        },
+        b: utils::Substring {
+            start: 0,
+            end: matches_b.first().unwrap().start_b,
+        },
+        similarity: 0.0,
+        levenshteinMatch: false,
+    }));
+    for (tokens_a, tokens_b) in matches_a.windows(2).zip(matches_b.windows(2)) {
+        // Get the area between two matches in from tokens_a and b
+        let mut cosine = utils::Result {
+            a: utils::Substring {
+                start: tokens_a[0].end_a,
+                end: tokens_a[1].start_a,
+            },
+            b: utils::Substring {
+                start: tokens_b[0].end_b,
+                end: tokens_b[1].start_b,
+            },
+            similarity: 0.0,
+            levenshteinMatch: false,
+        };
+        result.push(add_cosine_similarity_to_result(&mut cosine));
+    }
+    result.push(add_cosine_similarity_to_result(&mut utils::Result {
+        a: utils::Substring {
+            start: matches_a.last().unwrap().end_a,
+            end: file_a.len(),
+        },
+        b: utils::Substring {
+            start: matches_b.last().unwrap().end_b,
+            end: file_b.len(),
+        },
+        similarity: 0.0,
+        levenshteinMatch: false,
+    }));
     return JsValue::from_serde(&result).unwrap();
 }
 
