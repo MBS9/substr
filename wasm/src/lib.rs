@@ -1,11 +1,8 @@
 extern crate wasm_bindgen;
 use gloo_utils::format::JsValueSerdeExt;
 use std::panic::{self, PanicHookInfo};
-use std::{cmp::max, cmp::min};
-use utils::SubstringResult;
 use wasm_bindgen::prelude::*;
 
-use crate::utils::Result;
 
 mod comparativus;
 mod matrix;
