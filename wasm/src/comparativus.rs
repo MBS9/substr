@@ -91,17 +91,25 @@ fn expand_all_matches(
 
             let tokens_a = &text_a[ma.start_a..ma.end_a];
             let tokens_b = &text_b[ma.start_b..ma.end_b];
-            for (token_a, token_b) in tokens_a.iter().zip(tokens_b.iter()) {
-                len += max(token_a.len(), token_b.len());
+            let max_len = max(tokens_a.len(), tokens_b.len());
+            for i in 0..max_len {
+                let token_a = tokens_a.get(i);
+                let token_b = tokens_b.get(i);
+                match (token_a, token_b) {
+                    (Some(a), Some(b)) => len += max(a.len(), b.len()),
+                    (Some(a), None) => len += a.len(),
+                    (None, Some(b)) => len += b.len(),
+                    (None, None) => {}
+                }
             }
-
+            
             ma.len = len; // This may not necessarily be the same as base_match_size
             ma.edit_ratio = utils::recompute_ratio(
                 // This is the ratio of the match, which has been set as 1.0 before, but we need the real value
                 text_a, text_b, ma.start_a, ma.end_a, ma.start_b, ma.end_b, ma.len,
             );
             while ma.start_a < ma.end_a && ma.start_b < ma.end_b && ma.edit_ratio < min_ratio {
-                ma.len -= max(text_a[ma.end_a].len(), text_b[ma.end_b].len());
+                ma.len -= max(text_a[ma.end_a-1].len(), text_b[ma.end_b-1].len());
                 ma.end_a -= 1;
                 ma.end_b -= 1;
                 ma.edit_ratio = utils::recompute_ratio(
