@@ -5,14 +5,12 @@ use wasm_bindgen::prelude::*;
 
 
 mod comparativus;
-mod matrix;
 mod synonyms;
 mod utils;
 
 #[derive(PartialEq)]
 #[wasm_bindgen]
 pub enum Algorithm {
-    Matrix,
     Comparativus,
 }
 
@@ -40,16 +38,6 @@ pub fn process(
     let token_b = synonyms::tokenize_text(0, file_b.len(), &synonyms_b, file_b.as_slice());
     let levenshtein_distances: Vec<utils::SubstringResult>;
     match levenshtein_algorithm {
-        Algorithm::Matrix => {
-            levenshtein_distances = matrix::find_levenshtein_matches(
-                token_a.as_slice(),
-                token_b.as_slice(),
-                min_length,
-                ratio,
-                max_substrings,
-                max_strikes,
-            );
-        }
         Algorithm::Comparativus => {
             levenshtein_distances = comparativus::find_levenshtein_matches(
                 token_a.as_slice(),

@@ -89,7 +89,6 @@ export default function ConfigurationForm({ children, onSubmit, disabled }:
             variant='standard'
           >
             <MenuItem value={Algorithm.Comparativus}>Comparativus</MenuItem>
-            <MenuItem value={Algorithm.Matrix}>Matrix</MenuItem>
           </TextField>
         </Grid>
       </Grid>

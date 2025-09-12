@@ -46,22 +46,6 @@ pub struct Result {
     pub levenshteinMatch: bool,
 }
 
-pub struct MatrixElement {
-    pub len: usize,
-}
-
-impl std::clone::Clone for MatrixElement {
-    fn clone(&self) -> Self {
-        MatrixElement { len: self.len }
-    }
-}
-
-impl MatrixElement {
-    pub fn zero(&mut self) {
-        self.len = 0;
-    }
-}
-
 // Efficient matrix implementation - only stores last 2 rows to save memory
 pub struct EfficientMatrix<T> {
     row_len: usize,
@@ -249,16 +233,4 @@ pub fn expand_match_left_and_right(
         max_strike,
         substr,
     );
-}
-
-pub fn expand_matches_left_and_right(
-    ret: &mut [SubstringResult],
-    a: &[Token],
-    b: &[Token],
-    ratio: f32,
-    max_strike: usize,
-) {
-    for substr in ret.iter_mut() {
-        expand_match_left_and_right(substr, a, b, ratio, max_strike);
-    }
 }
