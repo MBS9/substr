@@ -5,7 +5,7 @@ import type { Metadata, Viewport } from "next"
 import type React from "react"
 import "./globals.css"
 import { ShowNotification } from "./components/showNotification"
-import { ThemeProvider } from "@mui/material"
+import { ThemeProvider, Typography } from "@mui/material"
 import theme from "./theme"
 
 export const metadata: Metadata = {
@@ -36,6 +36,13 @@ export default function RootLayout({
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
             <ShowNotification>{children}</ShowNotification>
+            <footer>
+              <Typography>
+                Developed by:
+                Laszlo Zala, ELTE Eötvös Loránd University |
+                Mark Barsi-Siminszky, University of Toronto
+              </Typography>
+            </footer>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
