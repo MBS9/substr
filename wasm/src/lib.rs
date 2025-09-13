@@ -64,12 +64,12 @@ pub fn process(
 
     let mut add_levenshtein_match = |elem: &utils::SubstringResult| {
         let a = utils::Substring {
-            start: elem.start_a,
-            end: elem.end_a,
+            start: token_a[elem.start_a].start,
+            end: token_a[elem.end_a].end,
         };
         let b = utils::Substring {
-            start: elem.start_b,
-            end: elem.end_b,
+            start: token_b[elem.start_b].start,
+            end: token_b[elem.end_b].end,
         };
         let similarity = elem.edit_ratio;
         result.push(utils::Result {
@@ -122,11 +122,11 @@ pub fn process(
     result.push(add_cosine_similarity_to_result(&mut utils::Result {
         a: utils::Substring {
             start: 0,
-            end: matches_a.first().unwrap().start_a,
+            end: token_a[matches_a.first().unwrap().start_a].end,
         },
         b: utils::Substring {
             start: 0,
-            end: matches_b.first().unwrap().start_b,
+            end: token_b[matches_b.first().unwrap().start_b].end,
         },
         similarity: 0.0,
         levenshteinMatch: false,
@@ -135,12 +135,12 @@ pub fn process(
         // Get the area between two matches in from tokens_a and b
         let mut cosine = utils::Result {
             a: utils::Substring {
-                start: tokens_a[0].end_a,
-                end: tokens_a[1].start_a,
+                start: token_a[tokens_a[0].end_a].start,
+                end: token_a[tokens_a[1].start_a].end,
             },
             b: utils::Substring {
-                start: tokens_b[0].end_b,
-                end: tokens_b[1].start_b,
+                start: token_b[tokens_b[0].end_b].start,
+                end: token_b[tokens_b[1].start_b].end,
             },
             similarity: 0.0,
             levenshteinMatch: false,
@@ -149,11 +149,11 @@ pub fn process(
     }
     result.push(add_cosine_similarity_to_result(&mut utils::Result {
         a: utils::Substring {
-            start: matches_a.last().unwrap().end_a,
+            start: token_a[matches_a.last().unwrap().end_a].start,
             end: file_a.len(),
         },
         b: utils::Substring {
-            start: matches_b.last().unwrap().end_b,
+            start: token_b[matches_b.last().unwrap().end_b].start,
             end: file_b.len(),
         },
         similarity: 0.0,
