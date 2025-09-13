@@ -22,6 +22,8 @@ export default function useExportResult() {
         algorithmSelection: result.algorithmSelection,
         synonymsA: result.synonymsA,
         synonymsB: result.synonymsB,
+        fileNameA: result.fileNameA,
+        fileNameB: result.fileNameB,
       }
 
       const file = await exportToFile(jsResultCopy)

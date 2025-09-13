@@ -93,25 +93,15 @@ export function useAddSynonym() {
         ratio: result.ratio,
         synonymsA: synonymsA,
         synonymsB: synonymsB,
+        fileNameA: result.fileNameA,
+        fileNameB: result.fileNameB,
       })
       showNotification(
         "The synonym was added, and the texts were reanalyzed.",
         "success",
       )
     },
-    [
-      priorSelection,
-      result.algorithmSelection,
-      result.baseMatchSize,
-      result.kernelSize,
-      result.maxStrikes,
-      result.minLength,
-      result.ratio,
-      setConfiguration,
-      showNotification,
-      synonymsA,
-      synonymsB,
-    ],
+    [priorSelection, result.algorithmSelection, result.baseMatchSize, result.fileNameA, result.fileNameB, result.kernelSize, result.maxStrikes, result.minLength, result.ratio, setConfiguration, showNotification, synonymsA, synonymsB],
   )
   return handleAddSynonym
 }

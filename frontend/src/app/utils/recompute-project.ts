@@ -35,6 +35,8 @@ export default function useComputeAnalysis(
           algorithmSelection: config.algorithmSelection,
           synonymsA: config.synonymsA,
           synonymsB: config.synonymsB,
+          fileNameA: config.fileNameA,
+          fileNameB: config.fileNameB,
         })
       } catch (error) {
         console.error("Error during analysis:", error)

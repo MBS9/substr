@@ -118,6 +118,8 @@ export default function ConfigurationForm({ children, onSubmit, disabled }:
           baseMatchSize,
           synonymsA: currentSettings?.synonymsA ?? [],
           synonymsB: currentSettings?.synonymsB ?? [],
+          fileNameA: currentSettings?.fileNameA ?? "",
+          fileNameB: currentSettings?.fileNameB ?? "",
         })
       })}
     </Box>

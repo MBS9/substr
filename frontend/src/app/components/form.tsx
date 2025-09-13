@@ -2,6 +2,7 @@ import React from "react"
 import type { DisplayResultState, InputData } from "../types"
 import {
   Box, Button, Chip,
+  Grid2,
   Typography,
 } from "@mui/material"
 import { Check as CheckIcon } from "@mui/icons-material"
@@ -19,19 +20,29 @@ interface Props {
 export function InputForm({ onSubmit, disabled, onImport }: Props) {
   const [fileASelected, setFileASelected] = React.useState(false)
   const [fileBSelected, setFileBSelected] = React.useState(false)
+  const [fileNameA, setFileNameA] = React.useState<string>("")
+  const [fileNameB, setFileNameB] = React.useState<string>("")
   const submitCallback = React.useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       const formData = new FormData(e.currentTarget)
       const fileA = formData.get("a") as File
       const fileB = formData.get("b") as File
+      const fileNameA = fileA.name
+      const fileNameB = fileB.name
       const minLength = parseInt(formData.get("min_length") as string)
       const ratio = parseFloat(formData.get("ratio") as string)
       const maxStrikes = parseInt(formData.get("strikes") as string)
       const kernelSize = parseInt(formData.get("kernel_size") as string)
       const algorithmSelection = parseInt(formData.get("algorithm_selection") as string) as Algorithm
       const baseMatchSize = parseInt(formData.get("base_match_size") as string)
-      onSubmit({ fileA, fileB, minLength, ratio, maxStrikes, kernelSize, algorithmSelection, baseMatchSize: baseMatchSize, synonymsA: [], synonymsB: [] })
+      onSubmit({
+        fileA, fileB, minLength, ratio,
+        maxStrikes, kernelSize,
+        algorithmSelection, baseMatchSize: baseMatchSize,
+        synonymsA: [], synonymsB: [],
+        fileNameA, fileNameB,
+      })
     },
     [onSubmit],
   )
@@ -50,48 +61,64 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
             Please click to upload two files to compare. The files should be in
             plain text format.
           </Typography>
-          <Button
-            variant='outlined'
-            component='label'
-            disabled={disabled}
-            endIcon={fileASelected ? <CheckIcon /> : null}
-            sx={{ mr: 3 }}
-          >
-            File A
-            <input
-              type='file'
-              name='a'
-              accept="text/plain"
-              hidden
-              required
-              onChange={(e) =>
-                e.target.files?.[0]
-                  ? setFileASelected(true)
-                  : setFileASelected(false)
-              }
-            />
-          </Button>
-          <Button
-            variant='outlined'
-            component='label'
-            disabled={disabled}
-            endIcon={fileBSelected ? <CheckIcon /> : null}
-          >
-            File B
-            <input
-              type='file'
-              name='b'
-              hidden
-              accept="text/plain"
-              required
-              onChange={(e) =>
-                e.target.files?.[0]
-                  ? setFileBSelected(true)
-                  : setFileBSelected(false)
-              }
-            />
-          </Button>
-          <br />
+          <Grid2 container sx={{ placeContent: "center" }}>
+            <Grid2>
+              <Button
+                variant='outlined'
+                component='label'
+                disabled={disabled}
+                endIcon={fileASelected ? <CheckIcon /> : null}
+                sx={{ mr: 3 }}
+              >
+                File A
+                <input
+                  type='file'
+                  name='a'
+                  accept="text/plain"
+                  hidden
+                  required
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) {
+                      setFileASelected(true)
+                      setFileNameA(e.target.files[0].name)
+                    } else {
+                      setFileASelected(false)
+                    }
+                  }
+                  }
+                />
+              </Button>
+              <Typography variant="subtitle2">{fileNameA}</Typography>
+            </Grid2>
+            <Grid2>
+              <Button
+                variant='outlined'
+                component='label'
+                disabled={disabled}
+                endIcon={fileBSelected ? <CheckIcon /> : null}
+              >
+                File B
+                <input
+                  type='file'
+                  name='b'
+                  hidden
+                  accept="text/plain"
+                  required
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) {
+                      setFileBSelected(true)
+                      setFileNameB(e.target.files[0].name)
+                    } else {
+                      setFileBSelected(false)
+                    }
+                  }
+                  }
+                />
+              </Button>
+              <Typography variant="subtitle2">{fileNameB}</Typography>
+            </Grid2>
+            <br />
+          </Grid2>
         </Box>
         <Divider textAlign='center' sx={{ mt: 3, mb: 3 }}>
           <Chip label='Enter a few configuration options for the new files' />

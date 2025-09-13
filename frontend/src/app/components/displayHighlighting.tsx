@@ -206,6 +206,7 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
       </Typography>
       <Grid container gap={3} sx={{ mt: 3 }}>
         <Grid sx={{ width: "50%" }}>
+          <Typography variant='h6'>{project?.fileNameA}</Typography>
           <Typography>
             {Array.from(result.textA).map((letter, index) => (
               <span
@@ -227,6 +228,7 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
           </Typography>
         </Grid>
         <Grid size='grow'>
+          <Typography variant='h6'>{project?.fileNameB}</Typography>
           <Typography>
             {Array.from(result.textB).map((letter, index) => (
               <span

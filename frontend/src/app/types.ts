@@ -26,6 +26,8 @@ export interface ConfigurationOptions {
   algorithmSelection: Algorithm;
   synonymsA: Omit<Synonym, "free">[];
   synonymsB: Omit<Synonym, "free">[];
+  fileNameA: string;
+  fileNameB: string;
 }
 
 interface LaunchParams {

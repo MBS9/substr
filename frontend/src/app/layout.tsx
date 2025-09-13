@@ -36,7 +36,19 @@ export default function RootLayout({
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
             <ShowNotification>{children}</ShowNotification>
-            <footer>
+            <footer
+              style={{
+                position: "fixed",
+                left: 0,
+                bottom: 0,
+                width: "100%",
+                textAlign: "center",
+                padding: "0.5rem 0",
+                background: "#fff",
+                boxShadow: "0 -2px 8px rgba(0,0,0,0.05)",
+                zIndex: 100,
+              }}
+            >
               <Typography variant="subtitle1">
                 Developed by:
                 Laszlo Zala, ELTE Eötvös Loránd University |
