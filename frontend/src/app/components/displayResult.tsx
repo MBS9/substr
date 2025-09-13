@@ -116,9 +116,6 @@ export function ShowDiff() {
         <Typography sx={headingStyle}>
           Base Match Size: {result.baseMatchSize}
         </Typography>
-        <Typography sx={headingStyle}>
-          Algorithm: {result.algorithmSelection}
-        </Typography>
       </Header>
       <UpdateSettingsModal settings={result} onSubmit={onSettingsChange} open={modalOpen} onClose={() => setModalOpen(false)} />
       <Box>
