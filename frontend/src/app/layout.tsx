@@ -38,12 +38,13 @@ export default function RootLayout({
             <ShowNotification>{children}</ShowNotification>
             <footer
               style={{
-                position: "fixed",
+                marginTop: "0.5rem",
+                position: "relative",
                 left: 0,
                 bottom: 0,
                 width: "100%",
                 textAlign: "center",
-                padding: "0.5rem 0",
+                padding: "1rem 0",
                 background: "#fff",
                 boxShadow: "0 -2px 8px rgba(0,0,0,0.05)",
                 zIndex: 100,
