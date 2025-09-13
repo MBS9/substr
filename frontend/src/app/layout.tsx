@@ -37,7 +37,7 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
             <ShowNotification>{children}</ShowNotification>
             <footer>
-              <Typography>
+              <Typography variant="subtitle1">
                 Developed by:
                 Laszlo Zala, ELTE Eötvös Loránd University |
                 Mark Barsi-Siminszky, University of Toronto
