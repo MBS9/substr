@@ -118,7 +118,7 @@ export function ShowDiff() {
         </Typography>
       </Header>
       <UpdateSettingsModal settings={result} onSubmit={onSettingsChange} open={modalOpen} onClose={() => setModalOpen(false)} />
-      <Box>
+      <Box component='main'>
         <Box sx={{ mt: 2, mb: 2 }}>
           <Typography variant='h5'>Quick Summary of Results</Typography>
           <Typography>
