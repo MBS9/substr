@@ -1,8 +1,10 @@
 extern crate wasm_bindgen;
 use gloo_utils::format::JsValueSerdeExt;
-use std::{cmp::min, panic::{self, PanicHookInfo}};
+use std::{
+    cmp::min,
+    panic::{self, PanicHookInfo},
+};
 use wasm_bindgen::prelude::*;
-
 
 mod comparativus;
 mod synonyms;
@@ -120,27 +122,29 @@ pub fn process(
         *cosine
     };
     let substract_one_if_not_0 = |x: usize| if x > 0 { x - 1 } else { 0 };
-    result.push(add_cosine_similarity_to_result(&mut utils::Result {
-        a: utils::Substring {
-            start: 0,
-            end: token_a[substract_one_if_not_0(matches_a.first().unwrap().start_a)].end,
-        },
-        b: utils::Substring {
-            start: 0,
-            end: token_b[substract_one_if_not_0(matches_b.first().unwrap().start_b)].end,
-        },
-        similarity: 0.0,
-        levenshteinMatch: false,
-    }));
+    if matches_a.first().unwrap().start_a > 1 && matches_b.first().unwrap().start_b > 1 {
+        result.push(add_cosine_similarity_to_result(&mut utils::Result {
+            a: utils::Substring {
+                start: 0,
+                end: token_a[matches_a.first().unwrap().start_a-1].end,
+            },
+            b: utils::Substring {
+                start: 0,
+                end: token_b[matches_b.first().unwrap().start_b-1].end,
+            },
+            similarity: 0.0,
+            levenshteinMatch: false,
+        }));
+    }
     for (tokens_a, tokens_b) in matches_a.windows(2).zip(matches_b.windows(2)) {
         // Get the area between two matches in from tokens_a and b
         let mut cosine = utils::Result {
             a: utils::Substring {
-                start: token_a[min(tokens_a[0].end_a+1, token_a.len()-1)].start,
+                start: token_a[min(tokens_a[0].end_a + 1, token_a.len() - 1)].start,
                 end: token_a[substract_one_if_not_0(tokens_a[1].start_a)].end,
             },
             b: utils::Substring {
-                start: token_b[min(tokens_b[0].end_b+1, token_b.len()-1)].start,
+                start: token_b[min(tokens_b[0].end_b + 1, token_b.len() - 1)].start,
                 end: token_b[substract_one_if_not_0(tokens_b[1].start_b)].end,
             },
             similarity: 0.0,
@@ -148,18 +152,22 @@ pub fn process(
         };
         result.push(add_cosine_similarity_to_result(&mut cosine));
     }
-    result.push(add_cosine_similarity_to_result(&mut utils::Result {
-        a: utils::Substring {
-            start: token_a[min(matches_a.last().unwrap().end_a+1, token_a.len()-1)].start,
-            end: file_a.len(),
-        },
-        b: utils::Substring {
-            start: token_b[min(matches_b.last().unwrap().end_b+1, token_b.len()-1)].start,
-            end: file_b.len(),
-        },
-        similarity: 0.0,
-        levenshteinMatch: false,
-    }));
+    if matches_a.last().unwrap().end_a != token_a.len() - 2
+        && matches_b.last().unwrap().end_b != token_b.len() - 2
+    {
+        result.push(add_cosine_similarity_to_result(&mut utils::Result {
+            a: utils::Substring {
+                start: token_a[matches_a.last().unwrap().end_a + 1].start,
+                end: file_a.len(),
+            },
+            b: utils::Substring {
+                start: token_b[matches_b.last().unwrap().end_b + 1].start,
+                end: file_b.len(),
+            },
+            similarity: 0.0,
+            levenshteinMatch: false,
+        }));
+    }
     return JsValue::from_serde(&result).unwrap();
 }
 
