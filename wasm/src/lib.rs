@@ -63,7 +63,11 @@ pub fn process(
         }
     }
     if levenshtein_distances.is_empty() {
-        return JsValue::from_serde(&Vec::<utils::Result>::new()).unwrap();
+        return JsValue::from_serde(&ResponseAndOverall {
+            overall_levenstein_similarity: utils::recompute_ratio(&token_a, &token_b, 0, token_a.len(), 0, token_b.len(), utils::find_length_from_tokens(&token_a, &token_b)),
+            overall_cosine_similarity: utils::cosine_similarity(&file_a.as_slice(), &file_b.as_slice()),
+            result: vec![],
+        }).unwrap()
     }
 
     let mut matches_a = levenshtein_distances[..].to_vec();
@@ -76,11 +80,11 @@ pub fn process(
     let mut add_levenshtein_match = |elem: &utils::SubstringResult| {
         let a = utils::Substring {
             start: token_a[elem.start_a].start,
-            end: token_a[elem.end_a].end,
+            end: token_a[elem.end_a-1].end,
         };
         let b = utils::Substring {
             start: token_b[elem.start_b].start,
-            end: token_b[elem.end_b].end,
+            end: token_b[elem.end_b-1].end,
         };
         let similarity = elem.edit_ratio;
         result.push(utils::Result {
@@ -149,11 +153,11 @@ pub fn process(
         // Get the area between two matches in from tokens_a and b
         let mut cosine = utils::Result {
             a: utils::Substring {
-                start: token_a[min(tokens_a[0].end_a + 1, token_a.len() - 1)].start,
+                start: token_a[min(tokens_a[0].end_a, token_a.len() - 1)].start,
                 end: token_a[substract_one_if_not_0(tokens_a[1].start_a)].end,
             },
             b: utils::Substring {
-                start: token_b[min(tokens_b[0].end_b + 1, token_b.len() - 1)].start,
+                start: token_b[min(tokens_b[0].end_b, token_b.len() - 1)].start,
                 end: token_b[substract_one_if_not_0(tokens_b[1].start_b)].end,
             },
             similarity: 0.0,
@@ -161,16 +165,16 @@ pub fn process(
         };
         result.push(add_cosine_similarity_to_result(&mut cosine));
     }
-    if matches_a.last().unwrap().end_a != token_a.len() - 2
-        && matches_b.last().unwrap().end_b != token_b.len() - 2
+    if matches_a.last().unwrap().end_a < token_a.len() - 1
+        && matches_b.last().unwrap().end_b < token_b.len() - 1
     {
         result.push(add_cosine_similarity_to_result(&mut utils::Result {
             a: utils::Substring {
-                start: token_a[matches_a.last().unwrap().end_a + 1].start,
+                start: token_a[matches_a.last().unwrap().end_a].start,
                 end: file_a.len(),
             },
             b: utils::Substring {
-                start: token_b[matches_b.last().unwrap().end_b + 1].start,
+                start: token_b[matches_b.last().unwrap().end_b].start,
                 end: file_b.len(),
             },
             similarity: 0.0,

@@ -32,7 +32,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' className={roboto.variable}>
-      <body>
+      <body style={{
+        minHeight: "100vh",
+        display: "grid",
+        gridTemplateRows: "auto 1fr auto",
+      }}>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
             <ShowNotification>{children}</ShowNotification>
