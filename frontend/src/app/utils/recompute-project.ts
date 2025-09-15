@@ -26,7 +26,9 @@ export default function useComputeAnalysis(
         setResult({
           textA: textA,
           textB: textB,
-          pairs: result,
+          pairs: result.result,
+          overallLevensteinSimilarity: result.overall_levenstein_similarity,
+          overallCosineSimilarity: result.overall_cosine_similarity,
           minLength: config.minLength,
           maxStrikes: config.maxStrikes,
           ratio: config.ratio,

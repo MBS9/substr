@@ -30,8 +30,7 @@ pub struct SubstringResult {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Copy)]
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Copy, Serialize, Deserialize)]
 pub struct Substring {
     pub start: usize,
     pub end: usize,
@@ -76,7 +75,6 @@ impl<T> IndexMut<usize> for EfficientMatrix<T> {
         &mut self.data[base..][..self.row_len]
     }
 }
-
 
 pub fn levenshtein_edit_distance<T: Eq>(a_chars: &[T], b_chars: &[T]) -> usize {
     let mut l = EfficientMatrix::new(0, b_chars.len() + 1);
@@ -137,6 +135,22 @@ pub fn recompute_ratio(
     ((new_len - edit_distance) as f32) / (new_len as f32)
 }
 
+pub fn find_length_from_tokens(tokens_a: &[Token], tokens_b: &[Token]) -> usize {
+    let mut len = 0;
+    let max_len = max(tokens_a.len(), tokens_b.len());
+    for i in 0..max_len {
+        let token_a = tokens_a.get(i);
+        let token_b = tokens_b.get(i);
+        match (token_a, token_b) {
+            (Some(a), Some(b)) => len += max(a.len(), b.len()),
+            (Some(a), None) => len += a.len(),
+            (None, Some(b)) => len += b.len(),
+            (None, None) => {}
+        }
+    }
+    len
+}
+
 // Helper function to expand matches forward (right)
 pub fn expand_matches_forward(
     a: &[Token],
@@ -151,15 +165,15 @@ pub fn expand_matches_forward(
     let start_a = ret.start_a;
     let start_b = ret.start_b;
     let mut strike = 0;
-    
+
     while strike < max_strike && new_end_a < a.len() && new_end_b < b.len() {
         // Expand
         new_end_a += 1;
-        new_len += max(a[new_end_a-1].len(), b[new_end_b-1].len());
+        new_len += max(a[new_end_a - 1].len(), b[new_end_b - 1].len());
         new_end_b += 1;
-        
+
         let new_ratio = recompute_ratio(a, b, start_a, new_end_a, start_b, new_end_b, new_len);
-        
+
         if new_ratio < ratio {
             strike += 1;
         } else {
@@ -186,17 +200,15 @@ pub fn expand_matches_backward(
     let end_a = ret.end_a;
     let end_b = ret.end_b;
     let mut strike = 0;
-    
-    while strike < max_strike && new_start_a > 0 && new_start_b > 0{
-        
+
+    while strike < max_strike && new_start_a > 0 && new_start_b > 0 {
         // Expand
         new_start_a -= 1;
         new_len += max(a[new_start_a].len(), b[new_start_b].len());
         new_start_b -= 1;
-        
-        let new_ratio =
-            recompute_ratio(a, b, new_start_a, end_a, new_start_b, end_b, new_len);
-        
+
+        let new_ratio = recompute_ratio(a, b, new_start_a, end_a, new_start_b, end_b, new_len);
+
         if new_ratio < ratio {
             strike += 1;
         } else {
@@ -217,20 +229,8 @@ pub fn expand_match_left_and_right(
     max_strike: usize,
 ) {
     // Expand to the right
-    expand_matches_forward(
-        a,
-        b,
-        ratio,
-        max_strike,
-        substr,
-    );
-    
+    expand_matches_forward(a, b, ratio, max_strike, substr);
+
     // Expand to the left
-    expand_matches_backward(
-        a,
-        b,
-        ratio,
-        max_strike,
-        substr,
-    );
+    expand_matches_backward(a, b, ratio, max_strike, substr);
 }

@@ -24,6 +24,8 @@ export default function useExportResult() {
         synonymsB: result.synonymsB,
         fileNameA: result.fileNameA,
         fileNameB: result.fileNameB,
+        overallCosineSimilarity: result.overallCosineSimilarity,
+        overallLevensteinSimilarity: result.overallLevensteinSimilarity,
       }
 
       const file = await exportToFile(jsResultCopy)

@@ -10,6 +10,8 @@ export type DisplayResultState = {
   textA: string;
   textB: string;
   pairs: Pair[];
+  overallLevensteinSimilarity: number;
+  overallCosineSimilarity: number;
 } & ConfigurationOptions
 
 export type InputData = {

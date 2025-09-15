@@ -133,6 +133,14 @@ export function ShowDiff() {
             Mean Cosine Similarity:{" "}
             {resultAnalytics.avarageCosineSimilarity.toPrecision(4)}
           </Typography>
+          <Typography>
+            Overall Levenshtein Similarity:{" "}
+            {result.overallLevensteinSimilarity.toPrecision(4)}
+          </Typography>
+          <Typography>
+            Overall Cosine Similarity:{" "}
+            {result.overallCosineSimilarity.toPrecision(4)}
+          </Typography>
         </Box>
         <DisplayHighlighting onContextMenu={(index, e) => { handleContextMenu(index, e as any) }} />
       </Box>

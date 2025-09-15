@@ -1,5 +1,6 @@
 extern crate wasm_bindgen;
 use gloo_utils::format::JsValueSerdeExt;
+use serde::Serialize;
 use std::{
     cmp::min,
     panic::{self, PanicHookInfo},
@@ -14,6 +15,14 @@ mod utils;
 #[wasm_bindgen]
 pub enum Algorithm {
     Comparativus,
+}
+
+#[wasm_bindgen]
+#[derive(Serialize)]
+pub struct ResponseAndOverall {
+    result: Vec<utils::Result>,
+    overall_levenstein_similarity: f32,
+    overall_cosine_similarity: f32,
 }
 
 #[wasm_bindgen]
@@ -168,7 +177,11 @@ pub fn process(
             levenshteinMatch: false,
         }));
     }
-    return JsValue::from_serde(&result).unwrap();
+    return JsValue::from_serde(&ResponseAndOverall {
+        overall_levenstein_similarity: utils::recompute_ratio(&token_a, &token_b, 0, token_a.len(), 0, token_b.len(), utils::find_length_from_tokens(&token_a, &token_b)),
+        overall_cosine_similarity: utils::cosine_similarity(&file_a.as_slice(), &file_b.as_slice()),
+        result,
+    }).unwrap();
 }
 
 const PUNCTUATION: [char; 44] = [

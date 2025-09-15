@@ -87,21 +87,7 @@ fn expand_all_matches(
                 edit_ratio: 1.0,
             };
 
-            let mut len = 0;
-
-            let tokens_a = &text_a[ma.start_a..ma.end_a];
-            let tokens_b = &text_b[ma.start_b..ma.end_b];
-            let max_len = max(tokens_a.len(), tokens_b.len());
-            for i in 0..max_len {
-                let token_a = tokens_a.get(i);
-                let token_b = tokens_b.get(i);
-                match (token_a, token_b) {
-                    (Some(a), Some(b)) => len += max(a.len(), b.len()),
-                    (Some(a), None) => len += a.len(),
-                    (None, Some(b)) => len += b.len(),
-                    (None, None) => {}
-                }
-            }
+            let len = utils::find_length_from_tokens(&text_a[ma.start_a..ma.end_a], &text_b[ma.start_b..ma.end_b]);
             
             ma.len = len; // This may not necessarily be the same as base_match_size
             ma.edit_ratio = utils::recompute_ratio(
