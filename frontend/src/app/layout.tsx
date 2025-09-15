@@ -35,23 +35,21 @@ export default function RootLayout({
       <body style={{
         minHeight: "100vh",
         display: "grid",
-        gridTemplateRows: "auto 1fr auto",
+        gridTemplateRows: "1fr auto",
       }}>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
-            <ShowNotification>{children}</ShowNotification>
+            <div>
+              <ShowNotification>{children}</ShowNotification>
+            </div>
             <footer
               style={{
                 marginTop: "0.5rem",
-                position: "relative",
-                left: 0,
-                bottom: 0,
                 width: "100%",
                 textAlign: "center",
                 padding: "1rem 0",
                 background: "#fff",
                 boxShadow: "0 -2px 8px rgba(0,0,0,0.05)",
-                zIndex: 100,
               }}
             >
               <Typography variant="subtitle1">
