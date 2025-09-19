@@ -1,11 +1,15 @@
 import { useNotification } from "../components/showNotification"
-import React from "react"
+import React, { useMemo } from "react"
 import { useProject } from "./useProject"
+import { cloneDeep } from "lodash"
 
 export function useAddSynonym() {
   const { project, setOptions: setConfiguration } = useProject()
   const result = project!
-  const { synonymsA, synonymsB } = result
+  const { synonymsA: synA, synonymsB: synB } = result
+  // Deep copy the synonyms to avoid direct state mutation
+  const synonymsA = useMemo(() => cloneDeep(synA), [synA])
+  const synonymsB = useMemo(() => cloneDeep(synB), [synB])
   const [priorSelection, setPriorSelection] = React.useState<Range | null>(
     null,
   )

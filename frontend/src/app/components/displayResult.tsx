@@ -15,6 +15,7 @@ import { Header } from "./header"
 import { DisplayHighlighting } from "./displayHighlighting"
 import SettingsIcon from "@mui/icons-material/Settings"
 import SaveAsIcon from "@mui/icons-material/SaveAs"
+import UndoIcon from "@mui/icons-material/Undo"
 import UpdateSettingsModal from "./updateSettingsModal"
 import React from "react"
 import useExportResult from "../utils/useExportResult"
@@ -23,7 +24,7 @@ import { useNotification } from "./showNotification"
 import { useProject } from "../utils/useProject"
 
 export function ShowDiff() {
-  const { project, setOptions: updateConfiguration } = useProject()
+  const { project, setOptions: updateConfiguration, undoConfigChange } = useProject()
   const result = project!
   const resultAnalytics = useResultAnalytics(result)
   const [selectedRange, setSelectedRange] = useState<Range | null>(null)
@@ -109,6 +110,9 @@ export function ShowDiff() {
         </IconButton>
         <IconButton onClick={openModal} color='inherit'>
           <SettingsIcon color="inherit" />
+        </IconButton>
+        <IconButton onClick={undoConfigChange} color='inherit'>
+          <UndoIcon color="inherit" />
         </IconButton>
         <Typography sx={headingStyle}>
           Minimum Length: {result.minLength}

@@ -43,7 +43,7 @@ export default function Run() {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hotReloadCounter])
-  const runAnalysisFromTextAndConfig = useComputeAnylsis(setResult)
+  const { computeAnalysis: runAnalysisFromTextAndConfig, undo: undoLastConfigChange } = useComputeAnylsis(setResult, result)
   const handleSubmit = React.useCallback(async (data: InputData) => {
     setStatusMessage("Processing... please wait")
     try {
@@ -74,8 +74,12 @@ export default function Run() {
     },
     [result, runAnalysisFromTextAndConfig],
   )
+  const undoLastChange = React.useCallback(() => {
+    if (result === null) return
+    undoLastConfigChange(result.textA, result.textB)
+  }, [result, undoLastConfigChange])
   return (
-    <ProjectContext.Provider value={{ project: result, setOptions: onConfigurationChange }}>
+    <ProjectContext.Provider value={{ project: result, setOptions: onConfigurationChange, undoConfigChange: undoLastChange }}>
       {(() => {
         if (result === null) {
           return (

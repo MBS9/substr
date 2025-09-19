@@ -4,6 +4,7 @@ import type { ConfigurationOptions, DisplayResultState } from "../types"
 interface ProjectContextType {
   project: DisplayResultState | null;
   setOptions: (project: ConfigurationOptions) => void;
+  undoConfigChange: () => void;
 }
 
 export const ProjectContext = React.createContext<ProjectContextType | null>(
