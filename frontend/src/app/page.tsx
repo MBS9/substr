@@ -82,7 +82,7 @@ export default function Run() {
             <>
               <header style={{ textAlign: "center" }}>
                 <Typography variant='h4' component='h1'>Substring Tiler</Typography>
-                <Typography variant='subtitle1'>Status: <i>{statusMessage}</i></Typography>
+                <Typography variant='subtitle1' component='p'>Status: <i>{statusMessage}</i></Typography>
               </header>
               <main style={{ display: "flex", justifyContent: "center" }}>
                 <Box
