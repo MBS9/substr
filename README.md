@@ -1,3 +1,3 @@
-# Comparing texts
+# Substring Tiler
 
-Go to [this URL](https://mbs9.github.io/substr/) and enjoy!
+Go to [to the tool](https://mbs9.github.io/substr/) and enjoy!

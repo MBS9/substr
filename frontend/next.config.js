@@ -2,11 +2,15 @@ const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 const path = require("path");
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
 const { env } = require('process');
+const { execSync } = require('child_process');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
   basePath: env.NEXT_PUBLIC_BASE_PATH || "",
+  env: {
+    GIT_COMMIT_ID: execSync('git rev-parse HEAD').toString().trim(),
+  },
   compiler: {
     removeConsole: {
       exclude: ['error'],

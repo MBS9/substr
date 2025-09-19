@@ -26,7 +26,7 @@ export default function ConfigurationForm({ children, onSubmit, disabled }:
     <Box sx={{ mt: 4, placeContent: "center", display: "grid", justifyItems: "center" }}>
       <Grid container spacing={3} sx={{ placeContent: "center" }}>
         <Grid>
-          <Typography>Minimum Length:</Typography>
+          <Typography>Minimum Length</Typography>
           <TextField
             disabled={UIDisabled}
             variant='standard'
@@ -39,7 +39,7 @@ export default function ConfigurationForm({ children, onSubmit, disabled }:
           />
         </Grid>
         <Grid>
-          <Typography>Max Strikes:</Typography>
+          <Typography>Max Strikes</Typography>
           <TextField
             disabled={UIDisabled}
             variant='standard'

@@ -1,12 +1,12 @@
 import { Roboto } from "next/font/google"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter"
-
 import type { Metadata, Viewport } from "next"
 import type React from "react"
 import "./globals.css"
 import { ShowNotification } from "./components/showNotification"
 import { ThemeProvider, Typography } from "@mui/material"
 import theme from "./theme"
+import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "Substring Tiler",
@@ -56,6 +56,11 @@ export default function RootLayout({
                 Developed by:
                 Laszlo Zala, ELTE Eötvös Loránd University |
                 Mark Barsi-Siminszky, University of Toronto
+              </Typography>
+              <Typography variant="subtitle1">
+                <Link href="https://github.com/mbs9/substr">GitHub Repository</Link>
+                {" | "}
+                Git commit: {process.env.GIT_COMMIT_ID}
               </Typography>
             </footer>
           </ThemeProvider>
