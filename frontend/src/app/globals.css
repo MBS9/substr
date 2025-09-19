@@ -19,3 +19,13 @@ span.show-info:hover::after {
   z-index: 100000;
   font-family: 'Roboto';
 }
+
+span.blink {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

@@ -57,6 +57,22 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
     [],
   )
 
+  const blinkRange = useCallback(
+    (
+      left: number,
+      right: number,
+      refSet: React.RefObject<HTMLSpanElement>[],
+      blink = true,
+    ) => {
+      for (let i = left; i < right; i++) {
+        const ref = refSet[i]
+        if (ref.current !== null) {
+          if (blink) ref.current.classList.add("blink")
+          else ref.current.classList.remove("blink")
+        }
+      }
+    }, [])
+
   const resetRange = useCallback(
     (
       left: number,
@@ -94,6 +110,30 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
     [result.pairs],
   )
 
+  const getContainingSynonym = useCallback(
+    (index: number, text: "a" | "b") => {
+      const synonyms = text === "a" ? result.synonymsA : result.synonymsB
+      const synonymResults = synonyms.filter(
+        (syn) => syn.word.start <= index && index < syn.word.end,
+      )
+      return synonymResults
+    },
+    [result.synonymsA, result.synonymsB],
+  )
+
+
+  const blinkSynonymsFromCharIndex = useCallback(
+    (index: number, blink = true) => {
+      getContainingSynonym(index, "a").forEach((syn) => {
+        blinkRange(syn.word.start, syn.word.end, aRefs, blink)
+        syn.synonyms.forEach((word) => {
+          blinkRange(word.start, word.end, bRefs, blink)
+        })
+      })
+    },
+    [aRefs, bRefs, blinkRange, getContainingSynonym],
+  )
+
   const highlightFromPair = useCallback(
     (pair: Pair, color: string, matchColor: string, index: number) => {
       if (pair.levenshteinMatch) color = matchColor
@@ -114,9 +154,11 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
         if (pair.hold === true) return
         highlightFromPair(pair, color, matchColor, index)
       })
+      blinkSynonymsFromCharIndex(index, true)
     },
-    [getContainingPair, highlightFromPair],
+    [blinkSynonymsFromCharIndex, getContainingPair, highlightFromPair],
   )
+
 
   const reset = useCallback(
     (index: number) => {
@@ -125,8 +167,9 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
         resetRange(pair.b.start, pair.b.end, bRefs)
         resetRange(pair.a.start, pair.a.end, aRefs)
       })
+      blinkSynonymsFromCharIndex(index, false)
     },
-    [getContainingPair, resetRange, bRefs, aRefs],
+    [getContainingPair, blinkSynonymsFromCharIndex, resetRange, bRefs, aRefs],
   )
 
   const toggleHold = useCallback(
