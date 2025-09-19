@@ -1,6 +1,6 @@
 import { Box, Grid2 as Grid, Typography } from "@mui/material"
-import type { Pair, Substring } from "../types"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import type { Pair } from "../types"
+import { useCallback, useEffect, useMemo } from "react"
 import React from "react"
 import { useProject } from "../utils/useProject"
 
@@ -10,24 +10,15 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
   const { project } = useProject()
   const result = project!
   const { onContextMenu } = props
-  const [isLoading, setIsLoading] = useState(true)
-  const [aRefs, setARefs] = useState<React.RefObject<HTMLSpanElement>[]>([])
-  const [bRefs, setBRefs] = useState<React.RefObject<HTMLSpanElement>[]>([])
-
-  const matchesA = useMemo(
-    () =>
-      result.pairs
-        .filter((pair) => pair.levenshteinMatch)
-        .map((pair) => pair.a),
-    [result.pairs],
-  )
-  const matchesB = useMemo(
-    () =>
-      result.pairs
-        .filter((pair) => pair.levenshteinMatch)
-        .map((pair) => pair.b),
-    [result.pairs],
-  )
+  const { aRefs, bRefs } = useMemo(() => {
+    const newARefs = Array(result.textA.length)
+      .fill(null)
+      .map(() => React.createRef<HTMLSpanElement>())
+    const newBRefs = Array(result.textB.length)
+      .fill(null)
+      .map(() => React.createRef<HTMLSpanElement>())
+    return { aRefs: newARefs, bRefs: newBRefs }
+  }, [result.textA.length, result.textB.length])
 
   const highlightRange = useCallback(
     (
@@ -36,17 +27,10 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
       color: string,
       refSet: React.RefObject<HTMLSpanElement>[],
       text: string,
-      matches: Substring[],
     ) => {
       for (let i = left; i < right; i++) {
         const ref = refSet[i]
         if (ref.current !== null) {
-          if (
-            matches.findIndex((match) => match.start <= i && i < match.end) !==
-            -1
-          ) {
-            ref.current.style.border = "3px solid green"
-          }
           ref.current.style.backgroundColor = color
           ref.current.title = text
         }
@@ -83,7 +67,6 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
         const ref = refSet[i]
         if (ref.current !== null) {
           ref.current.style.backgroundColor = "transparent"
-          ref.current.style.border = "none"
           ref.current.title = ""
         }
       }
@@ -119,10 +102,10 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
       const title = `${similarityType} similarity: ${pair.similarity.toFixed(
         4,
       )}`
-      highlightRange(pair.b.start, pair.b.end, color, bRefs, title, matchesB)
-      highlightRange(pair.a.start, pair.a.end, color, aRefs, title, matchesA)
+      highlightRange(pair.b.start, pair.b.end, color, bRefs, title)
+      highlightRange(pair.a.start, pair.a.end, color, aRefs, title)
     },
-    [highlightRange, matchesA, matchesB, bRefs, aRefs],
+    [highlightRange, bRefs, aRefs],
   )
 
   const highlightFromCharIndex = useCallback(
@@ -156,19 +139,6 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
   )
 
   useEffect(() => {
-    const newARefs = Array(result.textA.length)
-      .fill(null)
-      .map(() => React.createRef<HTMLSpanElement>())
-    const newBRefs = Array(result.textB.length)
-      .fill(null)
-      .map(() => React.createRef<HTMLSpanElement>())
-    setARefs(newARefs)
-    setBRefs(newBRefs)
-    setIsLoading(false)
-  }, [result.textA.length, result.textB.length])
-
-  useEffect(() => {
-    if (!isLoading) {
       resetRange(0, result.textA.length, aRefs)
       resetRange(0, result.textB.length, bRefs)
       result.pairs.forEach((pair, index) => {
@@ -193,8 +163,7 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
           bRefs,
         )
       })
-    }
-  }, [isLoading, result.pairs, highlightFromPair, resetRange, result.textA.length, result.textB.length, aRefs, bRefs, result.synonymsA, result.synonymsB, underlineRange])
+  }, [result.pairs, highlightFromPair, resetRange, result.textA.length, result.textB.length, aRefs, bRefs, result.synonymsA, result.synonymsB, underlineRange])
 
   return (
     <Box>
