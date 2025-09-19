@@ -83,7 +83,7 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
         const ref = refSet[i]
         if (ref.current !== null) {
           ref.current.style.backgroundColor = "transparent"
-          ref.current.style.borderColor = "transparent"
+          ref.current.style.border = "none"
           ref.current.title = ""
         }
       }
