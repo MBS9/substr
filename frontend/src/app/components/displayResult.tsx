@@ -18,7 +18,7 @@ import SaveAsIcon from "@mui/icons-material/SaveAs"
 import UpdateSettingsModal from "./updateSettingsModal"
 import React from "react"
 import useExportResult from "../utils/useExportResult"
-import { useAddSynonym } from "../utils/add-synonym"
+import { useAddSynonym } from "../utils/synonyms"
 import { useNotification } from "./showNotification"
 import { useProject } from "../utils/useProject"
 
@@ -69,7 +69,7 @@ export function ShowDiff() {
     )
   }, [contextMenu])
 
-  const addSynonym = useAddSynonym()
+  const { addSynonym, removeSynonym } = useAddSynonym()
 
   const handleAddSynonym = useCallback(() => {
     if (!selectedRange) {
@@ -79,6 +79,15 @@ export function ShowDiff() {
     addSynonym(selectedRange)
     setContextMenu(null)
   }, [addSynonym, selectedRange, showNotification])
+
+  const handleRemoveSynonym = useCallback(() => {
+    if (!selectedRange) {
+      showNotification("No word selected. Please select a word to remove a synonym.", "warning")
+      return
+    }
+    removeSynonym(selectedRange)
+    setContextMenu(null)
+  }, [removeSynonym, selectedRange, showNotification])
 
   const handleClose = useCallback(() => {
     setContextMenu(null)
@@ -155,6 +164,7 @@ export function ShowDiff() {
         }
       >
         <MenuItem onClick={handleAddSynonym}>Add Synonym</MenuItem>
+        <MenuItem onClick={handleRemoveSynonym}>Remove Synonym</MenuItem>
       </Menu>
     </>
   )

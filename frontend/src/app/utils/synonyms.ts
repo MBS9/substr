@@ -10,7 +10,7 @@ export function useAddSynonym() {
     null,
   )
   const showNotification = useNotification()
-  const handleAddSynonym = React.useCallback(
+  const addSynonym = React.useCallback(
     (range: Range) => {
       if (priorSelection === null) {
         setPriorSelection(range.cloneRange())
@@ -103,5 +103,59 @@ export function useAddSynonym() {
     },
     [priorSelection, result.algorithmSelection, result.baseMatchSize, result.fileNameA, result.fileNameB, result.kernelSize, result.maxStrikes, result.minLength, result.ratio, setConfiguration, showNotification, synonymsA, synonymsB],
   )
-  return handleAddSynonym
+  const removeSynonym = React.useCallback(
+    (range: Range) => {
+      const startElement = range.startContainer.parentElement?.id
+      const endElement = range.endContainer.parentElement?.id
+      if (startElement === undefined || endElement === undefined) {
+        showNotification("An error occured while removing the synonym.", "error")
+        return
+      }
+      const startIndex = Number(startElement.split("-")[1])
+      const endIndex = Number(endElement.split("-")[1])
+      const word = { start: startIndex, end: endIndex + 1 }
+      let synonymListA = synonymsA
+      let synonymListB = synonymsB
+      const text = startElement.includes("a") ? "a" : "b"
+      if (text === "b") {
+        const temp = synonymListA
+        synonymListA = synonymListB
+        synonymListB = temp
+      }
+      const foundSynonymA = synonymListA.findIndex(
+        (synonym) =>
+          synonym.word.end === word.end && synonym.word.start === word.start,
+      )
+      if (foundSynonymA === -1) {
+        showNotification("No synonym found for the selected region.", "error")
+        return
+      }
+      synonymListA.splice(foundSynonymA, 1)
+      // Also remove from the other list
+      synonymListB = synonymListB.map((synonym) => {
+        return {
+          word: synonym.word,
+          synonyms: synonym.synonyms.filter(
+            (syn) => syn.start !== word.start || syn.end !== word.end,
+          ),
+        }
+      }).filter(synonym => synonym.synonyms.length > 0)
+      setConfiguration({
+        algorithmSelection: result.algorithmSelection,
+        baseMatchSize: result.baseMatchSize,
+        kernelSize: result.kernelSize,
+        maxStrikes: result.maxStrikes,
+        minLength: result.minLength,
+        ratio: result.ratio,
+        synonymsA: text === "a" ? synonymListA : synonymListB,
+        synonymsB: text === "a" ? synonymListB : synonymListA,
+        fileNameA: result.fileNameA,
+        fileNameB: result.fileNameB,
+      })
+      showNotification(
+        "The synonym was removed, and the texts were reanalyzed.",
+        "success",
+      )
+    }, [result.algorithmSelection, result.baseMatchSize, result.fileNameA, result.fileNameB, result.kernelSize, result.maxStrikes, result.minLength, result.ratio, setConfiguration, showNotification, synonymsA, synonymsB])
+  return { addSynonym, removeSynonym }
 }

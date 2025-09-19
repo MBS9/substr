@@ -78,12 +78,14 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
       left: number,
       right: number,
       refSet: React.RefObject<HTMLSpanElement>[],
+      removeUnderline = false,
     ) => {
       for (let i = left; i < right; i++) {
         const ref = refSet[i]
         if (ref.current !== null) {
           ref.current.style.backgroundColor = "transparent"
           ref.current.title = ""
+          if (removeUnderline) ref.current.style.textDecoration = "none"
         }
       }
     },
@@ -182,8 +184,8 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
   )
 
   useEffect(() => {
-      resetRange(0, result.textA.length, aRefs)
-      resetRange(0, result.textB.length, bRefs)
+    resetRange(0, result.textA.length, aRefs, true)
+    resetRange(0, result.textB.length, bRefs, true)
       result.pairs.forEach((pair, index) => {
         pair.hold = pair.hold ?? true
         if (pair.hold) {
@@ -230,7 +232,7 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
                   highlightFromCharIndex(index, "", "green")
                 }
                 onMouseLeave={() => reset(index)}
-                onMouseDown={() => toggleHold(index)}
+                onClick={() => toggleHold(index)}
                 onContextMenu={(e) => onContextMenu ? onContextMenu(index, e as any) : undefined}
                 id={`a-${index}`}
               >
