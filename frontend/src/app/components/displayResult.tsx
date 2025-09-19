@@ -8,6 +8,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Tooltip,
   Typography,
 } from "@mui/material"
 import { useResultAnalytics } from "../utils/useResultAnalytics"
@@ -99,21 +100,27 @@ export function ShowDiff() {
   return (
     <>
       <Header>
-        <IconButton
-          onClick={() => {
-            void exportResult()
-          }}
-          type='button'
-          color='inherit'
-        >
-          <SaveAsIcon color="inherit" />
-        </IconButton>
-        <IconButton onClick={openModal} color='inherit'>
-          <SettingsIcon color="inherit" />
-        </IconButton>
-        <IconButton onClick={undoConfigChange} color='inherit'>
-          <UndoIcon color="inherit" />
-        </IconButton>
+        <Tooltip title="Save Project">
+          <IconButton
+            onClick={() => {
+              void exportResult()
+            }}
+            type='button'
+            color='inherit'
+          >
+            <SaveAsIcon color="inherit" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Update Settings">
+          <IconButton onClick={openModal} color='inherit'>
+            <SettingsIcon color="inherit" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Undo Changes">
+          <IconButton onClick={undoConfigChange} color='inherit'>
+            <UndoIcon color="inherit" />
+          </IconButton>
+        </Tooltip>
         <Typography sx={headingStyle}>
           Minimum Length: {result.minLength}
         </Typography>
