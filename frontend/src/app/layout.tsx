@@ -58,7 +58,20 @@ export default function RootLayout({
                 Mark Barsi-Siminszky, University of Toronto
               </Typography>
               <Typography variant="subtitle1">
-                <Link href="https://github.com/mbs9/substr">GitHub Repository</Link>
+                <Link href="https://docs.google.com/forms/d/e/1FAIpQLSdEAHf27KF8t9f9rNb5KmBeD1B9x5NVHX0M_J6MQo3NJ4RPOQ/viewform?usp=header"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Submit Feedback
+                </Link>
+              </Typography>
+              <Typography variant="subtitle1">
+                <Link href="https://github.com/mbs9/substr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub Repository
+                </Link>
                 {" | "}
                 Git commit: {process.env.GIT_COMMIT_ID}
               </Typography>
