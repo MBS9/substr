@@ -72,7 +72,7 @@ export function useAddSynonym() {
         synonymsA.push({
           synonyms: [wordB as any],
           word: wordA as any,
-        })
+        } as any)
       }
 
       const foundSynonymB = synonymsB.find(
@@ -85,7 +85,7 @@ export function useAddSynonym() {
         synonymsB.push({
           synonyms: [wordA as any],
           word: wordB as any,
-        })
+        } as any)
       }
       setPriorSelection(null)
       setConfiguration({
@@ -143,7 +143,7 @@ export function useAddSynonym() {
             (syn) => syn.start !== word.start || syn.end !== word.end,
           ),
         }
-      }).filter(synonym => synonym.synonyms.length > 0)
+      }).filter(synonym => synonym.synonyms.length > 0) as any
       setConfiguration({
         algorithmSelection: result.algorithmSelection,
         baseMatchSize: result.baseMatchSize,
