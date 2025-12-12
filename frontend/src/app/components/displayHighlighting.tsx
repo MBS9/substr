@@ -186,28 +186,28 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
   useEffect(() => {
     resetRange(0, result.textA.length, aRefs, true)
     resetRange(0, result.textB.length, bRefs, true)
-      result.pairs.forEach((pair, index) => {
-        pair.hold = pair.hold ?? true
-        if (pair.hold) {
-          highlightFromPair(pair, "", "green", index)
-        }
-      })
-      result.synonymsA.forEach((synonym) => {
-        underlineRange(
-          synonym.word.start,
-          synonym.word.end,
-          "black",
-          aRefs,
-        )
-      })
-      result.synonymsB.forEach((synonym) => {
-        underlineRange(
-          synonym.word.start,
-          synonym.word.end,
-          "black",
-          bRefs,
-        )
-      })
+    result.pairs.forEach((pair, index) => {
+      pair.hold = pair.hold ?? true
+      if (pair.hold) {
+        highlightFromPair(pair, "", "green", index)
+      }
+    })
+    result.synonymsA.forEach((synonym) => {
+      underlineRange(
+        synonym.word.start,
+        synonym.word.end,
+        "black",
+        aRefs,
+      )
+    })
+    result.synonymsB.forEach((synonym) => {
+      underlineRange(
+        synonym.word.start,
+        synonym.word.end,
+        "black",
+        bRefs,
+      )
+    })
   }, [result.pairs, highlightFromPair, resetRange, result.textA.length, result.textB.length, aRefs, bRefs, result.synonymsA, result.synonymsB, underlineRange])
 
   return (
