@@ -1,3 +1,3 @@
 # Substring Tiler
 
-Go to [to the tool](https://www.substringtiler.org/) and enjoy!
+Open the [Substring Tiler](https://www.substringtiler.org/) and enjoy!
