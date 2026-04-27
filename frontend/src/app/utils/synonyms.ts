@@ -3,6 +3,8 @@ import React, { useMemo } from "react"
 import { useProject } from "./useProject"
 import { cloneDeep } from "lodash"
 
+interface Element { startId: string | undefined, endId: string | undefined, startOffset: number | undefined, endOffset: number | undefined }
+
 export function useAddSynonym() {
   const { project, setOptions: setConfiguration } = useProject()
   const result = project!
@@ -14,6 +16,7 @@ export function useAddSynonym() {
     null,
   )
   const showNotification = useNotification()
+
   const addSynonym = React.useCallback(
     (range: Range) => {
       if (priorSelection === null) {
@@ -22,46 +25,44 @@ export function useAddSynonym() {
         return
       }
       // Get the element ids of the first and last element for both selections
-      let firstElements: [string | undefined, string | undefined] = [
-        priorSelection.startContainer.parentElement?.id,
-        priorSelection.endContainer.parentElement?.id,
-      ]
-      let secondElements: [string | undefined, string | undefined] = [
-        range.startContainer.parentElement?.id,
-        range.endContainer.parentElement?.id,
-      ]
+      let firstElements: Element = {
+        startId: priorSelection.startContainer.parentElement?.id,
+        endId: priorSelection.endContainer.parentElement?.id,
+        startOffset: priorSelection.startOffset,
+        endOffset: priorSelection.endOffset,
+      }
 
-      if (
-        firstElements.includes(undefined) ||
-        secondElements.includes(undefined)
-      ) {
-        showNotification("An error occured while adding the synonym.", "error")
-        setPriorSelection(null)
-        return
+      let secondElements: Element =
+      {
+        startId: range.startContainer.parentElement?.id,
+        endId: range.endContainer.parentElement?.id,
+        startOffset: range.startOffset,
+        endOffset: range.endOffset,
       }
 
       if (
-        (firstElements[0]?.includes("b") && secondElements[1]?.includes("b")) ||
-        (firstElements[0]?.includes("a") && secondElements[1]?.includes("a"))
+        (firstElements.startId?.includes("b") && secondElements.endId?.includes("b")) ||
+        (firstElements.startId?.includes("a") && secondElements.endId?.includes("a"))
       ) {
         showNotification("Please select words from different texts.", "error")
         return
       }
 
-      if (firstElements[0]?.includes("b")) {
+      if (firstElements.startId?.includes("b")) {
         // Swap the elements if the first element is from B
         const temp = firstElements
         firstElements = secondElements
         secondElements = temp
       }
+      console.log("First selection:", firstElements)
+      console.log("Second selection:", secondElements)
+      const startRangeA = Number(firstElements.startId!.split("-")[1]) + (firstElements.startOffset ?? 0)
+      const endRangeA = Number(firstElements.endId!.split("-")[1]) + (firstElements.endOffset ?? 0)
+      const startRangeB = Number(secondElements.startId!.split("-")[1]) + (secondElements.startOffset ?? 0)
+      const endRangeB = Number(secondElements.endId!.split("-")[1]) + (secondElements.endOffset ?? 0)
 
-      const startRangeA = Number(firstElements[0]!.split("-")[1])
-      const endRangeA = Number(firstElements[1]!.split("-")[1])
-      const startRangeB = Number(secondElements[0]!.split("-")[1])
-      const endRangeB = Number(secondElements[1]!.split("-")[1])
-
-      const wordA = { start: startRangeA, end: endRangeA + 1 }
-      const wordB = { start: startRangeB, end: endRangeB + 1 }
+      const wordA = { start: startRangeA, end: endRangeA }
+      const wordB = { start: startRangeB, end: endRangeB }
       const foundSynonymA = synonymsA.find(
         (synonym) =>
           synonym.word.end === wordA.end && synonym.word.start === wordA.start,
