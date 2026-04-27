@@ -84,7 +84,7 @@ export default function ConfigurationForm({ children, onSubmit, disabled }:
             select
             label='Algorithm'
             name='algorithm_selection'
-            onChange={(e) => setAlgorithmSelection(parseInt(e.target.value) as Algorithm)}
+            onChange={(e) => setAlgorithmSelection(parseInt(e.target.value))}
             value={algorithmSelection}
             variant='standard'
           >

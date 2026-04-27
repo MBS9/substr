@@ -8,7 +8,6 @@ import {
 import { Check as CheckIcon } from "@mui/icons-material"
 import Divider from "@mui/material/Divider"
 import ImportButton from "./importButton"
-import type { Algorithm } from "algo-wasm"
 import ConfigurationForm from "./configurationForm"
 
 interface Props {
@@ -34,7 +33,7 @@ export function InputForm({ onSubmit, disabled, onImport }: Props) {
       const ratio = parseFloat(formData.get("ratio") as string)
       const maxStrikes = parseInt(formData.get("strikes") as string)
       const kernelSize = parseInt(formData.get("kernel_size") as string)
-      const algorithmSelection = parseInt(formData.get("algorithm_selection") as string) as Algorithm
+      const algorithmSelection = parseInt(formData.get("algorithm_selection") as string)
       const baseMatchSize = parseInt(formData.get("base_match_size") as string)
       onSubmit({
         fileA, fileB, minLength, ratio,

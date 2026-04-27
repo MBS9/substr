@@ -26,7 +26,7 @@ export default function useComputeAnalysis(
           config.synonymsA,
           config.synonymsB,
         )
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+         
         if (addToHistory && result) history.current.push(cloneDeep({
           minLength: result.minLength,
           maxStrikes: result.maxStrikes,
