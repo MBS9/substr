@@ -54,8 +54,7 @@ export function useAddSynonym() {
         firstElements = secondElements
         secondElements = temp
       }
-      console.log("First selection:", firstElements)
-      console.log("Second selection:", secondElements)
+
       const startRangeA = Number(firstElements.startId!.split("-")[1]) + (firstElements.startOffset ?? 0)
       const endRangeA = Number(firstElements.endId!.split("-")[1]) + (firstElements.endOffset ?? 0)
       const startRangeB = Number(secondElements.startId!.split("-")[1]) + (secondElements.startOffset ?? 0)

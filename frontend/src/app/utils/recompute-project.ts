@@ -66,7 +66,6 @@ export default function useComputeAnalysis(
   )
   const undo = React.useCallback((textA: string, textB: string) => {
     const previous = history.current.pop()
-    console.log("Undo to previous config:", previous)
     if (previous) {
       computeAnalysis(textA, textB, previous, false)
       showNotification("Reverted to previous configuration.", "success")
