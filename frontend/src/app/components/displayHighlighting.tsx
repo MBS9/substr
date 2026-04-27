@@ -5,6 +5,7 @@ import React from "react"
 import { useProject } from "../utils/useProject"
 
 const COLOR_LIST = ["orange"]
+const TYPOGRAPHY_WRAP = { whiteSpace: "pre-wrap", overflowWrap: "anywhere", wordBreak: "break-word" }
 
 export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number, e: PointerEvent) => void }) {
   const { project } = useProject()
@@ -219,9 +220,9 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
         click on the text.
       </Typography>
       <Grid container gap={3} sx={{ mt: 3 }}>
-        <Grid sx={{ width: "50%" }}>
+        <Grid sx={{ width: "50%", minWidth: 0 }}>
           <Typography variant='h6'>{project?.fileNameA}</Typography>
-          <Typography>
+          <Typography sx={TYPOGRAPHY_WRAP}>
             {Array.from(result.textA).map((letter, index) => (
               <span
                 ref={aRefs[index]}
@@ -241,9 +242,9 @@ export function DisplayHighlighting(props: { onContextMenu?: (charIndex: number,
             ))}
           </Typography>
         </Grid>
-        <Grid size='grow'>
+        <Grid size='grow' sx={{ minWidth: 0 }}>
           <Typography variant='h6'>{project?.fileNameB}</Typography>
-          <Typography>
+          <Typography sx={TYPOGRAPHY_WRAP}>
             {Array.from(result.textB).map((letter, index) => (
               <span
                 ref={bRefs[index]}
