@@ -115,9 +115,9 @@ export function useAddSynonym() {
         showNotification("An error occured while removing the synonym.", "error")
         return
       }
-      const startIndex = Number(startElement.split("-")[1])
-      const endIndex = Number(endElement.split("-")[1])
-      const word = { start: startIndex, end: endIndex + 1 }
+      const startIndex = Number(startElement.split("-")[1]) + (range.startOffset ?? 0)
+      const endIndex = Number(endElement.split("-")[1]) + (range.endOffset ?? 0)
+      const word = { start: startIndex, end: endIndex }
       let synonymListA = synonymsA
       let synonymListB = synonymsB
       const text = startElement.includes("a") ? "a" : "b"
